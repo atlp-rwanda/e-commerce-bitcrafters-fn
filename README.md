@@ -1,11 +1,11 @@
 ## E-COMMERCE-BITCRAFTERS-FN
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/b587cbf0ba4c569d8f4f/maintainability)](https://codeclimate.com/github/atlp-rwanda/e-commerce-bitcrafters-fn/maintainability) 
-[![Test Coverage](https://api.codeclimate.com/v1/badges/b587cbf0ba4c569d8f4f/test_coverage)](https://codeclimate.com/github/atlp-rwanda/e-commerce-bitcrafters-fn/test_coverage)
-[![Coverage Status](https://coveralls.io/repos/github/atlp-rwanda/e-commerce-bitcrafters-fn/badge.svg?branch=development)](https://coveralls.io/github/atlp-rwanda/e-commerce-bitcrafters-fn?branch=development)
+[![Maintainability](https://api.codeclimate.com/v1/badges/9d32f234492c42c832aa/maintainability)](https://codeclimate.com/github/atlp-rwanda/e-commerce-bitcrafters-fn/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/9d32f234492c42c832aa/test_coverage)](https://codeclimate.com/github/atlp-rwanda/e-commerce-bitcrafters-fn/test_coverage)
+[![Coverage Status](https://coveralls.io/repos/github/atlp-rwanda/e-commerce-bitcrafters-fn/badge.svg?branch=develop)](https://coveralls.io/github/atlp-rwanda/e-commerce-bitcrafters-fn?branch=develop)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/atlp-rwanda/e-commerce-bitcrafters-fn/tree/ft-tests-setup.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/atlp-rwanda/e-commerce-bitcrafters-fn/tree/ft-tests-setup)
-![CI/CD](https://github.com/atlp-rwanda/e-commerce-bitcrafters-fn/badge.svg)
-[![Code coverage](https://coveralls.io/repos/github/atlp-rwanda/e-commerce-bitcrafters-fn/badge.svg)](https://coveralls.io/github/atlp-rwanda/e-commerce-bitcrafters-fn)
+![CI/CD](https://github.com/atlp-rwanda/e-commerce-bitcrafters-fn/actions/workflows/ci.yml/badge.svg)
+[![Coverage Coverage](https://coveralls.io/repos/github/atlp-rwanda/e-commerce-bitcrafters-fn/badge.svg)](https://coveralls.io/github/atlp-rwanda/e-commerce-bitcrafters-fn)
 
 
 <img alt="REACT JS" src="./public/andela.png"/>
