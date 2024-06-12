@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
 type Props = {
   /** Button description */
-  variant: "green" | "yellow" | "red";
-  borderRadius: "5px" | "10px" | "20px";
-  align: "center" | "start";
-  padding: "0px" | "5px" | "10px" | "20px";
-  label: string;
+  variant?: "green" | "yellow" | "red";
+  borderRadius?: "5px" | "10px" | "20px";
+  align?: "center" | "start";
+  padding?: "0px" | "5px" | "10px" | "20px";
+  label?: string;
 };
 /** Our Button component */
 const Button = ({
@@ -14,6 +14,7 @@ const Button = ({
   align = "center",
   padding = "5px",
   label = "Press Me",
+  ...restProps
 }: Props) => {
   return (
     <div
@@ -26,6 +27,7 @@ const Button = ({
         color: "white",
         fontFamily: "arial",
       }}
+      {...restProps}
     >
       {label}
     </div>

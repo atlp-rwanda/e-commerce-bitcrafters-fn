@@ -1,16 +1,15 @@
 import Routers from "./routes"
 import './app.scss'
+import { Provider } from "react-redux";
+import store from "./redux/store";
 function App() {
   return (
     <>
-    <Routers/>
-    <div className="nav-bar">Bit.Shop(sass)
-      <div className="sub-nav">Home (sass)</div>
-    </div>
-    <div className="font-bold text-xl text-green-500">About (Tailwind)</div>
+      <Provider store={store}>
+        <Routers />
+      </Provider>
     </>
-
-  )
+  );
 }
 
 export default App;
