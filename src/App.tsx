@@ -1,9 +1,9 @@
-import Counter from "./components/counter"
+import Routers from "./routes"
 import './app.scss'
 function App() {
   return (
     <>
-    <Counter/>
+    <Routers/>
     <div className="nav-bar">Bit.Shop(sass)
       <div className="sub-nav">Home (sass)</div>
     </div>
@@ -13,4 +13,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
