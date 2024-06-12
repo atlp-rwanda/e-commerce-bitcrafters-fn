@@ -9,6 +9,8 @@
     collectCoverageFrom: [  
       '**/*.{js,jsx,ts,tsx}',  
       '!**/node_modules/**',  
+      "!.storybook/**/**.{tsx,ts, jsx, md, js}", 
+      "!**/*.stories.{tsx, ts}"
      ],
     coverageThreshold: {
       global: {

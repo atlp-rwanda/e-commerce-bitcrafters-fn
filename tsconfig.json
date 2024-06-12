@@ -22,7 +22,9 @@
     "babel.config.js",
     "postcss.config.js",
     "tailwind.config.js",
-    "vite.config.ts"
+    "vite.config.ts",
+    "src/**/*.ts", 
+    ".storybook/**/*.ts" 
   ],
   "exclude": ["node_modules", "dist", "coverage"],
   "references": [{ "path": "./tsconfig.node.json" }]

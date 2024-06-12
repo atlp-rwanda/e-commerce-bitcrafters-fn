@@ -8,3 +8,8 @@ coverage
 
 .env
 ./.env
+
+*storybook.log
+*.stories.tsx
+
+.vscode
