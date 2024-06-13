@@ -1,8 +1,20 @@
-.nav-bar{
+.nav-bar {
   background-color: bisque;
   color: black;
-  .sub-nav{
+  .sub-nav {
     font-size: 20px;
     background-color: aquamarine;
   }
+}
+
+.navbar ul {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1em;
+  font-family: "Courier New", Courier, monospace;
+  margin: 0px auto;
+  font-size: 20px;
+  font-weight: bold;
+  list-style: none;
+  height: 38px;
 }
