@@ -6,20 +6,24 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "esModuleInterop": true,
-    
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "babel.config.js",
+    "postcss.config.js",
+    "tailwind.config.js",
+    "vite.config.ts"
+  ],
   "exclude": ["node_modules", "dist", "coverage"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
