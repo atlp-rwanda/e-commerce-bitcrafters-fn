@@ -1,0 +1,45 @@
+version: 2.1
+
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:18.17.0
+
+jobs:
+  test:
+    executor: node-executor
+    steps:
+      - checkout
+      - run:
+          name: Install npm and curl
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y npm curl
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - run:
+          name: Run Tests
+          command: npm test
+      - run:
+          name: Upload coverage to Coveralls
+          command: npx coveralls < coverage/lcov.info
+          env:
+            COVERALLS_REPO_TOKEN: $COVERALLS_REPO_TOKEN
+      - run:
+          name: Setup CodeClimate Test Reporter
+          command: |
+            # Download and setup codeclimate-test-reporter
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+            ./cc-test-reporter before-build
+      - run:
+          name: Run CodeClimate Test Reporter After Build
+          command: |
+            ./cc-test-reporter after-build --exit-code $?
+
+workflows:
+  version: 2
+  test-workflow:
+    jobs:
+      - test
