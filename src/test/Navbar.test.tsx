@@ -6,20 +6,13 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { BrowserRouter} from "react-router-dom";
 import '@testing-library/jest-dom';
+import React from 'react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 
-describe('Navbar component', () => {
-it('renders Navbar correctly', () => {
-  const NavBarTree = renderer
-    .create(
-          <BrowserRouter>
-        <Navbar />
-      </BrowserRouter>
-  )
-    .toJSON();
-  expect(NavBarTree).toMatchSnapshot();
-});
+describe('Footer component', () => {
 
-it('renders Footer correctly', () => {
+it('renders Footer ', () => {
   const footerTree = renderer
     .create(
       <BrowserRouter>
@@ -30,39 +23,120 @@ it('renders Footer correctly', () => {
   expect(footerTree).toMatchSnapshot();
 });
 
+});
 
 
-  test('toggles burger menu on button click', () => {
-    render(
-    <BrowserRouter>
-      <Navbar />
-    </BrowserRouter>
-    );
+const mockStore = configureStore([]);
 
-    const burgerButton = screen.getByRole('button');
-    expect(burgerButton).toBeInTheDocument();
-    expect(screen.queryByText('Logout')).not.toBeInTheDocument(); 
+jest.mock('../assets/images/Bit.Shop.svg', () => 'mocked-logo.svg');
 
-    fireEvent.click(burgerButton);
+describe('Navbar Component', () => {
+  let store: any;
 
-    expect(screen.getByText('Logout')).toBeInTheDocument(); 
+  beforeEach(() => {
+    store = mockStore({
+      auth: { isLoggedIn: false }
+    });
   });
 
-  test('renders mobile menu conditionally', () => {
-    render(
-      <BrowserRouter>
-     <Navbar burgerShown={true} />
-    </BrowserRouter>
-    ); 
-  
-    expect(screen.getByText('Logout')).toBeInTheDocument(); 
-  
-    render(
-      <BrowserRouter>
-      <Navbar burgerShown={false} />
-     </BrowserRouter>
-    ); 
-  
-    expect(screen.queryByText('Logout')).toBeInTheDocument(); 
+  const renderWithRouter = (component: React.ReactNode) => {
+    return render(
+      <Provider store={store}>
+        <BrowserRouter>
+          {component}
+        </BrowserRouter>
+      </Provider>
+    );
+  };
+
+  test('renders logo', () => {
+    renderWithRouter(<Navbar />);
+    const logoElement = screen.getByAltText('Logo');
+    expect(logoElement).toBeInTheDocument();
+    expect(logoElement).toHaveAttribute('src', 'mocked-logo.svg');
+  });
+
+  test('renders navigation links on desktop', () => {
+    renderWithRouter(<Navbar />);
+    const homeLink = screen.getByText('Home');
+    const aboutLink = screen.getByText('About');
+    const shopLink = screen.getByText('Shop');
+    const contactLink = screen.getByText('Contact');
+
+    expect(homeLink).toBeInTheDocument();
+    expect(aboutLink).toBeInTheDocument();
+    expect(shopLink).toBeInTheDocument();
+    expect(contactLink).toBeInTheDocument();
+  });
+
+  test('renders hamburger menu on mobile', () => {
+    renderWithRouter(<Navbar />);
+    const hamburgerButton = screen.getByRole('button');
+    expect(hamburgerButton).toBeInTheDocument();
+  });
+
+  test('toggles mobile menu when hamburger is clicked', () => {
+    renderWithRouter(<Navbar />);
+    const hamburgerButton = screen.getByRole('button');
+
+    fireEvent.click(hamburgerButton);
+    expect(screen.getByText('My wishlist')).toBeInTheDocument();
+
+    fireEvent.click(hamburgerButton);
+    expect(screen.queryByText('My wishlist')).not.toBeInTheDocument();
+  });
+
+  test('renders login button when user is not logged in', () => {
+    renderWithRouter(<Navbar />);
+    fireEvent.click(screen.getByRole('button')); 
+    expect(screen.getByText('Login')).toBeInTheDocument();
+  });
+
+  test('renders logout button when user is logged in', () => {
+    store = mockStore({
+      auth: { isLoggedIn: true }
+    });
+    renderWithRouter(<Navbar />);
+    fireEvent.click(screen.getByRole('button')); 
+    expect(screen.getByText('Logout')).toBeInTheDocument();
+  });
+});
+;
+
+
+describe('Navbar Component - Login Link', () => {
+  let store: any;
+
+  beforeEach(() => {
+    store = mockStore({
+      auth: { isLoggedIn: false }
+    });
+  });
+
+  const renderWithRouter = (component: React.ReactNode) => {
+    return render(
+      <Provider store={store}>
+        <BrowserRouter>
+          {component}
+        </BrowserRouter>
+      </Provider>
+    );
+  };
+
+  test('clicking login link in mobile menu closes the burger menu', () => {
+    renderWithRouter(<Navbar />);
+    
+    
+    const hamburgerButton = screen.getByRole('button');
+    fireEvent.click(hamburgerButton);
+    
+    expect(screen.getByText('Login')).toBeInTheDocument();
+
+    const loginLink = screen.getByText('Login');
+    fireEvent.click(loginLink);
+
+    expect(screen.queryByText('My wishlist')).not.toBeInTheDocument();
+
+    expect(screen.getByRole('button')).toBeInTheDocument();
   });
 });

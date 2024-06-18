@@ -13,19 +13,21 @@ type Story = StoryObj<typeof meta>;
 
 export const Base: Story = {
     args: {
- variant:"red",
- label:"talk"
+ color:"red",
+ value:"Button"
     }
 }
 
 export const Yellow: Story = {
     args: {
- variant:"yellow"
+ color:"yellow",
+  value:"Button"
     }
 }
 export const New: Story = {
     args: {
- variant:"yellow"
+ color:"yellow",
+  value:"Button"
     },
     render:(args) => <Button{...args}/>
 }

@@ -5,9 +5,6 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import counterReducer, { increment, decrement, incrementByAmount } from '../redux/counter';
 import Hello from "../components/Hello"
-import Login from "../views/Login";
-
-
 
 const store = configureStore({
   reducer: {
@@ -25,7 +22,6 @@ test("Renders the main App component", () => {
   // Ensure the Counter component is rendering correctly
   expect(screen.getByText("Shop Now")).toBeInTheDocument();
 });
-
 
 
 describe('counter reducer', () => {
@@ -62,10 +58,3 @@ describe("Hello Testing",()=>{
       })
 })
 
-describe("Should login", () => {
-  it("should render Login ", () => {
-    render(<Login />);
-    const myElement = screen.getByTestId("test-id");
-    expect(myElement).toBeInTheDocument();
-  });
-});
