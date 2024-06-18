@@ -9,6 +9,7 @@ export default [
       "node_modules",
       ".eslintrc.js",
       "eslint.config.js",
+      "vite.config.ts"
     ],
   },
   {

@@ -6,7 +6,7 @@ import {
   act,
 } from "@testing-library/react";
 import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
+import configureStore, { MockStoreEnhanced } from "redux-mock-store";
 import { MemoryRouter } from "react-router-dom";
 import Login from "../../views/Login";
 import axiosClient from "../../hooks/AxiosInstance";
@@ -17,6 +17,9 @@ import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
 import TextInput from "../../components/TextInput";
 import * as reactRouterDom from 'react-router-dom';
+import { PUBLIC_URL } from "../../constants";
+import userEvent from '@testing-library/user-event';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 jest.mock( "../../hooks/AxiosInstance");
 
@@ -542,3 +545,74 @@ describe('Login Component - Navigation Tests', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/request', { state: { email: 'test@example.com' } });
   });
 });
+// --------------------Login with Google--------------------------
+
+describe('Login component', () => {
+  let store: MockStoreEnhanced<unknown, {}>;
+
+  beforeEach(() => {
+    const mockStore = configureStore([]);
+    store = mockStore({
+      isLoggedIn: false,
+      authToken: null,
+    });
+  });
+
+  test('should login with Google successfully', async () => {
+    global.open = jest.fn();
+    global.localStorage = {
+      setItem: jest.fn(),
+      getItem: jest.fn(),
+      removeItem: jest.fn(),
+      clear: jest.fn(),
+      length: 0,
+      key: jest.fn(),
+    } as Storage;
+
+    render(
+      <Provider store={store}>
+        <Router>
+          <Login />
+        </Router>
+      </Provider>
+    );
+
+    const googleButton = screen.getByText('Continue with google');
+    await userEvent.click(googleButton);
+
+    expect(window.open).toHaveBeenCalledWith(`${PUBLIC_URL}users/google`, '_self');
+
+    const urlParams = new URLSearchParams();
+    urlParams.append('token', 'valid_token');
+    Object.defineProperty(window, 'location', {
+      value: {
+        search: `?${urlParams.toString()}`,
+      },
+    });
+  });
+
+  test('should notify on login failure', async () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <Login />
+          <Toastify.ToastContainer />
+        </Router>
+      </Provider>
+    );
+
+    const googleButton = screen.getByText('Continue with google');
+    await userEvent.click(googleButton);
+
+    const urlParams = new URLSearchParams();
+    urlParams.append('token', 'valid_token');
+    Object.defineProperty(window, 'location', {
+      value: {
+        search: `?${urlParams.toString()}`,
+      },
+      writable: true,
+    });
+
+  });
+});
+

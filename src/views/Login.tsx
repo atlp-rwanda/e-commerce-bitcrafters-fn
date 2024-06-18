@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import axiosClient from "../hooks/AxiosInstance";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
+import { PUBLIC_URL } from "../constants";
 
 const Login: React.FC = () => {
   const client = axiosClient();
@@ -21,7 +22,26 @@ const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const backendUrl = PUBLIC_URL
 
+  const loginWithGoogle = async () => {
+    try {
+      window.open(`${backendUrl}users/google`, "_self");
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+
+      if (token) {
+        const bearerToken = `Bearer ${token}`;
+        localStorage.setItem('AUTH_TOKEN', bearerToken);
+        dispatch(setAuthToken(token))
+        dispatch(setIsLoggedIn(true));
+      } 
+
+    } catch (error) {
+      notify("Login with Google failed");
+    }
+  };
   const loginSchema = yup.object().shape({
     email: yup
       .string()
@@ -159,9 +179,10 @@ const Login: React.FC = () => {
         <p className="text-center align-middle self-center ">- OR -</p>
 
         <Button
-          icon={<FcGoogle />}
-          value="Continue with google"
-          type="submit"
+        icon={<FcGoogle />}
+        value="Continue with google"
+        type="submit"
+        onClick={loginWithGoogle}
         />
 
         <p className="text-sm">
