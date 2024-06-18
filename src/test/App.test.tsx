@@ -23,7 +23,7 @@ test("Renders the main App component", () => {
   );
 
   // Ensure the Counter component is rendering correctly
-  expect(screen.getByText("Home Page")).toBeInTheDocument();
+  expect(screen.getByText("Shop Now")).toBeInTheDocument();
 });
 
 
