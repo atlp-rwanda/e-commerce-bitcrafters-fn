@@ -4,6 +4,10 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['poppins'],
+        'body': ['"poppins"'],
+      },
       colors:{
         black:"#262626",
         orange:"#FA8232",
@@ -12,8 +16,9 @@ export default {
         on_black:"#FFFFFF"
       },
       borderRadius:{
+        'sm': '5px',
         'md': '8px',
-        'lg': '12px',
+        'lg': '10px',
         'xl': '16px',
         '2xl': '24px'
       },
