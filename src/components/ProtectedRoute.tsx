@@ -31,7 +31,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) => {
 
   try {
     const decodedToken: DecodedToken = jwtDecode(authToken);
-    if (decodedToken.userRole !== "admin") {
+    if (decodedToken.userRole !== "admin" && !decodedToken.otp) {
       dispatch(setIsLoggedIn(false));
       dispatch(setAuthToken(null));
       dispatch(setAuthRole(null));

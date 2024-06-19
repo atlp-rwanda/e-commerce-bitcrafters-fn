@@ -4,7 +4,7 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { setAuthToken, setIsLoggedIn } from "../redux/authSlice";
+import { setAuthRole, setAuthToken, setIsLoggedIn } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 import axiosClient from "../hooks/AxiosInstance";
 
@@ -68,8 +68,9 @@ const TwoFactorAuth: React.FC = () => {
         const bearerToken = `Bearer ${token}`;
         localStorage.setItem("AUTH_TOKEN", bearerToken);
         dispatch(setAuthToken(token));
+        dispatch(setAuthRole('seller'));
         dispatch(setIsLoggedIn(true));
-        navigate("/");
+        navigate("/seller/addProduct");
         notify("Login successful");
       }
     } catch (err: any) {
