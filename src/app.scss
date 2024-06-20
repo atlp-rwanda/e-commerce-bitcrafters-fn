@@ -1,3 +1,10 @@
+*{
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
 .nav-bar {
   background-color: bisque;
   color: black;
@@ -7,7 +14,7 @@
   }
 }
 
-.navbar ul {
+.nav-link ul {
   display: flex;
   justify-content: flex-start;
   gap: 1em;
@@ -17,4 +24,53 @@
   font-weight: bold;
   list-style: none;
   height: 38px;
+}
+
+
+.nav-link .links p::before {
+  content: "";
+  width: 30%;
+  border-top: 1px solid black;
+  position: absolute;
+  bottom: 55px;
+  right:1px;
+  
+  /* display:none; */
+  padding:.3px 5px;
+  background:black;
+  border-radius: 100%;
+}
+.nav-link .links p:hover.nav-link .links p::before{
+  display:block;
+}
+
+.nav-link ul li{
+  position: relative;
+  cursor: pointer;
+
+}
+.nav-link ul li::before{
+  content:"";
+  width:100%;
+  border:1.3px solid black;
+  position:absolute;
+  bottom: 0px;
+  transform: translateX(0%);
+  display:none;
+  transition: all .5s;
+}
+
+
+.nav-link ul li:hover::before, 
+.nav-link #active::before { 
+display: block;
+}
+
+footer{
+  color:rgb(168 168 168);
+  bottom: 0;
+}
+
+body{
+  overflow-x: hidden;
 }
