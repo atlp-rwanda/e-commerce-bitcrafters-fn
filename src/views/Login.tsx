@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 const Login: React.FC = () => {
   const client = axiosClient();
   const notify = (message: string) => toast(message);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -45,17 +45,21 @@ const Login: React.FC = () => {
 
       if (response.status === 200) {
         setIsLoading(false);
-
-        localStorage.setItem(
-          "AUTH_TOKEN",
-          JSON.stringify(response.data.authToken),
-        );
-        dispatch(setAuthToken(response.data.authToken));
-        dispatch(setIsLoggedIn(true));
-        notify(response.data.message);
-        setTimeout(() => {
-          navigate("/");
-        }, 2500);
+        if (response.data.message.includes("OTP")) {
+          navigate("/verify-otp", { state: { email: values.email } });
+          notify(response.data.message);
+        } else {
+          localStorage.setItem(
+            "AUTH_TOKEN",
+            JSON.stringify(response.data.authToken),
+          );
+          dispatch(setAuthToken(response.data.authToken));
+          dispatch(setIsLoggedIn(true));
+          notify(response.data.message);
+          setTimeout(() => {
+            navigate("/");
+          }, 2500);
+        }
       }
     } catch (err: any) {
       setIsLoading(false);
@@ -145,10 +149,9 @@ const Login: React.FC = () => {
                     handleSubmit();
                   }}
                   disabled={!isValid}
-                  color={isValid?"rgb(38 38 38)":"rgba(0,0,0,.5)"}
+                  color={isValid ? "rgb(38 38 38)" : "rgba(0,0,0,.5)"}
                   value={isLoading ? "Loading..." : "Login"}
                 />
-                
               </div>
             </form>
           )}
@@ -156,9 +159,9 @@ const Login: React.FC = () => {
         <p className="text-center align-middle self-center ">- OR -</p>
 
         <Button
-        icon={<FcGoogle />}
-        value="Continue with google"
-        type="submit"
+          icon={<FcGoogle />}
+          value="Continue with google"
+          type="submit"
         />
 
         <p className="text-sm">

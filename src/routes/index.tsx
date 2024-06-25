@@ -1,5 +1,6 @@
 import Home from "../views/Home";
 import Login from "../views/Login";
+import TwoFactorAuth from "../views/TwoFactorAuth";
 import Layout from "../components/Layout";
 import ResetPassword from "../views/ChangePassword";
 import RequestPasswordChange from "../views/RequestPasswordChange";
@@ -13,8 +14,12 @@ const Routers: React.FC = () => {
           <Route index element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/request" element={<RequestPasswordChange />} />
-          <Route path="/users/reset-password/:token" element={<ResetPassword />} /> 
+          <Route
+            path="/users/reset-password/:token"
+            element={<ResetPassword />}
+          />
         </Route>
+        <Route path="/verify-otp" element={<TwoFactorAuth />} />
       </Routes>
     </BrowserRouter>
   );
