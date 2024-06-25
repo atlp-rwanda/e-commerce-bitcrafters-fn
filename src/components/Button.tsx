@@ -1,44 +1,28 @@
-import PropTypes from "prop-types";
-type Props = {
-  /** Button description */
-  variant?: "green" | "yellow" | "red";
-  borderRadius?: "5px" | "10px" | "20px";
-  align?: "center" | "start";
-  padding?: "0px" | "5px" | "10px" | "20px";
-  label?: string;
-};
-/** Our Button component */
-const Button = ({
-  variant = "green",
-  borderRadius = "10px",
-  align = "center",
-  padding = "5px",
-  label = "Press Me",
-  ...restProps
-}: Props) => {
+import React from 'react';
+
+interface InputProps {
+  value?: string;
+  color?: string | any;
+  rounded?: string;
+  icon?: any;
+  reverse?: boolean;
+  textColor?: string | any;
+  onClick?: (event: any) => void;
+  disabled?: boolean
+  type?: "submit" | "reset" | "button" | undefined
+}
+
+const Button: React.FC<InputProps> = (props) => {
+// const [showPassword, setShowPassword] = useState(false)
+
   return (
-    <div
-      style={{
-        padding: padding,
-        textAlign: align,
-        background: variant,
-        borderRadius: borderRadius,
-        width: 100,
-        color: "white",
-        fontFamily: "arial",
-      }}
-      {...restProps}
-    >
-      {label}
-    </div>
+    <button type={props.type} style={{backgroundColor:props.color || "rgb(38 38 38)"}}  className={` rounded-sm mt-2 px-4 w-full py-3 border-none flex space-x-2 items-center justify-center`} onClick={props.onClick}>
+ {props.icon} 
+
+ <p className={` text-sm`} style={{color:props.textColor || "white"}}>{props.value}</p>
+
+    </button>
   );
 };
 
 export default Button;
-
-Button.prototype = {
-  label: PropTypes.string,
-  backgroundColor: PropTypes.string,
-  size: PropTypes.oneOf(["sm", "md", "lg"]),
-  onClick: PropTypes.func,
-};
