@@ -60,6 +60,14 @@ const Login: React.FC = () => {
     } catch (err: any) {
       setIsLoading(false);
       notify(err.response ? err.response.data.message : "Login failed");
+      if (
+        err?.response?.data?.message ===
+        "Your password has expired please update it"
+      ) {
+        setTimeout(() => {
+          navigate("/request", { state: { email: values.email } });
+        }, 2500);
+      }
     } finally {
       setIsLoading(false);
     }

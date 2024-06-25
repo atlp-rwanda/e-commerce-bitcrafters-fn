@@ -16,6 +16,7 @@ import "@testing-library/jest-dom";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
 import TextInput from "../../components/TextInput";
+import * as reactRouterDom from 'react-router-dom';
 
 jest.mock( "../../hooks/AxiosInstance");
 
@@ -430,6 +431,8 @@ describe("Login component", () => {
       });
     });
   });
+
+  
 });
 
 // -----------------------------
@@ -445,3 +448,97 @@ jest.mock("formik", () => ({
     touched: {},
   }),
 }));
+
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+}));
+
+jest.mock('../../hooks/AxiosInstance');
+
+
+describe('Login Component - Navigation Tests', () => {
+  let store: any;
+  let mockNavigate: jest.Mock;
+
+  beforeEach(() => {
+    store = mockStore({
+      auth: {
+        authToken: null,
+        isLoggedIn: false,
+      },
+    });
+
+    jest.useFakeTimers();
+    mockNavigate = jest.fn();
+    (reactRouterDom.useNavigate as jest.Mock).mockReturnValue(mockNavigate);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    jest.clearAllMocks();
+  });
+
+  test('should navigate to home page after successful login', async () => {
+    const mockResponse = {
+      status: 200,
+      data: {
+        message: 'Login successful',
+        authToken: 'mock_auth_token',
+      },
+    };
+    (axiosClient as jest.Mock).mockReturnValue({ post: jest.fn().mockResolvedValue(mockResponse) });
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <Login />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await act(async () => {
+      fireEvent.change(screen.getByPlaceholderText('Enter email'), { target: { value: 'test@example.com' } });
+      fireEvent.change(screen.getByPlaceholderText('Enter password'), { target: { value: 'password123' } });
+      fireEvent.click(screen.getByText('Login'));
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(2500);
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  test('should navigate to request page when password has expired', async () => {
+    const mockError = {
+      response: {
+        data: {
+          message: 'Your password has expired please update it',
+        },
+      },
+    };
+    (axiosClient as jest.Mock).mockReturnValue({ post: jest.fn().mockRejectedValue(mockError) });
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <Login />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await act(async () => {
+      fireEvent.change(screen.getByPlaceholderText('Enter email'), { target: { value: 'test@example.com' } });
+      fireEvent.change(screen.getByPlaceholderText('Enter password'), { target: { value: 'expired_password' } });
+      fireEvent.click(screen.getByText('Login'));
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(2500);
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/request', { state: { email: 'test@example.com' } });
+  });
+});

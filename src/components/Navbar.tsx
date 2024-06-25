@@ -23,7 +23,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
 
   const [burgerShown, setIsBurgerShown] = useState(props.burgerShown || false);
   return (
-    <nav className="navbar-container  w-full border-b-1 p-8 flex-between space-x-2">
+    <nav className="navbar-container  w-full border-b-1 p-8 flex-between space-x-2 border-b-[1px] border-gray_100">
       <div className="nav-logo w-[20%] ">
         <img src={Logo} alt="Logo" className="w-24 object-contain " />
       </div>
