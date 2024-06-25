@@ -17,8 +17,12 @@ import UsersTable from "../views/admin/UsersTable";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Profile from "../views/UserProfile";
 import AddProductForm from "../views/seller/AddProductForm";
-import SellerLayout from "../layouts/SellerLayout";
+// import SellerLayout from "../layouts/SellerLayout";
 import SingleProduct from "../views/SingleProduct";
+// import SellerLayout from "../layouts/SellerLayout";
+import ViewProducts from "../views/seller/viewProduct";
+import SellerDashLayout from "../layouts/SellerDashLayout";
+import ViewSingleProduct from "../views/seller/viewSingleProduct";
 
 const Routers: React.FC = () => {
   return (
@@ -51,7 +55,9 @@ const Routers: React.FC = () => {
           <Route path="/users/reset-password/:token" element={<ResetPassword />} />      
         </Route>
         <Route element={<ProtectedRoute requiredRole="seller" />}>
-          <Route path="/seller" element={<SellerLayout />}>
+          <Route path="/seller" element={<SellerDashLayout />}>
+            <Route index element={<ViewProducts />} />
+            <Route path="/seller/products" element={<ViewProducts />} />
             <Route path="/seller/addProduct" element={<AddProductForm />} />
           </Route>
         </Route>
@@ -60,6 +66,7 @@ const Routers: React.FC = () => {
           </Route>
         </Route>
         <Route path="/*" element={<ErrorPage />} />
+        <Route path="/product-detail/:productId" Component={ViewSingleProduct} />
       </Routes>
     </BrowserRouter>
   );
