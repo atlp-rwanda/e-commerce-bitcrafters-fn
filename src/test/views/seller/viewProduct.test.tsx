@@ -12,7 +12,8 @@ const mockedAxiosClient = axiosClient as jest.MockedFunction<typeof axiosClient>
 const mockedToast = toast as jest.MockedFunction<typeof toast>;
 
 const mockClient = {
-  get: jest.fn()
+  get: jest.fn(),
+  delete: jest.fn(),
 };
 
 describe('ViewProducts', () => {
@@ -333,6 +334,109 @@ it('enables and handles previous button when not on first page', async () => {
       expect(images).toHaveLength(2);
       expect(images[0]).toHaveAttribute('src', 'image1.jpg');
       expect(images[1]).toHaveAttribute('src', 'image2.jpg');
+    });
+  });
+  it('handles product deletion correctly', async () => {
+    const mockCollections = [{ id: '1', name: 'Collection 1' }];
+    const mockProducts = [
+      { id: '1', name: 'Product 1', price: 100, quantity: 10, expiryDate: '2023-12-31', images: ['image1.jpg'] },
+      { id: '2', name: 'Product 2', price: 200, quantity: 20, expiryDate: '2023-12-31', images: ['image2.jpg'] },
+    ];
+  
+    mockClient.get.mockImplementation((url) => {
+      if (url === '/collections') {
+        return Promise.resolve({ data: { collections: mockCollections } });
+      } else if (url.includes('/collections/1/products')) {
+        return Promise.resolve({
+          data: {
+            products: mockProducts,
+            pagination: { totalPages: 1 }
+          }
+        });
+      }
+      return Promise.reject(new Error('Not found'));
+    });
+  
+    mockClient.delete.mockResolvedValueOnce({});
+  
+    const { container } = render(
+      <MemoryRouter>
+        <ViewProducts />
+      </MemoryRouter>
+    );
+  
+    
+    await waitFor(() => {
+      expect(screen.getByText('Collection 1')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByLabelText('Select Collection:'), { target: { value: '1' } });
+  
+    await waitFor(() => {
+      expect(screen.getByText('Product 1')).toBeInTheDocument();
+      expect(screen.getByText('Product 2')).toBeInTheDocument();
+    });
+  
+
+    console.log(container.innerHTML);
+  
+    const deleteButtons = screen.getAllByLabelText('delete');
+    expect(deleteButtons).toHaveLength(2); 
+    fireEvent.click(deleteButtons[0]);
+  
+    await waitFor(() => {
+      expect(mockClient.delete).toHaveBeenCalledWith('/collections/products/1');
+      expect(screen.queryByText('Product 1')).not.toBeInTheDocument();
+      expect(screen.getByText('Product 2')).toBeInTheDocument();
+      expect(mockedToast).toHaveBeenCalledWith('Product deleted successfully');
+    });
+  });
+  it('handles product deletion error', async () => {
+    const mockCollections = [{ id: '1', name: 'Collection 1' }];
+    const mockProducts = [
+      { id: '1', name: 'Product 1', price: 100, quantity: 10, expiryDate: '2023-12-31', images: ['image1.jpg'] },
+    ];
+  
+    
+    mockClient.get.mockImplementation((url) => {
+      if (url === '/collections') {
+        return Promise.resolve({ data: { collections: mockCollections } });
+      } else if (url.includes('/collections/1/products')) {
+        return Promise.resolve({ 
+          data: { 
+            products: mockProducts, 
+            pagination: { totalPages: 1 } 
+          } 
+        });
+      }
+      return Promise.reject(new Error('Not found'));
+    });
+  
+    mockClient.delete.mockRejectedValueOnce({ response: { data: { message: 'Error deleting product' } } });
+  
+    render(
+      <MemoryRouter>
+        <ViewProducts />
+      </MemoryRouter>
+    );
+  
+    await waitFor(() => {
+      expect(screen.getByText('Collection 1')).toBeInTheDocument();
+    });
+  
+    
+    fireEvent.change(screen.getByLabelText('Select Collection:'), { target: { value: '1' } });
+  
+    await waitFor(() => {
+      expect(screen.getByText('Product 1')).toBeInTheDocument();
+    });
+  
+    const deleteButton = screen.getByLabelText('delete');
+    fireEvent.click(deleteButton);
+  
+    await waitFor(() => {
+      expect(mockClient.delete).toHaveBeenCalledWith('/collections/products/1');
+      expect(screen.getByText('Product 1')).toBeInTheDocument();
+      expect(mockedToast).toHaveBeenCalledWith('Error deleting product');
     });
   });
 });

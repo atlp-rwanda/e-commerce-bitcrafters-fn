@@ -67,6 +67,7 @@ const Routers: React.FC = () => {
         </Route>
         <Route element={<ProtectedRoute requiredRole="buyer" />}>
           <Route path="/buyer" element={<Layout />}>
+          <Route index element={<Home />} />
           </Route>
         </Route>
         <Route path="/*" element={<ErrorPage />} />
