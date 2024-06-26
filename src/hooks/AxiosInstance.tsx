@@ -2,14 +2,22 @@ import axios, { AxiosInstance, AxiosError, AxiosResponse } from "axios";
 import { useSelector } from "react-redux";
 import { PUBLIC_URL } from "../constants";
 
+const axiosInstance = axios.create({
+  baseURL: `${PUBLIC_URL}`,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-const useAxiosClient = (token?:string): AxiosInstance => {
-const { authToken } = useSelector((state:any) => state.auth);
-    
-    const headers = token ? {
+const useAxiosClient = (token?: string): AxiosInstance => {
+  const { authToken } = useSelector((state: any) => state.auth);
+
+  const headers = token
+    ? {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      } : {
+      }
+    : {
         "Content-Type": "application/json",
       };
 
@@ -21,8 +29,7 @@ const { authToken } = useSelector((state:any) => state.auth);
   });
 
   client.interceptors.request.use((config: any) => {
-
-    const token = authToken
+    const token = authToken;
     config.headers = config.headers || {};
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -44,10 +51,11 @@ const { authToken } = useSelector((state:any) => state.auth);
         console.error(e);
       }
       throw error;
-    }
+    },
   );
 
   return client;
 };
 
 export default useAxiosClient;
+export { axiosInstance };

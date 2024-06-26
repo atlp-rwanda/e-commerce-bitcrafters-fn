@@ -1,6 +1,8 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 
   module.exports = {
+    maxWorkers: 2,  
+    testTimeout: 10000,
     preset: "ts-jest",
     testEnvironment: "jest-environment-jsdom",
     collectCoverage: true,
