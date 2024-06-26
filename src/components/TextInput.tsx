@@ -29,8 +29,7 @@ const [showPassword, setShowPassword] = useState(false)
           value={props.value}
           onChange={props.onChange}
           onBlur={props.onBlur}
-          
-          className='rounded p-2 outline-none w-full text-black text-sm'
+          className='rounded phone:p-2 outline-none w-full text-black text-sm'
         />
         <div className="eye absolute top-[30%] right-[5%]">
            {props.secured? <button onClick={()=>{setShowPassword(!showPassword)}} type='button' className='' >{!showPassword ?<IoEyeOutline/>:<IoEyeOffOutline/> }</button>  : "" }
