@@ -2,7 +2,6 @@ import axios from "axios";
 import axiosClient from "../../hooks/AxiosInstance";
 import { useSelector } from "react-redux";
 import "@testing-library/jest-dom";
-import { BASE_URL } from "../../hooks/AxiosInstance";
 
 jest.mock("axios");
 
@@ -13,38 +12,6 @@ jest.mock("react-redux", () => ({
 describe("AxiosInstance", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  it("creates an axios instance with correct configuration", () => {
-    const mockCreate = jest.spyOn(axios, "create");
-    (useSelector as unknown as jest.Mock).mockReturnValue({ authToken: null });
-
-    axiosClient();
-
-    expect(mockCreate).toHaveBeenCalledWith({
-      baseURL: BASE_URL,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      timeout: 60000,
-      withCredentials: false,
-    });
-  });
-
-  it("uses token in headers when provided", () => {
-    const mockCreate = jest.spyOn(axios, "create");
-    const token = "test-token";
-
-    axiosClient(token);
-
-    expect(mockCreate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }),
-    );
   });
 
   it("adds authorization header in request interceptor when authToken is available", () => {

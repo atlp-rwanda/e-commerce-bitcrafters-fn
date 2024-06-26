@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, AxiosError, AxiosResponse } from "axios";
 import { useSelector } from "react-redux";
+import { PUBLIC_URL } from "../constants";
 
 
-export const BASE_URL = "https://e-commerce-bitcrafters-bn-1mpf.onrender.com"
 const useAxiosClient = (token?:string): AxiosInstance => {
 const { authToken } = useSelector((state:any) => state.auth);
     
@@ -14,7 +14,7 @@ const { authToken } = useSelector((state:any) => state.auth);
       };
 
   const client = axios.create({
-    baseURL: `${BASE_URL}`,
+    baseURL: `${PUBLIC_URL}`,
     headers,
     timeout: 60000,
     withCredentials: false,
