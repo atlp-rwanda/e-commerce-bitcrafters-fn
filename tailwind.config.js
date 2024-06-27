@@ -13,7 +13,10 @@ export default {
         orange:"#FA8232",
         gray:"#F0EEED",
         gray_100:"#A8A8A8",
-        on_black:"#FFFFFF"
+        on_black: "#FFFFFF",
+        "main-black-color": "#262626",
+        links: "#1976D2",
+        "links-hover": "#0563c1",
       },
       borderRadius:{
         'sm': '5px',

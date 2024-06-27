@@ -9,27 +9,30 @@ import SignupForm from '../views/signup';
 import VerifyEmail from '../views/verifyEmail';
 import EmailVerified from '../views/emailVerified';
 import InvalidToken from '../views/invalidToken';
+import ForgotPassword from "../views/ForgotPassword";
 const Routers: React.FC = () => {
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />} /> 
+        <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/request" element={<RequestPasswordChange />} />
-          <Route
-            path="/users/reset-password/:token"
-            element={<ResetPassword />}
-          />
-        <Route path="/verify-otp" element={<TwoFactorAuth />} />
-        <Route path="/signup" element={<SignupForm />} />
+          <Route path="/users/reset-password/:token" element={<ResetPassword/>} />
+          <Route path="/forgot-password" element={<ForgotPassword/>} />
+          <Route path="/verify-otp" element={<TwoFactorAuth />} />
+          <Route path="/signup" element={<SignupForm />} />
           <Route path="/users/verify/:token" element={<VerifyEmail />} />
           <Route path="/email-verified" element={<EmailVerified />} />
-        <Route path="/invalid-token" element={<InvalidToken />} />
+          <Route path="/invalid-token" element={<InvalidToken />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
 };
 
 export default Routers;
+
+
+
