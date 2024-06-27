@@ -14,6 +14,7 @@ import ForgotPassword from "../views/ForgotPassword";
 import DashLayout from "../layouts/DashLayout";
 import UsersTable from "../views/admin/UsersTable";
 import ProtectedRoute from "../components/ProtectedRoute";
+import Profile from "../views/UserProfile";
 
 const Routers: React.FC = () => {
   return (
@@ -34,6 +35,7 @@ const Routers: React.FC = () => {
           <Route path="/email-verified" element={<EmailVerified />} />
           <Route path="/invalid-token" element={<InvalidToken />} />
           <Route path="/verify-otp" element={<TwoFactorAuth />} />
+          <Route path="/view-edit-profile" element={<Profile />} />
         </Route>
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/admin" element={<DashLayout />}>

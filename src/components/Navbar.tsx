@@ -12,14 +12,19 @@ import { IoMdLogIn, IoMdLogOut } from "react-icons/io";
 import { IoSettingsSharp } from "react-icons/io5";
 import { IoLocationOutline } from "react-icons/io5";
 import { IoMdHome } from "react-icons/io";
-import { useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 interface NavbarProps {
   burgerShown?: boolean; // Make burgerShown optional
 }
 
 const Navbar: React.FC<NavbarProps> = (props) => {
-  const { isLoggedIn } = useSelector((state: any) => state.auth);
+
+  const isLoggedIn = useSelector(
+    (state: RootState) => state.auth.isLoggedIn,
+    shallowEqual,
+  );
 
   const [burgerShown, setIsBurgerShown] = useState(props.burgerShown || false);
   return (
@@ -77,13 +82,24 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               <IoNotificationsOutline />
             </Link>
           </li>
+          <li>
+            <Link to="" className="text-lg">
+              {" "}
+              <IoLocationOutline />
+            </Link>
+          </li>
         </ul>
       </div>
       <div className=" w-[5%] hidden tablet:flex">
-        <Link to="login" className="text-lg">
-          {" "}
-          <RxAvatar className="text-2xl" />
-        </Link>
+        {!isLoggedIn ? (
+          <Link to="/login" className="text-lg">
+            <RxAvatar className="text-2xl" />
+          </Link>
+        ) : (
+          <Link to="/view-edit-profile" className="text-sm">
+            <RxAvatar className="text-2xl" />
+          </Link>
+        )}
       </div>
       <button
         onClick={() => setIsBurgerShown(!burgerShown)}
@@ -143,12 +159,29 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             </li>
 
             <li className=" rounded-sm hover:bg-white transition-all">
-              <Link to="" className="text-lg">
-                <div className="flex-between justify-center space-x-1 p-2 ">
-                  <IoSettingsSharp className="text-gray_100" />
-                  <p className="text-xs text-gray_100">User Settings</p>
-                </div>
-              </Link>
+              {isLoggedIn ? (
+                <Link
+                  to="/view-edit-profile"
+                  className="text-lg"
+                  onClick={() => setIsBurgerShown(false)}
+                >
+                  <div className="flex-between justify-center space-x-1 p-2">
+                    <IoSettingsSharp className="text-gray_100" />
+                    <p className="text-xs text-gray_100">User Settings</p>
+                  </div>
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-lg"
+                  onClick={() => setIsBurgerShown(false)}
+                >
+                  <div className="flex-between justify-center space-x-1 p-2">
+                    <IoSettingsSharp className="text-gray_100" />
+                    <p className="text-xs text-gray_100">User Settings</p>
+                  </div>
+                </Link>
+              )}
             </li>
 
             {isLoggedIn ? (
@@ -162,7 +195,13 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               </li>
             ) : (
               <li className=" rounded-sm hover:bg-white transition-all">
-                <Link to="/login" className="text-lg" onClick={()=>{setIsBurgerShown(!burgerShown)}}>
+                <Link
+                  to="/login"
+                  className="text-lg"
+                  onClick={() => {
+                    setIsBurgerShown(!burgerShown);
+                  }}
+                >
                   <div className="flex-between justify-center space-x-1 p-2 ">
                     <IoMdLogIn className="text-gray_100" />
                     <p className="text-xs text-gray_100">Login</p>
