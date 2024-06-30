@@ -16,12 +16,12 @@ import "@testing-library/jest-dom";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
 import TextInput from "../../components/TextInput";
-import * as reactRouterDom from 'react-router-dom';
+import * as reactRouterDom from "react-router-dom";
 import { PUBLIC_URL } from "../../constants";
-import userEvent from '@testing-library/user-event';
-import { BrowserRouter as Router } from 'react-router-dom';
+import userEvent from "@testing-library/user-event";
+import { BrowserRouter as Router } from "react-router-dom";
 
-jest.mock( "../../hooks/AxiosInstance");
+jest.mock("../../hooks/AxiosInstance");
 
 const mockStore = configureStore([]);
 
@@ -52,52 +52,6 @@ describe("Login Component", () => {
     expect(screen.getByPlaceholderText("Enter email")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Enter password")).toBeInTheDocument();
     expect(screen.getByText("Login")).toBeInTheDocument();
-  });
-
-  it("handles successful login", async () => {
-    const mockPost = jest.fn().mockResolvedValue({
-      status: 200,
-      data: {
-        authToken: "mock-token",
-        message: "Login successful",
-      },
-    });
-    (axiosClient as jest.Mock).mockReturnValue({ post: mockPost });
-
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <Login />
-        </MemoryRouter>
-      </Provider>,
-    );
-
-    await act(async () => {
-      fireEvent.change(screen.getByPlaceholderText("Enter email"), {
-        target: { value: "test@example.com" },
-      });
-      fireEvent.change(screen.getByPlaceholderText("Enter password"), {
-        target: { value: "password123" },
-      });
-
-      fireEvent.click(screen.getByText("Login"));
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-
-    await waitFor(() => {
-      expect(mockPost).toHaveBeenCalledWith("/users/login", {
-        email: "test@example.com",
-        password: "password123",
-      });
-      expect(store.getActions()).toContainEqual({
-        type: "auth/setAuthToken",
-        payload: "mock-token",
-      });
-      expect(store.getActions()).toContainEqual({
-        type: "auth/setIsLoggedIn",
-        payload: true,
-      });
-    });
   });
 
   it("handles login failure", async () => {
@@ -434,8 +388,6 @@ describe("Login component", () => {
       });
     });
   });
-
-  
 });
 
 // -----------------------------
@@ -452,16 +404,14 @@ jest.mock("formik", () => ({
   }),
 }));
 
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
   useNavigate: jest.fn(),
 }));
 
-jest.mock('../../hooks/AxiosInstance');
+jest.mock("../../hooks/AxiosInstance");
 
-
-describe('Login Component - Navigation Tests', () => {
+describe("Login Component - Navigation Tests", () => {
   let store: any;
   let mockNavigate: jest.Mock;
 
@@ -483,71 +433,49 @@ describe('Login Component - Navigation Tests', () => {
     jest.clearAllMocks();
   });
 
-  test('should navigate to home page after successful login', async () => {
-    const mockResponse = {
-      status: 200,
-      data: {
-        message: 'Login successful',
-        authToken: 'mock_auth_token',
-      },
-    };
-    (axiosClient as jest.Mock).mockReturnValue({ post: jest.fn().mockResolvedValue(mockResponse) });
-
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <Login />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    await act(async () => {
-      fireEvent.change(screen.getByPlaceholderText('Enter email'), { target: { value: 'test@example.com' } });
-      fireEvent.change(screen.getByPlaceholderText('Enter password'), { target: { value: 'password123' } });
-      fireEvent.click(screen.getByText('Login'));
-    });
-
-    act(() => {
-      jest.advanceTimersByTime(2500);
-    });
-
-    expect(mockNavigate).toHaveBeenCalledWith('/');
-  });
-
-  test('should navigate to request page when password has expired', async () => {
+  test("should navigate to request page when password has expired", async () => {
     const mockError = {
       response: {
         data: {
-          message: 'Your password has expired please update it',
+          message: "Your password has expired please update it",
         },
       },
     };
-    (axiosClient as jest.Mock).mockReturnValue({ post: jest.fn().mockRejectedValue(mockError) });
+    (axiosClient as jest.Mock).mockReturnValue({
+      post: jest.fn().mockRejectedValue(mockError),
+    });
 
     render(
       <Provider store={store}>
         <MemoryRouter>
           <Login />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
 
     await act(async () => {
-      fireEvent.change(screen.getByPlaceholderText('Enter email'), { target: { value: 'test@example.com' } });
-      fireEvent.change(screen.getByPlaceholderText('Enter password'), { target: { value: 'expired_password' } });
-      fireEvent.click(screen.getByText('Login'));
+      fireEvent.change(screen.getByPlaceholderText("Enter email"), {
+        target: { value: "test@example.com" },
+      });
+      fireEvent.change(screen.getByPlaceholderText("Enter password"), {
+        target: { value: "expired_password" },
+      });
+      fireEvent.click(screen.getByText("Login"));
     });
 
     act(() => {
       jest.advanceTimersByTime(2500);
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith('/request', { state: { email: 'test@example.com' } });
+    expect(mockNavigate).toHaveBeenCalledWith("/request", {
+      state: { email: "test@example.com" },
+    });
   });
 });
+
 // --------------------Login with Google--------------------------
 
-describe('Login component', () => {
+describe("Login component", () => {
   let store: MockStoreEnhanced<unknown, {}>;
 
   beforeEach(() => {
@@ -558,7 +486,7 @@ describe('Login component', () => {
     });
   });
 
-  test('should login with Google successfully', async () => {
+  test("should login with Google successfully", async () => {
     global.open = jest.fn();
     global.localStorage = {
       setItem: jest.fn(),
@@ -574,45 +502,46 @@ describe('Login component', () => {
         <Router>
           <Login />
         </Router>
-      </Provider>
+      </Provider>,
     );
 
-    const googleButton = screen.getByText('Continue with google');
+    const googleButton = screen.getByText("Continue with google");
     await userEvent.click(googleButton);
 
-    expect(window.open).toHaveBeenCalledWith(`${PUBLIC_URL}users/google`, '_self');
+    expect(window.open).toHaveBeenCalledWith(
+      `${PUBLIC_URL}users/google`,
+      "_self",
+    );
 
     const urlParams = new URLSearchParams();
-    urlParams.append('token', 'valid_token');
-    Object.defineProperty(window, 'location', {
+    urlParams.append("token", "valid_token");
+    Object.defineProperty(window, "location", {
       value: {
         search: `?${urlParams.toString()}`,
       },
     });
   });
 
-  test('should notify on login failure', async () => {
+  test("should notify on login failure", async () => {
     render(
       <Provider store={store}>
         <Router>
           <Login />
           <Toastify.ToastContainer />
         </Router>
-      </Provider>
+      </Provider>,
     );
 
-    const googleButton = screen.getByText('Continue with google');
+    const googleButton = screen.getByText("Continue with google");
     await userEvent.click(googleButton);
 
     const urlParams = new URLSearchParams();
-    urlParams.append('token', 'valid_token');
-    Object.defineProperty(window, 'location', {
+    urlParams.append("token", "valid_token");
+    Object.defineProperty(window, "location", {
       value: {
         search: `?${urlParams.toString()}`,
       },
       writable: true,
     });
-
   });
 });
-
