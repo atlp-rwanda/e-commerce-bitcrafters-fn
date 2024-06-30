@@ -18,13 +18,18 @@ const TwoFactorAuth: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const notify = (message: string) => toast(message);
-  const email = location.state?.email;
-
+  let email = location.state?.email;
+  const urlParams = new URLSearchParams(location.search);
+  const emailParam = urlParams.get('email');
+  
+  if(emailParam){
+    email = emailParam;
+  } 
   useEffect(() => {
     if (!email) {
       navigate("/login");
     }
-  }, [email, navigate]);
+  }, [email,navigate]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,

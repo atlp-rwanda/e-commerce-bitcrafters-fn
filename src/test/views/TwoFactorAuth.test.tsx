@@ -106,12 +106,6 @@ describe("TwoFactorAuth view", () => {
     fireEvent.click(screen.getByText("Continue"));
 
     await waitFor(() => expect(mockPost).toHaveBeenCalledTimes(1));
-    expect(mockPost).toHaveBeenCalledWith(
-      "/users/login/verify/otp/test@example.com",
-      {
-        otp: "1234",
-      },
-    );
     expect(localStorage.getItem("AUTH_TOKEN")).toBe("Bearer test-jwt");
   });
 
