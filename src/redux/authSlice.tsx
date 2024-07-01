@@ -1,40 +1,50 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface authTokenState {
-    token: string;
-  }
-export interface profileState {
-    name: string;
-    email: string;
-    profileImage: string;
-    phoneNumber: string;
-    userId: string;
-  }
-
-const initial ={
-    isLoggedIn:false,
-    authProfile:null,
-    authToken:null,
+export interface AuthState {
+  isLoggedIn: boolean;
+  authToken: string | null;
+  username: string | null;
+  authRole: string | null;
 }
 
+const initial: AuthState = {
+  isLoggedIn: false,
+  authToken: null,
+  username: null,
+  authRole: null,
+};
 
 const authSlice = createSlice({
-    name:"auth",
-    initialState:initial,
-    reducers:{
-        setIsLoggedIn:(state,action)=>{
-            state.isLoggedIn = action.payload;
-        },
-        setAuthProfile:(state,action)=>{
-            state.authProfile = action.payload;
-        },
-        setAuthToken:(state,action)=>{
-            state.authToken = action.payload;
-        },
-    }
+  name: "auth",
+  initialState: initial,
+  reducers: {
+    setIsLoggedIn: (state, action: PayloadAction<boolean>) => {
+      state.isLoggedIn = action.payload;
+    },
+    setAuthToken: (state, action: PayloadAction<string | null>) => {
+      state.authToken = action.payload;
+    },
+    setUsername: (state, action: PayloadAction<string | null>) => {
+      state.username = action.payload;
+    },
+    setAuthRole: (state, action: PayloadAction<string | null>) => {
+      state.authRole = action.payload;
+    },
+    clearAuthData: (state) => {
+      state.isLoggedIn = false;
+      state.authToken = null;
+      state.username = null;
+      state.authRole = null;
+    },
+  },
 });
 
-export default authSlice.reducer;
+export const {
+  setIsLoggedIn,
+  setAuthToken,
+  setUsername,
+  setAuthRole,
+  clearAuthData,
+} = authSlice.actions;
 
-export const{setAuthProfile, setIsLoggedIn, setAuthToken} = authSlice.actions
-export type RootState = ReturnType<typeof authSlice.reducer>;
+export default authSlice.reducer;

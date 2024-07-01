@@ -7,13 +7,20 @@ import "react-toastify/dist/ReactToastify.css";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
-import { setAuthToken, setIsLoggedIn } from "../redux/authSlice";
+import { setAuthRole, setAuthToken, setIsLoggedIn } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 import axiosClient from "../hooks/AxiosInstance";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 import { PUBLIC_URL } from "../constants";
+import { jwtDecode } from "jwt-decode";
 
+export interface DecodedToken {
+  email: string;
+  id: number;
+  username: string;
+  userRole: string;
+}
 const Login: React.FC = () => {
   const client = axiosClient();
   const notify = (message: string) => toast(message);
@@ -22,22 +29,21 @@ const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const backendUrl = PUBLIC_URL
+  const backendUrl = PUBLIC_URL;
 
   const loginWithGoogle = async () => {
     try {
       window.open(`${backendUrl}users/google`, "_self");
 
       const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token');
+      const token = urlParams.get("token");
 
       if (token) {
         const bearerToken = `Bearer ${token}`;
-        localStorage.setItem('AUTH_TOKEN', bearerToken);
-        dispatch(setAuthToken(token))
+        localStorage.setItem("AUTH_TOKEN", bearerToken);
+        dispatch(setAuthToken(token));
         dispatch(setIsLoggedIn(true));
-      } 
-
+      }
     } catch (error) {
       notify("Login with Google failed");
     }
@@ -62,28 +68,31 @@ const Login: React.FC = () => {
         email: values.email,
         password: values.password,
       });
-
       if (response.status === 200) {
         setIsLoading(false);
         if (response.data.message.includes("OTP")) {
           navigate("/verify-otp", { state: { email: values.email } });
           notify(response.data.message);
         } else {
-          localStorage.setItem(
-            "AUTH_TOKEN",
-            JSON.stringify(response.data.authToken),
-          );
+          const decodedToken: DecodedToken = jwtDecode(response.data.authToken);
+          let userRole = decodedToken.userRole;
           dispatch(setAuthToken(response.data.authToken));
+          dispatch(setAuthRole(userRole));
           dispatch(setIsLoggedIn(true));
           notify(response.data.message);
           setTimeout(() => {
-            navigate("/");
+            if (userRole === "admin") {
+              navigate("/admin");
+            } else {
+              navigate("/");
+            }
           }, 2500);
         }
       }
     } catch (err: any) {
       setIsLoading(false);
       notify(err.response ? err.response.data.message : "Login failed");
+
       if (
         err?.response?.data?.message ===
         "Your password has expired please update it"
@@ -157,7 +166,10 @@ const Login: React.FC = () => {
               />
               <div className="flex flex-col ">
                 <p className="text-xs">
-                  <Link to="/forgot-password" className="text-blue-500 hover:text-blue-800">
+                  <Link
+                    to="/forgot-password"
+                    className="text-blue-500 hover:text-blue-800"
+                  >
                     Forgot password?
                   </Link>
                 </p>
@@ -179,10 +191,10 @@ const Login: React.FC = () => {
         <p className="text-center align-middle self-center ">- OR -</p>
 
         <Button
-        icon={<FcGoogle />}
-        value="Continue with google"
-        type="submit"
-        onClick={loginWithGoogle}
+          icon={<FcGoogle />}
+          value="Continue with google"
+          type="submit"
+          onClick={loginWithGoogle}
         />
 
         <p className="text-sm">

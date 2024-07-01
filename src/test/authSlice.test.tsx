@@ -1,44 +1,51 @@
-import authSlice from "../redux/authSlice";
-import { setAuthToken, setAuthProfile, setIsLoggedIn } from "../redux/authSlice";
+import authReducer, {
+  setIsLoggedIn,
+  setAuthToken,
+  setUsername,
+  setAuthRole,
+  clearAuthData,
+  AuthState,
+} from "../redux/authSlice";
 
-describe('auth slice', () => {
-    const initialState = {
-        isLoggedIn: false,
-        authProfile: null,
-        authToken: null,
-      }
-    test('has the expected initial state', () => {
-      
-  
-      expect(initialState).toEqual({
-        isLoggedIn: false,
-        authProfile: null,
-        authToken: null,
-      });
-    });
+describe("authSlice", () => {
+  const initialState: AuthState = {
+    isLoggedIn: false,
+    authToken: null,
+    username: null,
+    authRole: null,
+  };
 
-    
-  it('should set authProfile', () => {
-    const profileData = {
-        name: 'John Doe',
-        email: 'john.doe@example.com',  
-      };
-    const result = authSlice(initialState, setAuthProfile(profileData));
-    expect(result.authProfile).toEqual(profileData);
-    
-  });
-  
-  it('should set authToken', () => {
-    const token = 'abc123.def456';
-    const result = authSlice(initialState, setAuthToken(token));
-    expect(result.authToken).toEqual(token);
-    
-  });
-  it('should set isLoggedIn', () => {
-    const state = true;
-    const result = authSlice(initialState, setIsLoggedIn(state));
-    expect(result.isLoggedIn).toEqual(state);
-    
+  it("should handle setIsLoggedIn", () => {
+    const actual = authReducer(initialState, setIsLoggedIn(true));
+    expect(actual.isLoggedIn).toEqual(true);
   });
 
+  it("should handle setAuthToken", () => {
+    const token = "test-token";
+    const actual = authReducer(initialState, setAuthToken(token));
+    expect(actual.authToken).toEqual(token);
   });
+
+  it("should handle setUsername", () => {
+    const username = "testuser";
+    const actual = authReducer(initialState, setUsername(username));
+    expect(actual.username).toEqual(username);
+  });
+
+  it("should handle setAuthRole", () => {
+    const role = "admin";
+    const actual = authReducer(initialState, setAuthRole(role));
+    expect(actual.authRole).toEqual(role);
+  });
+
+  it("should handle clearAuthData", () => {
+    const loggedInState: AuthState = {
+      isLoggedIn: true,
+      authToken: "token",
+      username: "user",
+      authRole: "admin",
+    };
+    const actual = authReducer(loggedInState, clearAuthData());
+    expect(actual).toEqual(initialState);
+  });
+});
