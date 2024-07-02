@@ -15,11 +15,20 @@ jest.mock("../../../hooks/AxiosInstance");
 
 jest.mock("react-toastify", () => ({
   toast: jest.fn(),
+  ToastContainer: jest.fn().mockImplementation(() => null),
+}));
+jest.mock("react-icons/ci", () => ({
+  CiEdit: () => <span>Edit</span>,
 }));
 
 describe("UsersTable", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (axiosClient as jest.Mock).mockReturnValue({
+      get: jest.fn(),
+      post: jest.fn(),
+      patch: jest.fn(),
+    });
   });
 
   const mockUsersPage1 = [
@@ -62,6 +71,9 @@ describe("UsersTable", () => {
       pagination: { totalPages: 2 },
     },
   };
+
+  // uncovered lines
+  //end
 
   test("should fetch and display users", async () => {
     (axiosClient as jest.Mock).mockReturnValue({
@@ -272,23 +284,37 @@ describe("UsersTable", () => {
       expect(toast).toHaveBeenCalledWith(errorMessage);
     });
   });
-  test("should display error message when fetching users fails", async () => {
-    const errorMessage = "Fetching users failed";
+  // new tests
+    test("should open and close status change modal", async () => {
+      (axiosClient as jest.Mock).mockReturnValue({
+        get: jest.fn().mockResolvedValue(mockResponsePage1),
+      });
 
-    const mockGet = jest.fn().mockRejectedValue({
-      response: { data: { message: errorMessage } },
+      render(<UsersTable />);
+
+      await waitFor(() => {
+        expect(screen.getByText("User 1")).toBeInTheDocument();
+      });
+
+      // Find all buttons with text "Edit"
+      const editButtons = screen.getAllByText("Edit");
+      // Click the second "Edit" button (index 1), which should be for status
+      fireEvent.click(editButtons[1]);
+
+      await waitFor(() => {
+        // Check for the title of the StatusChangeModal
+        expect(screen.getByText(/Change Status of/)).toBeInTheDocument();
+      });
+
+      // Find and click the close button
+      const closeButton = screen.getByLabelText("Close");
+      fireEvent.click(closeButton);
+
+      await waitFor(() => {
+        // Check that the modal is no longer in the document
+        expect(screen.queryByText(/Change Status of/)).not.toBeInTheDocument();
+      });
     });
-
-    (axiosClient as jest.Mock).mockReturnValue({
-      get: mockGet,
-    });
-
-    render(<UsersTable />);
-
-    await waitFor(() => {
-      expect(toast).toHaveBeenCalledWith(errorMessage);
-    });
-  });
 });
 
 describe("RoleChangeModal", () => {
@@ -310,3 +336,5 @@ describe("RoleChangeModal", () => {
     expect(roleSelect.value).toBe("seller");
   });
 });
+
+

@@ -15,8 +15,12 @@ export default {
         gray_100: "#A8A8A8",
         on_black: "#FFFFFF",
         "main-black-color": "#262626",
-        links: "#1976D2",
-        "links-hover": "#0563c1",
+        "customBlue-hover": "#0563c1",
+        customBlue: "#1976D2",
+        customBlueBg: "rgba(25, 118, 210, 0.1)", // 30% opacity
+        customGreen: "#4CAF50",
+        customGreenBg: "rgba(76, 175, 80, 0.1)",
+        customRed: "#FF6347",
         dashColor: "#F3F2F0",
         view_more: "#4D98E2",
         view_more_text: "#1976D2",
@@ -43,6 +47,7 @@ export default {
         bigphone: "650px",
         tablet: "860px",
         laptop: "1200px",
+        xs: "510px",
       },
       height: {
         "50vh": "50vh",
@@ -56,5 +61,13 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".outline-none": {
+          outline: "0",
+        },
+      });
+    },
+  ],
 };

@@ -93,13 +93,13 @@ const ForgotPassword: React.FC = () => {
           </Formik>
           <p className="login-register text-xs mb-3 text-center">
             Already have an account.{" "}
-            <Link to="/login" className="text-links hover:text-links-hover">
+            <Link to="/login" className="text-customBlue hover:text-customBlue-hover">
               Login
             </Link>
           </p>
           <p className="login-register text-xs text-center">
             Don't have an account.{" "}
-            <Link to="/register" className="text-links hover:text-links-hover">
+            <Link to="/register" className="text-customBlue hover:text-customBlue-hover">
               Create One
             </Link>
           </p>
