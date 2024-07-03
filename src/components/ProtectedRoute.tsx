@@ -3,7 +3,12 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useSelector, shallowEqual, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { jwtDecode } from "jwt-decode";
-import { setIsLoggedIn, setAuthToken, setAuthRole } from "../redux/authSlice";
+import {
+  setIsLoggedIn,
+  setAuthToken,
+  setAuthRole,
+  setAuthUserId,
+} from "../redux/authSlice";
 import { DecodedToken } from "../views/Login";
 
 interface ProtectedRouteProps {
@@ -24,7 +29,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) => {
     (state: RootState) => state.auth.authRole,
     shallowEqual,
   );
-
   if (!authToken) {
     return <Navigate to="/login" />;
   }
@@ -35,6 +39,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) => {
       dispatch(setIsLoggedIn(false));
       dispatch(setAuthToken(null));
       dispatch(setAuthRole(null));
+      dispatch(setAuthUserId(null));
       return <Navigate to="/" />;
     }
 
@@ -45,6 +50,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) => {
     dispatch(setIsLoggedIn(false));
     dispatch(setAuthToken(null));
     dispatch(setAuthRole(null));
+    dispatch(setAuthUserId(null));
     return <Navigate to="/login" />;
   }
 

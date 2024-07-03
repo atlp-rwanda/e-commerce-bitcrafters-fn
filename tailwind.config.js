@@ -21,8 +21,9 @@ export default {
         view_more: "#4D98E2",
         view_more_text: "#1976D2",
         back_next: "#BDBBBB",
-        'custom-bg': '#F3F2F0',
-        'custom-white': '#FFFFFF',
+        "custom-bg": "#F3F2F0",
+        "custom-white": "#FFFFFF",
+        chat_back: "#F5F5F5",
       },
       borderRadius: {
         sm: "5px",
@@ -37,17 +38,21 @@ export default {
         tablet: "860px",
         laptop: "1200px",
       },
-      screens:{
-        phone:"450px",
-        bigphone:"650px",
-        tablet:"860px",
-        laptop:"1200px",
+      screens: {
+        phone: "450px",
+        bigphone: "650px",
+        tablet: "860px",
+        laptop: "1200px",
       },
       height: {
-        '50vh': '50vh'
+        "50vh": "50vh",
       },
       boxShadow: {
-        'black-shadow': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        "black-shadow":
+          "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+      },
+      fontSize: {
+        "custom-size": "0.60rem",
       },
     },
   },

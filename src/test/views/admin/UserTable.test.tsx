@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import axiosClient from "../../../hooks/AxiosInstance";
 import UsersTable from "../../../views/admin/UsersTable";
 import { toast } from "react-toastify";
@@ -88,15 +94,17 @@ describe("UsersTable", () => {
       expect(screen.getByText("User 1")).toBeInTheDocument();
       expect(screen.getByText("User 2")).toBeInTheDocument();
     });
-
-    const nextButton = screen.getByRole("button", { name: /next/i });
-    fireEvent.click(nextButton);
+    await act(async () => {
+      const nextButton = screen.getByRole("button", { name: /next/i });
+      fireEvent.click(nextButton);
+    });
     await waitFor(() => {
       expect(screen.getByText("User 3")).toBeInTheDocument();
     });
-
-    const prevButton = screen.getByRole("button", { name: /back/i });
-    fireEvent.click(prevButton);
+    await act(async () => {
+      const prevButton = screen.getByRole("button", { name: /back/i });
+      fireEvent.click(prevButton);
+    });
 
     await waitFor(() => {
       expect(screen.getByText("User 1")).toBeInTheDocument();
@@ -114,16 +122,18 @@ describe("UsersTable", () => {
     await waitFor(() => {
       expect(screen.getByText("User 1")).toBeInTheDocument();
     });
-
-    const editButton = screen.getAllByRole("button", { name: /edit/i })[0];
-    fireEvent.click(editButton);
+    await act(async () => {
+      const editButton = screen.getAllByRole("button", { name: /edit/i })[0];
+      fireEvent.click(editButton);
+    });
     await waitFor(() => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
       expect(screen.getByText(/Change Role/i)).toBeInTheDocument();
     });
-
-    const closeButton = screen.getByRole("button", { name: /close/i });
-    fireEvent.click(closeButton);
+    await act(async () => {
+      const closeButton = screen.getByRole("button", { name: /close/i });
+      fireEvent.click(closeButton);
+    });
 
     await waitFor(() => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
@@ -148,17 +158,19 @@ describe("UsersTable", () => {
     await waitFor(() => {
       expect(screen.getByText("User 1")).toBeInTheDocument();
     });
-
-    const editButton = screen.getAllByRole("button", { name: /edit/i })[0];
-    fireEvent.click(editButton);
+    await act(async () => {
+      const editButton = screen.getAllByRole("button", { name: /edit/i })[0];
+      fireEvent.click(editButton);
+    });
 
     await waitFor(() => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
       expect(screen.getByText(/Change Role/i)).toBeInTheDocument();
     });
-
-    const saveButton = screen.getByRole("button", { name: /save/i });
-    fireEvent.click(saveButton);
+    await act(async () => {
+      const saveButton = screen.getByRole("button", { name: /save/i });
+      fireEvent.click(saveButton);
+    });
 
     await waitFor(() => {
       expect(toast).toHaveBeenCalledWith("Role updated successfully");
@@ -190,9 +202,10 @@ describe("UsersTable", () => {
     });
 
     render(<UsersTable />);
-
-    const nextButton = screen.getByRole("button", { name: /next/i });
-    fireEvent.click(nextButton);
+    await act(async () => {
+      const nextButton = screen.getByRole("button", { name: /next/i });
+      fireEvent.click(nextButton);
+    });
 
     await waitFor(() => {
       expect(screen.getByText("User 3")).toBeInTheDocument();
@@ -210,9 +223,10 @@ describe("UsersTable", () => {
     });
 
     render(<UsersTable />);
-
-    const prevButton = screen.getByRole("button", { name: /back/i });
-    fireEvent.click(prevButton);
+    await act(async () => {
+      const prevButton = screen.getByRole("button", { name: /back/i });
+      fireEvent.click(prevButton);
+    });
 
     await waitFor(() => {
       expect(screen.getByText("User 1")).toBeInTheDocument();
@@ -240,17 +254,19 @@ describe("UsersTable", () => {
     await waitFor(() => {
       expect(screen.getByText("User 1")).toBeInTheDocument();
     });
-
-    const editButton = screen.getAllByRole("button", { name: /edit/i })[0];
-    fireEvent.click(editButton);
+    await act(async () => {
+      const editButton = screen.getAllByRole("button", { name: /edit/i })[0];
+      fireEvent.click(editButton);
+    });
 
     await waitFor(() => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
       expect(screen.getByText(/Change Role/i)).toBeInTheDocument();
     });
-
-    const saveButton = screen.getByRole("button", { name: /save/i });
-    fireEvent.click(saveButton);
+    await act(async () => {
+      const saveButton = screen.getByRole("button", { name: /save/i });
+      fireEvent.click(saveButton);
+    });
 
     await waitFor(() => {
       expect(toast).toHaveBeenCalledWith(errorMessage);
@@ -276,7 +292,7 @@ describe("UsersTable", () => {
 });
 
 describe("RoleChangeModal", () => {
-  it("updates role state on change", () => {
+  it("updates role state on change", async () => {
     const { getByRole } = render(
       <RoleChangeModal
         isOpen={true}
@@ -286,10 +302,10 @@ describe("RoleChangeModal", () => {
         setNewRole={() => {}}
       />,
     );
-
     const roleSelect = getByRole("combobox") as HTMLSelectElement;
-
-    fireEvent.change(roleSelect, { target: { value: "seller" } });
+    await act(async () => {
+      fireEvent.change(roleSelect, { target: { value: "seller" } });
+    });
 
     expect(roleSelect.value).toBe("seller");
   });

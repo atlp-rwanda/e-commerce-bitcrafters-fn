@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import Hero from "../assets/images/black-lady.svg";
 import Star from "../assets/images/star.svg";
 import { Link } from "react-router-dom";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
+import { FaTimes, FaCommentDots } from "react-icons/fa";
+import Chat from "./chat/Chat";
 
 const Home: React.FC = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
   return (
     <div className="main-container px-10 py-5">
       <div className="section-container tablet:flex justify-between items-center tablet:px-10">
@@ -34,6 +41,27 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
+      <button
+        data-testid="chat-button"
+        onClick={toggleChat}
+        className="fixed bottom-10 right-10 bg-slate-200 text-black p-3 rounded-full shadow-lg z-50"
+      >
+        {isChatOpen ? <FaTimes size={22} /> : <FaCommentDots size={70} />}
+      </button>
+      {isChatOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end items-end z-40">
+          <div
+            data-testid="chat-container"
+            className="bg-white w-full max-w-sm md:max-w-lg h-5/6 rounded shadow-lg p-4 relative overflow-hidden mr-10 mb-10"
+          >
+            <button
+              onClick={toggleChat}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            ></button>
+            <Chat />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -71,21 +71,20 @@ describe("Login Component", () => {
       fireEvent.change(screen.getByPlaceholderText("Enter password"), {
         target: { value: "password123" },
       });
-
       fireEvent.click(screen.getByText("Login"));
+    });
 
-      await waitFor(() => {
-        expect(screen.getByPlaceholderText("Enter email")).toHaveValue(
-          "test@example.com",
-        );
-        expect(screen.getByPlaceholderText("Enter password")).toHaveValue(
-          "password123",
-        );
-        expect(mockNavigate).toHaveBeenCalledWith("/verify-otp", {
-          state: { email: "test@example.com" },
-        });
-        expect(notify).toHaveBeenCalledWith("OTP sent to your email");
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText("Enter email")).toHaveValue(
+        "test@example.com",
+      );
+      expect(screen.getByPlaceholderText("Enter password")).toHaveValue(
+        "password123",
+      );
+      expect(mockNavigate).toHaveBeenCalledWith("/verify-otp", {
+        state: { email: "test@example.com" },
       });
+      expect(notify).toHaveBeenCalledWith("OTP sent to your email");
     });
   });
 });
