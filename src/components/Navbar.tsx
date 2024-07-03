@@ -15,6 +15,9 @@ import { IoMdHome } from "react-icons/io";
 import { shallowEqual, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import SearchComponent from "./SearchComponent";
+import Badge from "@mui/material/Badge";
+import 'react-toastify/dist/ReactToastify.css';
+import { useNotifications } from "./notificationtoast";
 
 interface NavbarProps {
   burgerShown?: boolean; 
@@ -30,6 +33,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
 
   const [burgerShown, setIsBurgerShown] = useState(props.burgerShown || false);
   const [showSearch, setShowSearch] = useState(props.showSearch|| false);
+  const { unreadCount } = useNotifications();
   return (
     <div className=" w-full flex flex-col  ">
     <nav className="navbar-container  w-full border-b-1 p-8 flex-between space-x-2 border-b-[1px] border-gray_100">
@@ -71,25 +75,28 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           <li>
             <Link to="" className="text-lg">
               {" "}
-              <CiHeart />
+              <CiHeart size={24}/>
             </Link>
           </li>
           <li>
             <Link to="" className="text-lg">
               {" "}
-              <IoCartOutline />
+              <IoCartOutline size={24} />
             </Link>
           </li>
           <li>
             <Link to="" className="text-lg">
               {" "}
-              <IoNotificationsOutline />
+              <Badge badgeContent={unreadCount} color="primary">
+                <IoNotificationsOutline size={24} />
+              </Badge>
             </Link>
           </li>
           <li>
             <Link to="" className="text-lg">
               {" "}
-              <IoLocationOutline />
+              
+              <IoLocationOutline size={24} />
             </Link>
           </li>
         </ul>
@@ -134,7 +141,10 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             <li className=" rounded-sm hover:bg-white">
               <Link to="" className="text-lg">
                 <div className="flex-between justify-center space-x-1 p-2 ">
-                  <IoNotificationsOutline className="text-gray_100" />
+                  
+                  <Badge badgeContent={unreadCount} color="primary">
+                <IoNotificationsOutline size={24} className="text-gray_100" />
+              </Badge>
                   <p className="text-xs text-gray_100">Notifications</p>
                 </div>
               </Link>

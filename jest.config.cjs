@@ -5,6 +5,7 @@
     testTimeout: 10000,
     preset: "ts-jest",
     testEnvironment: "jest-environment-jsdom",
+    setupFilesAfterEnv: ['<rootDir>/src/test/jest.setup.ts'],
     collectCoverage: true,
     coverageDirectory: "coverage",
     coverageReporters: ["json", "lcov", "text", "clover"],

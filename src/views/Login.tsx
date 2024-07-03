@@ -91,6 +91,8 @@ const Login: React.FC = () => {
           setTimeout(() => {
             if (userRole === "admin") {
               navigate("/admin");
+            } else if (userRole === "buyer") {
+              navigate("/buyer");
             } else {
               navigate("/");
             }

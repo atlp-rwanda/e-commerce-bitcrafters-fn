@@ -26,6 +26,10 @@ import DashboardButton from "./DashBoardButton";
 import axiosClient from "../hooks/AxiosInstance";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Badge from "@mui/material/Badge";
+import 'react-toastify/dist/ReactToastify.css';
+import { useNotifications } from "./notificationtoast";
+
 interface User {
   id: number;
   username: string;
@@ -46,6 +50,7 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { unreadCount } = useNotifications();
 
   const navigate = useNavigate();
   const notify = (message: string) => toast(message);
@@ -183,9 +188,15 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             dataTestId="notification-button"
             icon={
               isSelected == "notifications" ? (
-                <IoIosNotifications className="text-white text-lg tablet:text-2xl" />
+                
+                <Badge badgeContent={unreadCount} color="primary">
+                <IoIosNotifications className="text-white text-lg tablet:text-2xl" size={24} />
+              </Badge>
               ) : (
-                <IoIosNotificationsOutline className="text-black text-lg tablet:text-2xl" />
+                
+                <Badge badgeContent={unreadCount} color="primary">
+                <IoIosNotificationsOutline className="text-black text-lg tablet:text-2xl" size={24} />
+              </Badge>
               )
             }
             value={showMenu ? "Notificarions" : ""}

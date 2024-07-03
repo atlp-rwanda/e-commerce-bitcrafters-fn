@@ -52,6 +52,10 @@ const Routers: React.FC = () => {
             <Route path="/seller/addProduct" element={<AddProductForm />} />
           </Route>
         </Route>
+        <Route element={<ProtectedRoute requiredRole="buyer" />}>
+          <Route path="/buyer" element={<Layout />}>
+          </Route>
+        </Route>
       </Routes>
     </BrowserRouter>
   );

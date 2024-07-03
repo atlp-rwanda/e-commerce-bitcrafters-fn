@@ -28,7 +28,7 @@
     "tailwind.config.js",
     "src/**/*.ts", 
     ".storybook/**/*.ts" 
-  ],
+, "jest.setup.ts"  ],
   "exclude": ["node_modules", "dist", "coverage",  "vite.config.ts",],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
