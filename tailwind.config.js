@@ -21,6 +21,8 @@ export default {
         view_more: "#4D98E2",
         view_more_text: "#1976D2",
         back_next: "#BDBBBB",
+        'custom-bg': '#F3F2F0',
+        'custom-white': '#FFFFFF',
       },
       borderRadius: {
         sm: "5px",

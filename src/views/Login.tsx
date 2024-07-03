@@ -20,6 +20,7 @@ export interface DecodedToken {
   id: number;
   username: string;
   userRole: string;
+  otp?: string
 }
 const Login: React.FC = () => {
   const client = axiosClient();

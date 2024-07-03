@@ -15,6 +15,8 @@ import DashLayout from "../layouts/DashLayout";
 import UsersTable from "../views/admin/UsersTable";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Profile from "../views/UserProfile";
+import AddProductForm from "../views/seller/AddProductForm";
+import SellerLayout from "../layouts/SellerLayout";
 
 const Routers: React.FC = () => {
   return (
@@ -41,6 +43,11 @@ const Routers: React.FC = () => {
           <Route path="/admin" element={<DashLayout />}>
             <Route index element={<UsersTable />} />
             <Route path="/admin/users" element={<UsersTable />} />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoute requiredRole="seller" />}>
+          <Route path="/seller" element={<SellerLayout />}>
+            <Route path="/seller/addProduct" element={<AddProductForm />} />
           </Route>
         </Route>
       </Routes>

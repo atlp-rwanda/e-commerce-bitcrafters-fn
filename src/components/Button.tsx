@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface InputProps {
+  name?: string
   value?: string;
   color?: string | any;
   rounded?: string;
@@ -16,7 +17,7 @@ const Button: React.FC<InputProps> = (props) => {
 // const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <button type={props.type} style={{backgroundColor:props.color || "rgb(38 38 38)"}}  className={` rounded-sm mt-2 px-4 w-full py-3 border-none flex space-x-2 items-center justify-center`} onClick={props.onClick}>
+    <button type={props.type} name={props.name} style={{backgroundColor:props.color || "rgb(38 38 38)"}}  className={` rounded-sm mt-2 px-4 w-full py-3 border-none flex space-x-2 items-center justify-center`} onClick={props.onClick}>
  {props.icon} 
 
  <p className={` text-sm`} style={{color:props.textColor || "white"}}>{props.value}</p>
