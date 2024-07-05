@@ -14,9 +14,11 @@ import { IoLocationOutline } from "react-icons/io5";
 import { IoMdHome } from "react-icons/io";
 import { shallowEqual, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import SearchComponent from "./SearchComponent";
 
 interface NavbarProps {
-  burgerShown?: boolean; // Make burgerShown optional
+  burgerShown?: boolean; 
+  showSearch?:boolean;
 }
 
 const Navbar: React.FC<NavbarProps> = (props) => {
@@ -27,7 +29,9 @@ const Navbar: React.FC<NavbarProps> = (props) => {
   );
 
   const [burgerShown, setIsBurgerShown] = useState(props.burgerShown || false);
+  const [showSearch, setShowSearch] = useState(props.showSearch|| false);
   return (
+    <div className=" w-full flex flex-col  ">
     <nav className="navbar-container  w-full border-b-1 p-8 flex-between space-x-2 border-b-[1px] border-gray_100">
       <div className="nav-logo w-[20%] ">
         <img src={Logo} alt="Logo" className="w-24 object-contain " />
@@ -59,7 +63,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
       <div className="nav-icons flex-between hidden tablet:flex">
         <ul className="flex-between space-x-4">
           <li>
-            <div className="search-container bg-gray rounded-sm flex-between space-x-2 p-2">
+            <div className="search-container bg-gray rounded-sm flex-between space-x-2 p-2 cursor-pointer" onClick={()=>setShowSearch(!showSearch)}>
               <p className="text-xs">search here</p>
               <CiSearch />
             </div>
@@ -101,7 +105,9 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           </Link>
         )}
       </div>
-      <button
+      <div className="flex gap-10 items-center">
+      <CiSearch className="text-xl flex tablet:hidden" onClick={()=>setShowSearch(!showSearch)} />
+              <button
         onClick={() => setIsBurgerShown(!burgerShown)}
         className="tablet:hidden"
       >
@@ -111,6 +117,8 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           <RxCross2 className="text-3xl " />
         )}
       </button>
+      </div>
+
 
       {burgerShown && (
         <div className=" bg-black  flex tablet:hidden z-10 absolute w-[80%] tablet:w-[60%] top-[10%] right-[15%] border border-gray_100 rounded-sm">
@@ -212,7 +220,15 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           </ul>
         </div>
       )}
+
     </nav>
+ {showSearch &&   <div className="fixed z-20 bg-[rgba(0,0,0,0.5)] w-full h-full mx-auto ">
+      <SearchComponent
+      hideSearch={()=>{setShowSearch(false)}}
+      />
+    
+    </div>}
+    </div>
   );
 };
 

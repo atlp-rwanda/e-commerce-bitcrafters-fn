@@ -107,6 +107,9 @@ const Profile: React.FC = () => {
     return (
       <div className="h-50vh ml-10 text-slate-600 text-blue-500">
         Loading...
+        <div className="">
+                <Logout />
+              </div>
       </div>
     );
 

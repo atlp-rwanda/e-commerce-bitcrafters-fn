@@ -17,6 +17,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Profile from "../views/UserProfile";
 import AddProductForm from "../views/seller/AddProductForm";
 import SellerLayout from "../layouts/SellerLayout";
+import SingleProduct from "../views/SingleProduct";
 
 const Routers: React.FC = () => {
   return (
@@ -35,6 +36,7 @@ const Routers: React.FC = () => {
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/users/verify/:token" element={<VerifyEmail />} />
           <Route path="/email-verified" element={<EmailVerified />} />
+          <Route path="/products/:productId" element={<SingleProduct />} />
           <Route path="/invalid-token" element={<InvalidToken />} />
           <Route path="/verify-otp" element={<TwoFactorAuth />} />
           <Route path="/view-edit-profile" element={<Profile />} />
