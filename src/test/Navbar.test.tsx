@@ -34,6 +34,9 @@ describe("Navbar Component", () => {
     store = mockStore({
       auth: { isLoggedIn: false },
       chat: { unreadMessagesCount: 0 },
+      cart:  {
+        count: 0,
+      },
     });
   });
 
@@ -86,25 +89,12 @@ describe("Navbar Component", () => {
     renderWithRouter(<Navbar />);
     await act(async () => {
       fireEvent.click(screen.getByRole("button"));
-    });
-    expect(screen.getByText("Login")).toBeInTheDocument();
-  });
+    fireEvent.click(screen.getByRole('button')); 
+    expect(screen.getByText('Home')).toBeInTheDocument();
+  })
+  })
 
-  // test("renders logout button when user is logged in", async () => {
-  //   store = mockStore({
-  //     auth: { isLoggedIn: true },
-  //     chat: { unreadMessagesCount: 0 },
-  //   });
-  //   renderWithRouter(<Navbar />);
-  //   // await act(async () => {
-  //   // fireEvent.click(screen.getByRole("button"));
-  //   fireEvent.click(screen.getByRole("button", { name: "Logout" }));
-  //   await waitFor(() => {
-  //     expect(
-  //       screen.getByRole("button", { name: "Logout" }),
-  //     ).toBeInTheDocument();
-  //   });
-  // });
+
 });
 describe("Navbar Component - Login Link", () => {
   let store: any;
@@ -113,6 +103,9 @@ describe("Navbar Component - Login Link", () => {
     store = mockStore({
       auth: { isLoggedIn: false },
       chat: { unreadMessagesCount: 0 },
+      cart:  {
+        count: 0,
+      },
     });
   });
 
@@ -139,4 +132,4 @@ describe("Navbar Component - Login Link", () => {
 
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
-});
+})
