@@ -10,7 +10,6 @@ import VerifyEmail from "../views/verifyEmail";
 import EmailVerified from "../views/emailVerified";
 import InvalidToken from "../views/invalidToken";
 import ForgotPassword from "../views/ForgotPassword";
-// import AdminDashboard from "../views/AdminDashboard";
 import DashLayout from "../layouts/DashLayout";
 import UsersTable from "../views/admin/UsersTable";
 import ProtectedRoute from "../components/ProtectedRoute";

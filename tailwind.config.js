@@ -12,6 +12,7 @@ export default {
         black: "#262626",
         orange: "#FA8232",
         gray: "#F0EEED",
+        grayboro: '#DCDCDC',
         gray_100: "#A8A8A8",
         on_black: "#FFFFFF",
         "main-black-color": "#262626",
