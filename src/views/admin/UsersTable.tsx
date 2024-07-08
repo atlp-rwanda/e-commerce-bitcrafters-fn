@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
+import { CiEdit } from "react-icons/ci";
 import RoleChangeModal from "../../components/RoleChange";
+import StatusChangeModal from "../../components/StatusChangeModal";
 import axiosClient from "../../hooks/AxiosInstance";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface User {
   id: number;
@@ -19,6 +21,8 @@ const UsersTable = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+
   const client = axiosClient();
   const notify = (message: string) => toast(message);
 
@@ -62,6 +66,16 @@ const UsersTable = () => {
     setSelectedUser(null);
   };
 
+  const openStatusModal = (user: User) => {
+    setSelectedUser(user);
+    setIsStatusModalOpen(true);
+  };
+
+  const closeStatusModal = () => {
+    setSelectedUser(null);
+    setIsStatusModalOpen(false);
+  };
+
   const saveRole = async (newRole: string) => {
     if (selectedUser) {
       setIsLoading(true);
@@ -82,6 +96,14 @@ const UsersTable = () => {
         setSelectedUser(null);
       }
     }
+  };
+
+  const handleStatusChange = (userId: number, newStatus: string) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user.id === userId ? { ...user, status: newStatus } : user,
+      ),
+    );
   };
 
   return (
@@ -145,13 +167,24 @@ const UsersTable = () => {
                     </span>
                   </td>
                   <td className="py-2 px-4 border-b border-gray-200 text-left">
-                    <button
-                      aria-label="edit"
-                      className="bg-view_more text-white px-2 py-1 rounded flex items-center justify-center"
-                      onClick={() => openModal(user)}
-                    >
-                      <FaEdit className="text-lg" />
-                    </button>
+                    <div className="flex space-x-2 max-xs:block max-xs:space-y-2 max-xs:space-x-0">
+                      <button
+                        aria-label="edit"
+                        className="bg-customBlueBg text-customBlue px-5 max-xs:px-2 rounded-full flex items-center justify-center"
+                        onClick={() => openModal(user)}
+                      >
+                        <CiEdit className="text-lg" />
+                        role
+                      </button>
+                      <button
+                        aria-label="change status"
+                        className="bg-customGreenBg text-customGreen px-3  max-xs:px-0 rounded-full flex items-center justify-center"
+                        onClick={() => openStatusModal(user)}
+                      >
+                        <CiEdit className="text-lg" />
+                        status
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -185,6 +218,16 @@ const UsersTable = () => {
           setNewRole={setNewRole}
         />
       )}
+      {selectedUser && isStatusModalOpen && (
+        <StatusChangeModal
+          isOpen={isStatusModalOpen}
+          onClose={closeStatusModal}
+          onStatusChange={handleStatusChange}
+          currentStatus={selectedUser.status}
+          user={{ name: selectedUser.username, id: selectedUser.id }}
+        />
+      )}
+      <ToastContainer />
     </div>
   );
 };
