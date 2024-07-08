@@ -5,6 +5,7 @@ import authReducer, {
   setAuthRole,
   clearAuthData,
   AuthState,
+  setAuthUserId,
 } from "../redux/authSlice";
 
 describe("authSlice", () => {
@@ -13,6 +14,7 @@ describe("authSlice", () => {
     authToken: null,
     username: null,
     authRole: null,
+    authUserId: null,
   };
 
   it("should handle setIsLoggedIn", () => {
@@ -37,13 +39,18 @@ describe("authSlice", () => {
     const actual = authReducer(initialState, setAuthRole(role));
     expect(actual.authRole).toEqual(role);
   });
-
+  it("should handle setAuthUserId", () => {
+    const id = "5";
+    const actual = authReducer(initialState, setAuthUserId(id));
+    expect(actual.authUserId).toEqual(id);
+  });
   it("should handle clearAuthData", () => {
     const loggedInState: AuthState = {
       isLoggedIn: true,
       authToken: "token",
       username: "user",
       authRole: "admin",
+      authUserId: "user",
     };
     const actual = authReducer(loggedInState, clearAuthData());
     expect(actual).toEqual(initialState);

@@ -5,6 +5,7 @@ export interface AuthState {
   authToken: string | null;
   username: string | null;
   authRole: string | null;
+  authUserId: string | null;
 }
 
 const initial: AuthState = {
@@ -12,6 +13,7 @@ const initial: AuthState = {
   authToken: null,
   username: null,
   authRole: null,
+  authUserId: null,
 };
 
 const authSlice = createSlice({
@@ -30,11 +32,15 @@ const authSlice = createSlice({
     setAuthRole: (state, action: PayloadAction<string | null>) => {
       state.authRole = action.payload;
     },
+    setAuthUserId: (state, action: PayloadAction<string | null>) => {
+      state.authUserId = action.payload;
+    },
     clearAuthData: (state) => {
       state.isLoggedIn = false;
       state.authToken = null;
       state.username = null;
       state.authRole = null;
+      state.authUserId = null;
     },
   },
 });
@@ -45,6 +51,7 @@ export const {
   setUsername,
   setAuthRole,
   clearAuthData,
+  setAuthUserId,
 } = authSlice.actions;
 
 export default authSlice.reducer;

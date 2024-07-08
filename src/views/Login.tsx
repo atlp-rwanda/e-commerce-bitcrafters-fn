@@ -7,7 +7,12 @@ import "react-toastify/dist/ReactToastify.css";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
-import { setAuthRole, setAuthToken, setIsLoggedIn } from "../redux/authSlice";
+import {
+  setAuthRole,
+  setAuthToken,
+  setAuthUserId,
+  setIsLoggedIn,
+} from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 import axiosClient from "../hooks/AxiosInstance";
 import Button from "../components/Button";
@@ -17,7 +22,7 @@ import { jwtDecode } from "jwt-decode";
 
 export interface DecodedToken {
   email: string;
-  id: number;
+  id: string;
   username: string;
   userRole: string;
   otp?: string
@@ -80,6 +85,8 @@ const Login: React.FC = () => {
           dispatch(setAuthToken(response.data.authToken));
           dispatch(setAuthRole(userRole));
           dispatch(setIsLoggedIn(true));
+          dispatch(setAuthUserId(decodedToken.id));
+
           notify(response.data.message);
           setTimeout(() => {
             if (userRole === "admin") {

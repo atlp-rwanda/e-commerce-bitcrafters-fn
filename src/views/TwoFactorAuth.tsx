@@ -4,9 +4,16 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { setAuthRole, setAuthToken, setIsLoggedIn } from "../redux/authSlice";
+import {
+  setAuthRole,
+  setAuthToken,
+  setAuthUserId,
+  setIsLoggedIn,
+} from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 import axiosClient from "../hooks/AxiosInstance";
+import { jwtDecode } from "jwt-decode";
+import { DecodedToken } from "./Login";
 
 const TwoFactorAuth: React.FC = () => {
   const client = axiosClient();
@@ -20,16 +27,16 @@ const TwoFactorAuth: React.FC = () => {
   const notify = (message: string) => toast(message);
   let email = location.state?.email;
   const urlParams = new URLSearchParams(location.search);
-  const emailParam = urlParams.get('email');
-  
-  if(emailParam){
+  const emailParam = urlParams.get("email");
+
+  if (emailParam) {
     email = emailParam;
-  } 
+  }
   useEffect(() => {
     if (!email) {
       navigate("/login");
     }
-  }, [email,navigate]);
+  }, [email, navigate]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -65,11 +72,11 @@ const TwoFactorAuth: React.FC = () => {
 
       if (response.status === 200) {
         const token = response.data.jwt;
-        const bearerToken = `Bearer ${token}`;
-        localStorage.setItem("AUTH_TOKEN", bearerToken);
+        const decodedToken: DecodedToken = jwtDecode(response.data.jwt);
         dispatch(setAuthToken(token));
-        dispatch(setAuthRole('seller'));
+        dispatch(setAuthRole("seller"));
         dispatch(setIsLoggedIn(true));
+        dispatch(setAuthUserId(decodedToken.id));
         navigate("/seller/addProduct");
         notify("Login successful");
       }

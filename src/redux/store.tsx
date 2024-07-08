@@ -1,5 +1,14 @@
 import storage from "redux-persist/lib/storage";
-import { persistReducer, persistStore } from "redux-persist";
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+  persistReducer,
+  persistStore,
+} from "redux-persist";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
 import counterReducer from "./counter";
@@ -9,7 +18,13 @@ import { TypedUseSelectorHook, useSelector } from "react-redux";
 const authPersistConfig = {
   key: "auth",
   storage,
-  whitelist: ["isLoggedIn", "authRole", "authToken", "authProfile"],
+  whitelist: [
+    "isLoggedIn",
+    "authRole",
+    "authToken",
+    "authProfile",
+    "authUserId",
+  ],
 };
 
 const rootReducer = combineReducers({
@@ -20,6 +35,12 @@ const rootReducer = combineReducers({
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 const persistor = persistStore(store);
