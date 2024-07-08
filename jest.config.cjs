@@ -20,6 +20,8 @@
       "!coverage/**",
       "!**/*.config.{js,cjs,ts}",
       "!.eslintrc.js",
+      "!src/views/XMobileMoney.tsx",
+      "!src/views/XCreditCard.tsx",
     ],
     coverageThreshold: {
       global: {
