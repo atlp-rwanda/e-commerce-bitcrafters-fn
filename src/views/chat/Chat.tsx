@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PUBLIC_URL } from "../../constants";
 import { ToastContainer, toast } from "react-toastify";
 import Avatar from "../../assets/images/profileImage.svg";
@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSmile } from "@fortawesome/free-solid-svg-icons";
 import emojiData from "emoji.json";
 import { useNavigate } from "react-router-dom";
-
+import { setUnreadMessagesCount } from "../../redux/chatSlice";
 interface Message {
   id: string;
   userId: number | string;
@@ -35,16 +35,23 @@ const Chat: React.FC = () => {
   const notify = (message: string) => toast(message);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [activeUsers, setActiveUsers] = useState<number[]>([]);
-
+  const [newMessagesCount, setNewMessagesCount] = useState(0);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   useEffect(() => {
     if (authToken) {
       const newSocket = io(`${PUBLIC_URL}chat`, {
         auth: { token: authToken },
       });
-
       newSocket.on("connect", () => {
         newSocket.emit("requestPastMessages");
+        scrollToBottom();
       });
 
       newSocket.on("pastMessages", (pastMessages: any[]) => {
@@ -60,6 +67,7 @@ const Chat: React.FC = () => {
           online: activeUsers.includes(msg.userId),
         }));
         setMessages(formattedMessages.reverse());
+        scrollToBottom();
       });
 
       newSocket.on("chatMessage", (msg: any) => {
@@ -88,6 +96,11 @@ const Chat: React.FC = () => {
           if (!activeUsers.includes(msg.userId)) {
             setActiveUsers((prevUsers) => [...prevUsers, msg.userId]);
           }
+          scrollToBottom();
+          if (msg.user.id !== loggedInUserId) {
+            setNewMessagesCount((prevCount) => prevCount + 1);
+            dispatch(setUnreadMessagesCount(newMessagesCount + 1)); // Update the Redux state
+          }
         } else {
           notify("Your message was not sent");
         }
@@ -103,6 +116,7 @@ const Chat: React.FC = () => {
                 msg.userId === data.user.id ? { ...msg, online: true } : msg,
               ),
             );
+            scrollToBottom();
           }
         },
       );
@@ -136,6 +150,17 @@ const Chat: React.FC = () => {
     }
   }, [authToken]);
 
+  useEffect(() => {
+    const resetUnreadMessagesCount = () => {
+      setNewMessagesCount(0);
+      dispatch(setUnreadMessagesCount(0));
+    };
+    window.addEventListener("focus", resetUnreadMessagesCount);
+    return () => {
+      window.removeEventListener("focus", resetUnreadMessagesCount);
+    };
+  }, [dispatch]);
+
   const handleEmojiClick = (emoji: string) => {
     setMessage((prevMessage) => prevMessage + emoji);
     setShowEmojiPicker(false);
@@ -155,6 +180,7 @@ const Chat: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full p-4 bg-chat_back">
+      <p className="text-center font-bold">Chats</p>
       <div className="flex-1 overflow-y-auto rounded p-4">
         <ul className="space-y-4">
           {messages.map((msg) => (
@@ -163,7 +189,7 @@ const Chat: React.FC = () => {
               className={`p-3 rounded-lg flex items-start space-x-2 ${
                 msg?.userId === loggedInUserId
                   ? "self-end bg-slate-900 text-white"
-                  : "bg-white self-start border p-1 border-gray-100 rounded-r"
+                  : "bg-white self-start border p-1 border-gray-100 rounded-r text-black"
               }`}
             >
               {msg?.userId !== loggedInUserId && (
@@ -175,7 +201,7 @@ const Chat: React.FC = () => {
                   />
                   <span
                     className={`w-2 h-2 rounded-full ml-1 ${
-                      msg.online ? "bg-green-500" : "bg-red-500"
+                      msg.online ? "bg-green-500 " : "bg-red-500"
                     }`}
                   ></span>
                 </div>
@@ -193,6 +219,7 @@ const Chat: React.FC = () => {
               </div>
             </li>
           ))}
+          <div ref={messagesEndRef} />
         </ul>
       </div>
       <form
@@ -203,7 +230,7 @@ const Chat: React.FC = () => {
         <button
           type="button"
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          className="p-2 bg-gray-300 text-gray-700 hover:bg-gray-400 flex"
+          className="p-2 bg-gray-300 text-black hover:bg-gray-400 flex"
           aria-label="Show emoji picker"
         >
           <FontAwesomeIcon icon={faSmile} className="h-7 w-7 sm:w-auto" />
@@ -212,7 +239,7 @@ const Chat: React.FC = () => {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 p-2 border border-gray-300 rounded w-full sm:w-auto"
+          className="flex-1 p-2 border border-black text-black rounded w-full sm:w-auto"
           placeholder="Type your message here..."
         />
 

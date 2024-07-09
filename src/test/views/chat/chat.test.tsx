@@ -34,6 +34,9 @@ const initialState: Partial<RootState> = {
       rehydrated: true,
     },
   },
+  chat: {
+    unreadMessagesCount: 0,
+  },
 };
 
 jest.mock("react-router-dom", () => ({
@@ -43,7 +46,9 @@ jest.mock("react-router-dom", () => ({
 
 describe("Chat Component", () => {
   let mockSocket: Socket;
-
+  beforeAll(() => {
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+  });
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -71,7 +76,22 @@ describe("Chat Component", () => {
       ).toBeInTheDocument();
     });
   });
+  it("resets unread messages count when window gains focus", async () => {
+    const store = mockStore(initialState);
+    render(
+      <Provider store={store}>
+        <Router>
+          <Chat />
+        </Router>
+      </Provider>,
+    );
 
+    window.dispatchEvent(new Event("focus"));
+
+    await waitFor(() => {
+      expect(initialState.chat?.unreadMessagesCount).toBe(0);
+    });
+  });
   it("emits 'requestPastMessages' when socket connects", async () => {
     render(
       <Provider store={mockStore(initialState)}>

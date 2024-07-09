@@ -36,6 +36,7 @@ const AllTheProviders: React.FC<AllTheProvidersProps> = ({
 }) => {
   const store = mockStore({
     auth: { isLoggedIn: true, authToken: "mock-token" },
+    chat: { unreadMessagesCount: 0 },
   });
 
   return (
