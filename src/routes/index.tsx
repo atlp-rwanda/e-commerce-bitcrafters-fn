@@ -1,9 +1,11 @@
 import Home from "../views/Home";
 import Login from "../views/Login";
 import TwoFactorAuth from "../views/TwoFactorAuth";
+import ErrorPage from "../views/ErroPage";
 import Layout from "../layouts/Layout";
 import ResetPassword from "../views/ChangePassword";
 import RequestPasswordChange from "../views/RequestPasswordChange";
+import AboutPage from "../views/AboutPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignupForm from "../views/signup";
 import VerifyEmail from "../views/verifyEmail";
@@ -24,6 +26,7 @@ const Routers: React.FC = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/request" element={<RequestPasswordChange />} />
           <Route
@@ -45,6 +48,7 @@ const Routers: React.FC = () => {
             <Route index element={<UsersTable />} />
             <Route path="/admin/users" element={<UsersTable />} />
           </Route>
+          <Route path="/users/reset-password/:token" element={<ResetPassword />} />      
         </Route>
         <Route element={<ProtectedRoute requiredRole="seller" />}>
           <Route path="/seller" element={<SellerLayout />}>
@@ -55,6 +59,7 @@ const Routers: React.FC = () => {
           <Route path="/buyer" element={<Layout />}>
           </Route>
         </Route>
+        <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
   );
