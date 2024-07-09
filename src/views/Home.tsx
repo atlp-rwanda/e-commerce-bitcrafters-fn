@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Hero from "../assets/images/black-lady.svg";
 import Star from "../assets/images/star.svg";
 import { Link } from "react-router-dom";
@@ -11,8 +11,65 @@ import MacBook from "../assets/images/macbook.svg";
 import { FaArrowRight } from "react-icons/fa6";
 import ServicesSection from "../components/servicesSection.tsx";
 import CollectionCard from "../components/CollectionCard.tsx";
+import axiosClient from "../hooks/AxiosInstance.tsx";
+
+interface Product {
+  id: string;
+  images: string[];
+  name: string;
+  price: string;
+  discount: string;
+  discription: string;
+  rating: number;
+}
 
 const Home: React.FC = () => {
+  const [newArrivalProducts, setNewArrivalProducts] = useState<Product[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [newArrivalPage, setNewArrivalPage] = useState(1);
+  const [featuredPage, setFeaturedPage] = useState(2);
+  const client = axiosClient();
+
+  const fetchNewArrivalProducts = async (page: number) => {
+    try {
+      const response = await client.get(`/collections/products?page=${page}`);
+      setNewArrivalProducts(response.data.products);
+    } catch (error) {
+      console.error("Error fetching new arrival products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchFeaturedProducts = async (page: number) => {
+    try {
+      const response = await client.get(`/collections/products?page=${page}`);
+      setFeaturedProducts(response.data.products);
+    } catch (error) {
+      console.error("Error fetching featured products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNewArrivalProducts(newArrivalPage);
+    fetchFeaturedProducts(featuredPage);
+
+    const intervalId = setInterval(() => {
+      setNewArrivalPage((prevPage) => (prevPage === 1 ? 2 : 1));
+      setFeaturedPage((prevPage) => (prevPage === 2 ? 3 : 2));
+    }, 60000); 
+
+    return () => clearInterval(intervalId); 
+  }, []);
+
+  useEffect(() => {
+    fetchNewArrivalProducts(newArrivalPage);
+    fetchFeaturedProducts(featuredPage);
+  }, [newArrivalPage, featuredPage]);
+
   return (
     <div className="main-container px-10 py-5 flex flex-col gap-5">
       <div className="section-container tablet:flex justify-between items-center tablet:px-10">
@@ -46,103 +103,70 @@ const Home: React.FC = () => {
       <div className="section-container px-2 tablet:px-10 my-10">
         <SectionHeader title="New Arrival" />
         <div className="product-container flex flex-wrap items-center justify-center tablet:justify-start gap-5 tablet:gap-10 my-5">
-          <MainProductCard
-            id="1"
-            Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
-            name="Apple Headphone"
-            price="20.000"
-            discount="21.000"
-            discription="Apple product for apple users. Vibrant music"
-            rating={"2.5"}
-          />
-          <MainProductCard
-            id="1"
-            Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
-            name="Apple Headphone"
-            price="20.000"
-            discount="21.000"
-            discription="Apple product for apple users. Vibrant music"
-            rating={"4.6"}
-          />
-          <MainProductCard
-            id="1"
-            Image={
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSmWOWXGp9I_mdd1_VqNOnINHYJghuPgx2zg&s"
-            }
-            name="Apple Headphone"
-            price="20.000"
-            discount="21.000"
-            discription="Apple product for apple users. Vibrant music"
-            rating={"3"}
-          />
-          <MainProductCard
-            id="1"
-            Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
-            name="Apple Headphone"
-            price="20.000"
-            discount="21.000"
-            discription="Apple product for apple users. Vibrant music"
-            rating={"3.6"}
-          />
-          <MainProductCard
-            id="1"
-            Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
-            name="Apple Headphone"
-            price="20.000"
-            discount="21.000"
-            discription="Apple product for apple users. Vibrant music"
-            rating={"4.6"}
-          />
-          <MainProductCard
-            id="1"
-            Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
-            name="Apple Headphone"
-            price="20.000"
-            discount="21.000"
-            discription="Apple product for apple users. Vibrant music"
-            rating={"4"}
-          />
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            newArrivalProducts.length > 0 ? (
+              newArrivalProducts.map((product) => (
+                <MainProductCard
+                  key={product.id}
+                  id={product.id}
+                  Image={product.images[0]}
+                  name={product.name}
+                  price={product.price}
+                  discount={product.discount}
+                  discription={product.discription}
+                  rating={product.rating}
+                />
+              ))
+            ) : (
+              <>
+                <MainProductCard
+                  id="1"
+                  Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
+                  name="Apple Headphone"
+                  price="20.000"
+                  discount="21.000"
+                  discription="Apple product for apple users. Vibrant music"
+                  rating={2.5}
+                />
+                <MainProductCard
+                  id="2"
+                  Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
+                  name="Apple Headphone"
+                  price="20.000"
+                  discount="21.000"
+                  discription="Apple product for apple users. Vibrant music"
+                  rating={4.6}
+                />
+                <MainProductCard
+                  id="3"
+                  Image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSmWOWXGp9I_mdd1_VqNOnINHYJghuPgx2zg&s"
+                  name="Apple Headphone"
+                  price="20.000"
+                  discount="21.000"
+                  discription="Apple product for apple users. Vibrant music"
+                  rating={3}
+                />
+              </>
+            )
+          )}
         </div>
       </div>
 
       <div className="section-container px-2 tablet:px-10 my-10">
-        <SectionHeader title="Categories  " />
-        <div className="product-container flex flex-wrap gap-5 tablet:gap-10 my-5 items-center ">
+        <SectionHeader title="Categories" />
+        <div className="product-container flex flex-wrap gap-5 tablet:gap-10 my-5 items-center">
           <CollectionCard
-            Image={
-              "https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
-            }
+            Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
             name="Electronics"
           />
           <CollectionCard
-            Image={
-              "https://i0.wp.com/woodwoon.com/wp-content/uploads/2023/01/BC0004-bedroom-chair-furniture-brand-in-pakistan-woodwoon.webp?fit=1024%2C1024&ssl=1"
-            }
+            Image="https://i0.wp.com/woodwoon.com/wp-content/uploads/2023/01/BC0004-bedroom-chair-furniture-brand-in-pakistan-woodwoon.webp?fit=1024%2C1024&ssl=1"
             name="Furniture"
           />
           <CollectionCard
-            Image={
-              "https://www.corebase-clothing.com/cdn/shop/products/T-Shirt-Premium-Navy-1080-new-230223_f817e7f7-5019-4568-9677-4fb2b5987d98.jpg?v=1677227766"
-            }
-            name="Clothing"
-          />
-
-          <CollectionCard
-            Image={
-              "https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
-            }
-            name="Electronics"
-          />
-          <CollectionCard
-            Image={
-              "https://i0.wp.com/woodwoon.com/wp-content/uploads/2023/01/BC0004-bedroom-chair-furniture-brand-in-pakistan-woodwoon.webp?fit=1024%2C1024&ssl=1"
-            }
-            name="Furniture"
-          />
-          <CollectionCard
-            Image={
-              "https://www.corebase-clothing.com/cdn/shop/products/T-Shirt-Premium-Navy-1080-new-230223_f817e7f7-5019-4568-9677-4fb2b5987d98.jpg?v=1677227766"
-            }
+            Image="https://www.corebase-clothing.com/cdn/shop/products/T-Shirt-Premium-Navy-1080-new-230223_f817e7f7-5019-4568-9677-4fb2b5987d98.jpg?v=1677227766"
             name="Clothing"
           />
         </div>
@@ -151,46 +175,63 @@ const Home: React.FC = () => {
       <div className="section-container px-2 tablet:px-10 my-10">
         <SectionHeader title="Featured Products" />
         <div className="product-container flex flex-wrap gap-5 tablet:gap-10 my-5">
-          <MainProductCard
-            id="1"
-            Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
-            name="Apple Headphone"
-            price="20.000"
-            discount="21.000"
-            discription="Apple product for apple users. Vibrant music"
-            rating={"2.5"}
-          />
-          <MainProductCard
-            id="1"
-            Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
-            name="Apple Headphone"
-            price="20.000"
-            discount="21.000"
-            discription="Apple product for apple users. Vibrant music"
-            rating={"4.6"}
-          />
-          <MainProductCard
-            id="1"
-            Image={
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSmWOWXGp9I_mdd1_VqNOnINHYJghuPgx2zg&s"
-            }
-            name="Apple Headphone"
-            price="20.000"
-            discount="21.000"
-            discription="Apple product for apple users. Vibrant music"
-            rating={"3"}
-          />
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            featuredProducts.length > 0 ? (
+              featuredProducts.map((product) => (
+                <MainProductCard
+                  key={product.id}
+                  id={product.id}
+                  Image={product.images[0]}
+                  name={product.name}
+                  price={product.price}
+                  discount={product.discount}
+                  discription={product.discription}
+                  rating={product.rating}
+                />
+              ))
+            ) : (
+              <>
+                <MainProductCard
+                  id="1"
+                  Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
+                  name="Apple Headphone"
+                  price="20.000"
+                  discount="21.000"
+                  discription="Apple product for apple users. Vibrant music"
+                  rating={2.5}
+                />
+                <MainProductCard
+                  id="2"
+                  Image="https://m.media-amazon.com/images/I/81S533RgkwL._AC_UF350,350_QL80_.jpg"
+                  name="Apple Headphone"
+                  price="20.000"
+                  discount="21.000"
+                  discription="Apple product for apple users. Vibrant music"
+                  rating={4.6}
+                />
+                <MainProductCard
+                  id="3"
+                  Image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSmWOWXGp9I_mdd1_VqNOnINHYJghuPgx2zg&s"
+                  name="Apple Headphone"
+                  price="20.000"
+                  discount="21.000"
+                  discription="Apple product for apple users. Vibrant music"
+                  rating={3}
+                />
+              </>
+            )
+          )}
         </div>
       </div>
+
       <div className="section-container px-2 tablet:px-10 my-10 w-full">
         <SectionHeader title="Promotion" />
-
         <div className="promotion-container flex flex-wrap-reverse gap-5 tablet:gap-10 my-5 p-10 bg-black rounded-md">
           <div className="content tablet:w-[45%] flex flex-col gap-5 justify-center">
             <p className="text-white self-start">For a limited time only</p>
-
             <h2 className="text-2xl font-bold text-white">Macbook Pro</h2>
-
             <p className="text-white tablet:w-[50%]">
               Apple M1 Max Chip. 32GB Unified Memory, 1TB SSD Storage
             </p>
@@ -203,7 +244,7 @@ const Home: React.FC = () => {
               />
             </div>
           </div>
-          <div className="image-container tablet:w-[45%] flex justify-end ">
+          <div className="image-container tablet:w-[45%] flex justify-end">
             <div className="relative">
               <img src={MacBook} alt="MacBook" />
               <div className="circle bg-gray rounded-full p-2 w-28 h-28 absolute flex items-center justify-center top-0">

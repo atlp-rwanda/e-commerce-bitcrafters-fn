@@ -1,11 +1,12 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { toast } from 'react-toastify';
 import axiosClient from '../../../hooks/AxiosInstance';
 import ViewSingleProduct from '../../../views/seller/viewSingleProduct';
-import {store} from '../../../redux/store'; 
+import { store } from '../../../redux/store';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -51,6 +52,7 @@ describe('ViewSingleProduct', () => {
     (axiosClient as jest.Mock).mockReturnValue({
       get: jest.fn().mockResolvedValue({ data: { item: mockProduct } }),
     });
+    // toast.mockClear();
   });
 
   it('renders loading state initially', () => {
@@ -127,6 +129,175 @@ describe('ViewSingleProduct', () => {
     await waitFor(() => {
       expect(mockNotify).toHaveBeenCalledWith('Error fetching product');
       expect(screen.getByText('No product found')).toBeInTheDocument();
+    });
+  });
+
+  it('handles no response error when adding product to cart', async () => {
+    const mockClient = {
+      get: jest.fn().mockResolvedValue({ data: { item: mockProduct } }),
+      post: jest.fn().mockRejectedValue({ request: {} }),
+    };
+    (axiosClient as jest.Mock).mockReturnValue(mockClient);
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <ViewSingleProduct />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      const addToCartButton = screen.getByText('Add to Cart', { selector: 'button.flex' });
+      fireEvent.click(addToCartButton);
+    });
+
+    const addToCartModalButton = screen.getByText('Add to Cart', { selector: 'button[type="submit"]' });
+    await act(async () => {
+      userEvent.click(addToCartModalButton);
+    });
+
+    await waitFor(() => {
+      expect(toast).toHaveBeenCalledWith('No response received from the server.');
+    });
+  });
+
+  it('handles error setting up request when adding product to cart', async () => {
+    const mockClient = {
+      get: jest.fn().mockResolvedValue({ data: { item: mockProduct } }),
+      post: jest.fn().mockRejectedValue({}),
+    };
+    (axiosClient as jest.Mock).mockReturnValue(mockClient);
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <ViewSingleProduct />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      const addToCartButton = screen.getByText('Add to Cart', { selector: 'button.flex' });
+      fireEvent.click(addToCartButton);
+    });
+
+    const addToCartModalButton = screen.getByText('Add to Cart', { selector: 'button[type="submit"]' });
+    await act(async () => {
+      userEvent.click(addToCartModalButton);
+    });
+
+    await waitFor(() => {
+      expect(toast).toHaveBeenCalledWith('Error setting up request.');
+    });
+  });
+
+  it('handles API response error when adding product to cart', async () => {
+    const mockClient = {
+      get: jest.fn().mockResolvedValue({ data: { item: mockProduct } }),
+      post: jest.fn().mockRejectedValue({
+        response: {
+          data: { message: 'Error adding to cart' },
+        },
+      }),
+    };
+    (axiosClient as jest.Mock).mockReturnValue(mockClient);
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <ViewSingleProduct />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      const addToCartButton = screen.getByText('Add to Cart', { selector: 'button.flex' });
+      fireEvent.click(addToCartButton);
+    });
+
+    const addToCartModalButton = screen.getByText('Add to Cart', { selector: 'button[type="submit"]' });
+    await act(async () => {
+      userEvent.click(addToCartModalButton);
+    });
+
+    await waitFor(() => {
+      expect(toast).toHaveBeenCalledWith('Error adding to cart');
+    });
+  });
+
+  it('opens modal when "Add to Cart" button is clicked', async () => {
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <ViewSingleProduct />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      const addToCartButton = screen.getByText('Add to Cart', { selector: 'button.flex' });
+      fireEvent.click(addToCartButton);
+    });
+
+    expect(screen.getByText('Add to Cart', { selector: 'h2' })).toBeInTheDocument();
+  });
+
+  it('updates quantity when input value changes', async () => {
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <ViewSingleProduct />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      const addToCartButton = screen.getByText('Add to Cart', { selector: 'button.flex' });
+      fireEvent.click(addToCartButton);
+    });
+
+    const quantityInput = screen.getByLabelText('Quantity:') as HTMLInputElement;
+    fireEvent.change(quantityInput, { target: { value: '5' } });
+
+    expect(quantityInput.value).toBe('5');
+  });
+
+  it('adds product to cart successfully', async () => {
+    const mockNavigate = jest.fn();
+    jest.spyOn(require('react-router-dom'), 'useNavigate').mockReturnValue(mockNavigate);
+
+    const mockClient = {
+      get: jest.fn().mockResolvedValue({ data: { item: mockProduct } }),
+      post: jest.fn().mockResolvedValue({}),
+    };
+    (axiosClient as jest.Mock).mockReturnValue(mockClient);
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <ViewSingleProduct />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      const addToCartButton = screen.getByText('Add to Cart', { selector: 'button.flex' });
+      fireEvent.click(addToCartButton);
+    });
+
+    const quantityInput = screen.getByLabelText('Quantity:');
+    fireEvent.change(quantityInput, { target: { value: '5' } });
+
+    const addToCartModalButton = screen.getByText('Add to Cart', { selector: 'button[type="submit"]' });
+    await act(async () => {
+      userEvent.click(addToCartModalButton);
+    });
+
+    await waitFor(() => {
+      expect(mockClient.post).toHaveBeenCalledWith('/cart/products/123', { quantity: 5 });
+      expect(mockNavigate).toHaveBeenCalledWith('/cart');
+      expect(toast).toHaveBeenCalledWith('Product added to cart successfully!');
     });
   });
 });

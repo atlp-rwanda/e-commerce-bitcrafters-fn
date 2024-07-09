@@ -49,56 +49,53 @@ const Navbar: React.FC<NavbarProps> = (props) => {
   
   return (
     <div className=" w-full flex flex-col  ">
-      <nav className="navbar-container w-full border-b-1 p-8 flex-between space-x-2 border-b-[1px] border-gray_100">
-        <div className="nav-logo w-[20%]">
-          <img src={Logo} alt="Logo" className="w-24 object-contain" />
-        </div>
-        <div className="nav-link flex-between w-[30%] hidden tablet:flex">
-          <ul className="flex-between space-x-4">
-            <li>
-              <Link to="" className="text-sm">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/about" className="text-sm">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link to="" className="text-sm">
-                Shop
-              </Link>
-            </li>
-            <li>
-              <Link to="" className="text-sm">
-                Contact
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div className="nav-icons flex-between hidden tablet:flex">
-          <ul className="flex-between space-x-4">
-            <li>
-              <div
-                className="search-container bg-gray rounded-sm flex-between space-x-2 p-2 cursor-pointer"
-                onClick={() => setShowSearch(!showSearch)}
-              >
-                <p className="text-xs">search here</p>
-                <CiSearch />
-              </div>
-            </li>
-            <li>
-              <Link to="" className="text-lg">
-                <CiHeart size={24} />
-              </Link>
-            </li>
-            <li>
+    <nav className="navbar-container  w-full border-b-1 p-8 flex-between space-x-2 border-b-[1px] border-gray_100">
+      <div className="nav-logo w-[20%] ">
+        <img src={Logo} alt="Logo" className="w-24 object-contain " />
+      </div>
+      <div className="nav-link flex-between  w-[30%] hidden tablet:flex">
+        <ul className="flex-between space-x-4">
+          <li>
+            <Link to="" className="text-sm">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/about" className="text-sm">
+              About
+            </Link>
+          </li>
+          <li>
+            <Link to="" className="text-sm">
+              Shop
+            </Link>
+          </li>
+          <li>
+            <Link to="" className="text-sm">
+              Contact
+            </Link>
+          </li>
+        </ul>
+      </div>
+      <div className="nav-icons flex-between hidden tablet:flex">
+        <ul className="flex-between space-x-4">
+          <li>
+            <div className="search-container bg-gray rounded-sm flex-between space-x-2 p-2 cursor-pointer" onClick={()=>setShowSearch(!showSearch)}>
+              <p className="text-xs">search here</p>
+              <CiSearch />
+            </div>
+          </li>
+          <li>
+            <Link to="" className="text-lg">
+              {" "}
+              <CiHeart size={24}/>
+            </Link>
+          </li>
+          <li>
             <Link to="/cart" className="text-lg relative">
               {" "}
               <IoCartOutline size={24} />
-    {count >0 && <p className="bg-red-500 p-1 text-1 flex items-center justify-center text-white absolute rounded-full top-[-3px] right-[-3px] text-[10px] h-[13px] w-[13px]">{count}</p>}
-    
+              {count >0 && <p className="bg-red-500 p-1 text-1 flex items-center justify-center text-white absolute rounded-full bottom-[-3px] right-[-3px] text-[8px] h-[13px] w-[13px]">{count}</p>}
             </Link>
           </li>
             <li>
