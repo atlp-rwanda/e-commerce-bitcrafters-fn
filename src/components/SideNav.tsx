@@ -29,6 +29,7 @@ import { toast } from "react-toastify";
 import Badge from "@mui/material/Badge";
 import 'react-toastify/dist/ReactToastify.css';
 import { useNotifications } from "./notificationtoast";
+import NotificationPane from "../views/NotificationPane";
 
 interface User {
   id: number;
@@ -51,6 +52,7 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { unreadCount } = useNotifications();
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
 
   const navigate = useNavigate();
   const notify = (message: string) => toast(message);
@@ -199,10 +201,10 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
               </Badge>
               )
             }
-            value={showMenu ? "Notificarions" : ""}
+            value={showMenu ? "Notifications" : ""}
             onClick={() => {
+              setIsModalOpen(true)
               setIsSelected("notifications");
-              navigate("/admin/notifications");
             }}
             color={isSelected == "notifications" ? "rgb(38 38 38)" : "white"}
             textColor={
@@ -210,6 +212,10 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             }
             showFull={showMenu}
             borderColor={"1px solid rgb(240 238 237)"}
+          />
+          <NotificationPane 
+            open={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
           />
         </div>
         <div className="link w-full">

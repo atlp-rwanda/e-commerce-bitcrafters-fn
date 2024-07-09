@@ -18,6 +18,7 @@ import SearchComponent from "./SearchComponent";
 import Badge from "@mui/material/Badge";
 import 'react-toastify/dist/ReactToastify.css';
 import { useNotifications } from "./notificationtoast";
+import NotificationPane from "../views/NotificationPane";
 
 interface NavbarProps {
   burgerShown?: boolean; 
@@ -34,6 +35,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
   const [burgerShown, setIsBurgerShown] = useState(props.burgerShown || false);
   const [showSearch, setShowSearch] = useState(props.showSearch|| false);
   const { unreadCount } = useNotifications();
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   return (
     <div className=" w-full flex flex-col  ">
     <nav className="navbar-container  w-full border-b-1 p-8 flex-between space-x-2 border-b-[1px] border-gray_100">
@@ -88,7 +90,8 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             <Link to="" className="text-lg">
               {" "}
               <Badge badgeContent={unreadCount} color="primary">
-                <IoNotificationsOutline size={24} />
+                <IoNotificationsOutline size={24} onClick={() => {
+              setIsModalOpen(true)}}/>
               </Badge>
             </Link>
           </li>
@@ -101,6 +104,10 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           </li>
         </ul>
       </div>
+      <NotificationPane 
+            open={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
       <div className=" w-[5%] hidden tablet:flex">
         {!isLoggedIn ? (
           <Link to="/login" className="text-lg">
@@ -139,13 +146,21 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               </Link>
             </li>
             <li className=" rounded-sm hover:bg-white">
-              <Link to="" className="text-lg">
+              <Link to="" className="text-lg" 
+                onClick={() => {
+                  setIsBurgerShown(false)
+                  setIsModalOpen(true)
+              }}>
                 <div className="flex-between justify-center space-x-1 p-2 ">
                   
                   <Badge badgeContent={unreadCount} color="primary">
                 <IoNotificationsOutline size={24} className="text-gray_100" />
               </Badge>
                   <p className="text-xs text-gray_100">Notifications</p>
+                  <NotificationPane 
+                    open={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                  />
                 </div>
               </Link>
             </li>

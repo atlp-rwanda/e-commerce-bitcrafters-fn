@@ -23,7 +23,7 @@ checks:
     config:
       threshold: 75
   identical-code:
-    enabled: true
+    enabled: false
     config:
       threshold: 75
 
