@@ -1,9 +1,10 @@
-// CheckoutSubmit.test.tsx
-
-import { renderHook, act, } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { CheckoutFormValues, useCheckoutSubmit } from "../../components/CheckoutSubmit";
+import {
+  CheckoutFormValues,
+  useCheckoutSubmit,
+} from "../../components/CheckoutSubmit";
 import useAxiosClient from "../../hooks/AxiosInstance";
 import { FormikHelpers } from "formik";
 
@@ -39,7 +40,6 @@ describe("useCheckoutSubmit", () => {
     setFormikState: jest.fn(),
   });
 
-
   it("should filter out mobile money number for credit card payment", async () => {
     const mockValues = {
       fullName: "GUY MAX",
@@ -51,10 +51,6 @@ describe("useCheckoutSubmit", () => {
       deliveryDate: "2025-12-31",
       paymentMethod: "creditCard",
       mobileMoneyNumber: "0781234567",
-      cardNumber: "4111111111111111",
-      cardHolderName: "Maxime Guy",
-      expiryDate: "2025-12-31",
-      cvv: "123",
     };
 
     mockPost.mockResolvedValueOnce({ data: "Success" });
@@ -85,10 +81,6 @@ describe("useCheckoutSubmit", () => {
       deliveryDate: "2025-12-31",
       paymentMethod: "mobileMoney",
       mobileMoneyNumber: "0781234567",
-      cardNumber: "4111111111111111",
-      cardHolderName: "Maxime Guy",
-      expiryDate: "2025-12-31",
-      cvv: "123",
     };
 
     mockPost.mockResolvedValueOnce({ data: "Success" });
@@ -139,7 +131,6 @@ describe("useCheckoutSubmit", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/mobileMoney");
     jest.useRealTimers();
   });
-
   it("should navigate to credit card page after successful submission", async () => {
     const mockValues = {
       fullName: "GUY MAX",
@@ -150,13 +141,15 @@ describe("useCheckoutSubmit", () => {
       email: "guy@example.com",
       deliveryDate: "2025-12-31",
       paymentMethod: "creditCard",
-      cardNumber: "4111111111111111",
-      cardHolderName: "Maxime Guy",
-      expiryDate: "2025-12-31",
-      cvv: "123",
     };
 
-    mockPost.mockResolvedValueOnce({ data: "Success" });
+    mockPost.mockResolvedValueOnce({
+      data: {
+        order: {
+          id: "123456",
+        },
+      },
+    });
 
     const { result } = renderHook(() => useCheckoutSubmit());
     const mockFormikHelpers = createMockFormikHelpers();
@@ -168,7 +161,8 @@ describe("useCheckoutSubmit", () => {
       jest.runAllTimers();
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith("/creditCard");
+    expect(mockNavigate).toHaveBeenCalledWith("/payment/123456");
+
     jest.useRealTimers();
   });
 
