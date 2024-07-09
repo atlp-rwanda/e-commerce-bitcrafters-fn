@@ -50,7 +50,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             </Link>
           </li>
           <li>
-            <Link to="" className="text-sm">
+            <Link to="/about" className="text-sm">
               About
             </Link>
           </li>
