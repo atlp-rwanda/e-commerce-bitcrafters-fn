@@ -3,6 +3,11 @@ import axiosClient from "../hooks/AxiosInstance";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
 import { FaTimes } from "react-icons/fa";
+import { AppDispatch } from "../redux/store";
+import {useDispatch, useSelector } from "react-redux";
+import { AllReads, setAllRead } from "../redux/notificationSlice";
+
+
 //Modal.setAppElement('#root');
 interface Notification {
   id: number;
@@ -23,25 +28,42 @@ const NotificationPane: React.FC<ModalProps> = ({ open, onClose }) => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const allRead = useSelector(AllReads);
   const client = axiosClient();
+  const dispatch = useDispatch<AppDispatch>();
   const notify = (message: string) => toast(message);
+ 
 
   const fetchNotifications = async (pageNumber: number) => {
     setIsLoading(true);
     try {
       const response = await client.get(`/notifications?page=${pageNumber}`);
-      setNotifications(response.data.notifications || []);
-      setTotalPages(response.data.pagination.totalPages || 1);
+      setNotifications(response.data.notifications);
+      setTotalPages(response.data.pagination.totalPages);
+      dispatch(setAllRead(response.data.notifications.every((n: Notification) => n.isRead)));
     } catch (err: any) {
-      notify("failed to fetch notifications");
     } finally {
       setIsLoading(false);
     }
   };
+  const markAllAsRead = async () => {
+    try {
+      const response = await client.put("/notifications/all");
+      if(response.status === 200){
+        notify("All notifications marked as read");
+        fetchNotifications(page)
+      }
+    } catch (err: any) {
+    }
+  };
 
   useEffect(() => {
+    fetchNotifications(page);
+  }, [page]);
+  useEffect(() => {
     if (open) {
-      fetchNotifications(page);
+      setIsModalOpen(true);
     }
   }, [open, page]);
 
@@ -58,13 +80,13 @@ const NotificationPane: React.FC<ModalProps> = ({ open, onClose }) => {
   };
 
   const closeModal = () => {
+    setIsModalOpen(false);
     onClose()
   };
-
   return (
     <div className="relative p-4">
       <Modal
-        isOpen={open}
+        isOpen={isModalOpen}
         onRequestClose={closeModal}
         contentLabel="Notifications"
         className="absolute top-0 left-0 right-0 bottom-0 m-auto bg-white p-8 rounded shadow-lg w-3/4 h-3/4 max-h-full overflow-auto"
@@ -76,11 +98,12 @@ const NotificationPane: React.FC<ModalProps> = ({ open, onClose }) => {
             <ul className="space-y-4">
               {isLoading ? (
                 <li className="text-center py-4">Loading...</li>
-              ) : (
-                notifications.map((notification, index) => (
+              )
+              : (
+                Array.isArray(notifications) && notifications.map((notification, index) => (
                   <li
                     key={notification.id}
-                    className={`p-3 rounded-lg flex items-start space-x-2 ${index % 2 === 0 ? 'bg-grayboro' : 'bg-gray-500'}`}
+                    className={`p-3 rounded-lg flex items-start space-x-2 ${notification.isRead ? (index % 2 === 0 ? 'bg-grayboro' : 'bg-gray-500') : 'bg-blue-100'}`}
                   >
                     <div className="flex-1">
                       <div className="flex justify-between mb-1">
@@ -89,7 +112,10 @@ const NotificationPane: React.FC<ModalProps> = ({ open, onClose }) => {
                           {new Date(notification.createdAt).toLocaleTimeString()}
                         </span>
                       </div>
-                      <p className="font-bold text-sm">{notification.message}</p>
+                      <p className={`text-sm ${notification.isRead ? 'font-normal' : 'font-bold flex items-center'}`}>
+                            {!notification.isRead && <span className="mr-2 text-black" style={{ fontSize: '1.5rem', lineHeight: '1rem' }}>•</span>}
+                           {notification.message}
+                      </p>
                     </div>
                   </li>
                 ))
@@ -101,6 +127,7 @@ const NotificationPane: React.FC<ModalProps> = ({ open, onClose }) => {
               onClick={handlePrevPage}
               className={`bg-back_next text-white px-4 py-2 rounded ${page === 1 && "opacity-50 cursor-not-allowed"}`}
               disabled={page === 1}
+              name='Back'
             >
               Back
             </button>
@@ -109,14 +136,26 @@ const NotificationPane: React.FC<ModalProps> = ({ open, onClose }) => {
               onClick={handleNextPage}
               className={`bg-back_next text-white px-4 py-2 rounded ${page === totalPages && "opacity-50 cursor-not-allowed"}`}
               disabled={page === totalPages}
+               name='Next'
             >
               Next
             </button>
           </div>
+
+          {!allRead && (
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={markAllAsRead}
+                className="bg-green-800 text-white px-4 py-2 rounded"
+                 name='Mark All as Read'
+              >
+                Mark All as Read
+              </button>
+            </div>
+          )}
           <div className="absolute top-2 right-2 px-4 py-2 rounded">
-            <FaTimes size={22} onClick={closeModal} /> 
+            <FaTimes size={22} onClick={closeModal}  name='Close' data-testid="close-icon" /> 
           </div >
-         
         </div>
       </Modal>
     </div>
