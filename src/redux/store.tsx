@@ -13,6 +13,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
 import counterReducer from "./counter";
 import userReducer from "./userSlice";
+import chatReducer from "./chatSlice";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 
 const authPersistConfig = {
@@ -28,6 +29,7 @@ const authPersistConfig = {
 };
 
 const rootReducer = combineReducers({
+  chat: chatReducer,
   counter: counterReducer,
   auth: persistReducer(authPersistConfig, authReducer),
   user: userReducer,
