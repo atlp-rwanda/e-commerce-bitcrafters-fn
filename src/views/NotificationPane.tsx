@@ -23,7 +23,6 @@ const NotificationPane: React.FC<ModalProps> = ({ open, onClose }) => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const client = axiosClient();
   const notify = (message: string) => toast(message);
 
@@ -31,8 +30,8 @@ const NotificationPane: React.FC<ModalProps> = ({ open, onClose }) => {
     setIsLoading(true);
     try {
       const response = await client.get(`/notifications?page=${pageNumber}`);
-      setNotifications(response.data.notifications);
-      setTotalPages(response.data.pagination.totalPages);
+      setNotifications(response.data.notifications || []);
+      setTotalPages(response.data.pagination.totalPages || 1);
     } catch (err: any) {
       notify("failed to fetch notifications");
     } finally {
@@ -41,14 +40,10 @@ const NotificationPane: React.FC<ModalProps> = ({ open, onClose }) => {
   };
 
   useEffect(() => {
-    fetchNotifications(page);
-  }, [page]);
-  console.log(open)
-  useEffect(() => {
     if (open) {
-      setIsModalOpen(true);
+      fetchNotifications(page);
     }
-  }, [open]);
+  }, [open, page]);
 
   const handleNextPage = () => {
     if (page < totalPages) {
@@ -63,14 +58,13 @@ const NotificationPane: React.FC<ModalProps> = ({ open, onClose }) => {
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);
     onClose()
   };
 
   return (
     <div className="relative p-4">
       <Modal
-        isOpen={isModalOpen}
+        isOpen={open}
         onRequestClose={closeModal}
         contentLabel="Notifications"
         className="absolute top-0 left-0 right-0 bottom-0 m-auto bg-white p-8 rounded shadow-lg w-3/4 h-3/4 max-h-full overflow-auto"

@@ -82,6 +82,33 @@ describe("TwoFactorAuth view", () => {
     expect(inputs[0]).toHaveFocus();
   });
 
+  test("should verify OTP and handle success", async () => {
+    mockPost.mockResolvedValueOnce({
+      status: 200,
+      data: { jwt: "test-jwt" },
+    });
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={[{ state: { email: "test@example.com" } }]}
+        >
+          <TwoFactorAuth />
+        </MemoryRouter>
+      </Provider>,
+    );
+
+    const inputs = screen.getAllByRole("textbox");
+    fireEvent.change(inputs[0], { target: { value: "1" } });
+    fireEvent.change(inputs[1], { target: { value: "2" } });
+    fireEvent.change(inputs[2], { target: { value: "3" } });
+    fireEvent.change(inputs[3], { target: { value: "4" } });
+
+    fireEvent.click(screen.getByText("Continue"));
+
+    await waitFor(() => expect(mockPost).toHaveBeenCalledTimes(1));
+  });
+
   test("should handle OTP verification failure", async () => {
     mockPost.mockRejectedValueOnce({
       response: { data: { message: "Invalid OTP" } },

@@ -76,8 +76,8 @@ const TwoFactorAuth: React.FC = () => {
         dispatch(setAuthToken(token));
         dispatch(setAuthRole("seller"));
         dispatch(setIsLoggedIn(true));
-        dispatch(setAuthUserId(decodedToken.id));
-        navigate("/seller/addProduct");
+       dispatch(setAuthUserId(decodedToken.id));
+        navigate("/seller");
         notify("Login successful");
       }
     } catch (err: any) {
