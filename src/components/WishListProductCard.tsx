@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { FaRegHeart, FaRegEye } from "react-icons/fa";
+import {FaRegEye } from "react-icons/fa";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useNavigate } from 'react-router-dom';
 import { IoStar } from "react-icons/io5";
 import { FaRegStar } from "react-icons/fa6";
 import axiosClient from '../hooks/AxiosInstance';
 import { ToastContainer, toast } from 'react-toastify';
+import { MdDelete } from 'react-icons/md';
 
 // Modal.setAppElement('#root');
 
@@ -22,6 +23,7 @@ interface InputProps {
   price?: string | any;
   discount?: string | any;
   discription?: string | any;
+  deleteItem?: (event: any) => void;
 }
 
 const MainProductCard: React.FC<InputProps> = (props) => {
@@ -30,7 +32,6 @@ const MainProductCard: React.FC<InputProps> = (props) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const notify = (message: string) => toast(message);
-  const [isLoading, setIsLoading] = useState(false);
 
 
   const openModal = () => setModalIsOpen(true);
@@ -56,24 +57,7 @@ const MainProductCard: React.FC<InputProps> = (props) => {
       }
     }
   };
-  const addProductToWishList = async (productId: string) => {
-    setIsLoading(true);
-    try {
-      await client.post(`/wishList/products/${productId}`);
-      notify("Product added to WishList successfully!");
 
-    } catch (error: any) {
-      if (error.response) {
-        toast(`${error.response.data.message}`);
-      } else if (error.request) {
-        notify("No response received from the server.");
-      } else {
-        notify("Error setting up request.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
   const handleViewItemClick = (productId: string) => {
     navigate(`/product-detail/${productId}`);
   };
@@ -91,19 +75,17 @@ const MainProductCard: React.FC<InputProps> = (props) => {
         <div className='absolute rounded hidden group-hover:flex flex-col items-center justify-center gap-5 w-full h-full' style={{ backgroundColor: "rgba(0,0,0,.5)" }}>
           <div className="links flex gap-2 items-center justify-center w-full">
             <div className='bg-white hover:bg-orange rounded-full p-2 group flex items-center justify-center transition-all'>
-              <button 
-                onClick={() => addProductToWishList(props.id)} 
-                disabled={isLoading} 
-                className='flex items-center justify-center transition-all'
-              >
-                <FaRegHeart 
-                  className='text-xl text-black hover:text-white transition-all'
-                  data-testid="wishlist-icon"
-                />
-              </button>
+              <div
+          className="flex items-center gap-1 p-1 rounded-sm border border-gray cursor-pointer"
+          onClick={props.deleteItem}
+          data-testid="delete-icon"
+        >
+          <MdDelete className="text-red-500" />
+        </div>
+
             </div>
             <div className='bg-white hover:bg-orange rounded-full p-2 group flex items-center justify-center transition-all'>
-              <button onClick={openModal}>
+              <button onClick={openModal} data-testid="shopping-cart-icon">
                 <AiOutlineShoppingCart className='text-xl text-black hover:text-white ml-[-2px] transition-all' />
               </button>
             </div>

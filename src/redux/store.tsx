@@ -15,6 +15,7 @@ import counterReducer from "./counter";
 import userReducer from "./userSlice";
 import chatReducer from "./chatSlice";
 import cartReducer from "./cart"
+import wishListReducer from "./wishListSlice"
 import notificationReducer from "./notificationSlice";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   user: userReducer,
   cart:cartReducer,
+  wishList: wishListReducer,
   notification: notificationReducer,
 });
 

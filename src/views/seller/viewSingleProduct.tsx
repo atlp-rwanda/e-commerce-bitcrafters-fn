@@ -3,7 +3,7 @@ import axiosClient from "../../hooks/AxiosInstance";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
-import { FaStar, FaRegStar, FaShoppingCart } from "react-icons/fa";
+import { FaStar, FaRegStar, FaShoppingCart, FaRegHeart } from "react-icons/fa";
 import Modal from "react-modal";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -86,6 +86,20 @@ const ViewSingleProduct: React.FC = () => {
       }
     }
   };
+  const addProductToWishList = async (productId: string) => {
+    try {
+      await client.post(`/wishList/products/${productId}`);
+      notify("Product added to WishList successfully!");
+    } catch (error: any) {
+      if (error.response) {
+        toast(`${error.response.data.message}`);
+      } else if (error.request) {
+        notify("No response received from the server.");
+      } else {
+        notify("Error setting up request.");
+      }
+    }
+  };
 
   const renderStars = (rating: number) => {
     const stars = [];
@@ -141,6 +155,12 @@ const ViewSingleProduct: React.FC = () => {
               onClick={openModal}
             >
               <FaShoppingCart className="mr-2" /> Add to Cart
+            </button>
+            <button
+              className="m-4 px-4 py-2 bg-white text-black border border-black rounded flex items-center hover:bg-gray-100"
+              onClick={() => addProductToWishList(product.id)}
+            >
+              <FaRegHeart className="mr-2"  data-testid="wishlist-icon"/> Add to wishList
             </button>
           </div>
         </div>
