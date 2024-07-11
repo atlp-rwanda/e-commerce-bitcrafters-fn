@@ -14,6 +14,7 @@ import authReducer from "./authSlice";
 import counterReducer from "./counter";
 import userReducer from "./userSlice";
 import chatReducer from "./chatSlice";
+import cartReducer from "./cart"
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 
 const authPersistConfig = {
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   counter: counterReducer,
   auth: persistReducer(authPersistConfig, authReducer),
   user: userReducer,
+  cart:cartReducer
 });
 
 const store = configureStore({

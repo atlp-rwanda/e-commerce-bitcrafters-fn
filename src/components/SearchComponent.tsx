@@ -58,7 +58,7 @@ const SearchComponent: React.FC<SearchProps> = (props) => {
     <div className="w-[90%] phone:w-[80%] h-[75%] phone:h-[70%] m-auto relative p-5 bg-gray my-5 rounded flex flex-col justify-between mt-10 transition-all">
       <p className='font-semibold text-center text-base  phone:text-2xl my-2'>Search Here</p>
       <IoClose className="text-xl text-black align-baseline self-end absolute right-5 top-5 rounded-full" onClick={props.hideSearch}/>
-      <div className='flex flex-wrap gap- mx-auto w-full bg-b lue-300 items-center'>
+      <div className='flex flex-wrap gap- mx-auto w-full  items-center'>
         <div className='m- w-[40%] phone:w-[30%] '>
           <p className='text-xs phone:text-sm'>Name or category</p>
           <div className={'input border border-gray_100 bg-white my-2 rounded-sm w-full flex  items-center'} >
@@ -108,7 +108,7 @@ const SearchComponent: React.FC<SearchProps> = (props) => {
           <div>Loading...</div>
         ) : searchedProducts.length > 0 ? (
           searchedProducts.map((product: any, index: any) => (
-            <Link to={`/products/${product.id}`} key={index} className="flex items-center justify-between my-2 border-b border-gray pb-2 w-[80%] mx-auto hover:bbg-gray">
+            <Link to={`/products/${product.id}`} key={index} className="flex items-center justify-between tablet:justify-start gap-5 my-2 border-b border-gray pb-2 w-[80%] mx-auto hover:bbg-gray">
               <img className="w-16 h-16 object-cover rounded-sm" src={product.images[0]} alt="" />
              
               <div className='flex flex-col phone:flex-row gap-1 phone:gap-5'>

@@ -23,6 +23,8 @@ import SingleProduct from "../views/SingleProduct";
 import ViewProducts from "../views/seller/viewProduct";
 import SellerDashLayout from "../layouts/SellerDashLayout";
 import ViewSingleProduct from "../views/seller/viewSingleProduct";
+import UserCart from "../views/UserCart";
+import CheckoutPage from "../views/CheckoutPage";
 
 const Routers: React.FC = () => {
   return (
@@ -33,6 +35,8 @@ const Routers: React.FC = () => {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/request" element={<RequestPasswordChange />} />
+          <Route path="/cart" element={<UserCart />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route
             path="/users/reset-password/:token"
             element={<ResetPassword />}

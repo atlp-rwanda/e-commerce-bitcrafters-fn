@@ -41,10 +41,12 @@ const Navbar: React.FC<NavbarProps> = (props) => {
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
   };
+  const { count } = useSelector((state: any) => state.cart);
   const [burgerShown, setIsBurgerShown] = useState(props.burgerShown || false);
   const [showSearch, setShowSearch] = useState(props.showSearch || false);
   const { unreadCount } = useNotifications();
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+  
   return (
     <div className=" w-full flex flex-col  ">
       <nav className="navbar-container w-full border-b-1 p-8 flex-between space-x-2 border-b-[1px] border-gray_100">
@@ -92,10 +94,13 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               </Link>
             </li>
             <li>
-              <Link to="" className="text-lg">
-                <IoCartOutline size={24} />
-              </Link>
-            </li>
+            <Link to="/cart" className="text-lg relative">
+              {" "}
+              <IoCartOutline size={24} />
+    {count >0 && <p className="bg-red-500 p-1 text-1 flex items-center justify-center text-white absolute rounded-full top-[-3px] right-[-3px] text-[10px] h-[13px] w-[13px]">{count}</p>}
+    
+            </Link>
+          </li>
             <li>
               <Link to="" className="text-lg">
                 <Badge badgeContent={unreadCount} color="primary">
@@ -219,14 +224,18 @@ const Navbar: React.FC<NavbarProps> = (props) => {
                   </div>
                 </Link>
               </li>
-              <li className="rounded-sm hover:bg-white transition-all">
-                <Link to="" className="text-lg">
-                  <div className="flex-between justify-center space-x-1 p-2">
-                    <IoCartOutline className="text-gray_100" />
-                    <p className="text-xs text-gray_100">My cart</p>
+              <li className=" rounded-sm hover:bg-white transition-all">
+              <Link to="/cart" className="text-lg">
+                <div className="flex-between justify-center space-x-1 p-2 ">
+                  <div className="relative">
+                  <IoCartOutline className="text-gray_100" />
+                  {count >0 && <p className="bg-red-500 p-1 text-1 flex items-center justify-center text-white absolute rounded-full top-[-3px] right-[-3px] text-[8px] h-[13px] w-[13px]">{count}</p>}
                   </div>
-                </Link>
-              </li>
+
+                  <p className="text-xs text-gray_100">My cart</p>
+                </div>
+              </Link>
+            </li>
 
               <li className="rounded-sm hover:bg-white transition-all">
                 <Link to="" className="text-lg">

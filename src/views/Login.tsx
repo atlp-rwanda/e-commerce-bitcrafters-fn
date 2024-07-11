@@ -92,7 +92,7 @@ const Login: React.FC = () => {
             if (userRole === "admin") {
               navigate("/admin");
             } else if (userRole === "buyer") {
-              navigate("/buyer");
+              navigate("/");
             } else {
               navigate("/");
             }
