@@ -37,6 +37,7 @@
     moduleNameMapper: {
       "^.+\\.svg$": "jest-svg-transformer",
       "^.+\\.(css|less|scss)$": "identity-obj-proxy",
+       '\\.(png|jpg|webp|ttf|woff|woff2|mp4)$': '<rootDir>/src/test/__mocks__/fileMock.js'
     },
     testMatch: [
       "**/__tests__/**/*.+(ts|tsx|js)",
