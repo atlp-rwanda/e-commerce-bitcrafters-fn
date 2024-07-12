@@ -5,13 +5,12 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import configureStore from "redux-mock-store";
 import * as axiosHook from "../../hooks/AxiosInstance";
-import * as reactRedux from 'react-redux';
+import * as reactRedux from "react-redux";
 import * as reactRouterDom from "react-router-dom";
 import { toast } from "react-toastify";
 
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
+jest.mock("react-redux", () => ({
+  ...jest.requireActual("react-redux"),
   useSelector: jest.fn(),
   useDispatch: () => jest.fn(),
 }));
@@ -48,23 +47,25 @@ jest.mock("react-loader-spinner", () => ({
 
 const mockStore = configureStore([]);
 
-describe('UserCart Component', () => {
-  let store:any;
-  let mockAxiosGet:any;
+describe("UserCart Component", () => {
+  let store: any;
+  let mockAxiosGet: any;
   let mockUseSelector;
   let mockNavigate: jest.Mock;
 
   beforeEach(() => {
     store = mockStore({
       cart: { count: 2 },
-      auth: { authToken: 'mock-token' },
+      auth: { authToken: "mock-token" },
     });
 
     mockAxiosGet = jest.fn();
     (axiosHook.default as jest.Mock).mockReturnValue({ get: mockAxiosGet });
 
-    mockUseSelector = jest.spyOn(reactRedux, 'useSelector');
-    mockUseSelector.mockImplementation(selector => selector(store.getState()));
+    mockUseSelector = jest.spyOn(reactRedux, "useSelector");
+    mockUseSelector.mockImplementation((selector) =>
+      selector(store.getState()),
+    );
 
     jest.useFakeTimers();
     mockNavigate = jest.fn();
@@ -76,8 +77,7 @@ describe('UserCart Component', () => {
   });
 
   it("renders loading state initially", async () => {
-
-    mockAxiosGet.mockReturnValue(new Promise(() => {})); 
+    mockAxiosGet.mockReturnValue(new Promise(() => {}));
 
     render(
       <Provider store={store}>
@@ -111,7 +111,6 @@ describe('UserCart Component', () => {
   });
 
   it("renders cart items when present", async () => {
-
     const mockCartData = {
       cart: {
         items: [
@@ -149,16 +148,18 @@ describe('UserCart Component', () => {
     });
   });
 
-  it('handles error when fetching cart fails', async () => {
-    const errorMessage = 'Error fetching cart';
-    mockAxiosGet.mockRejectedValue({ response: { data: { message: errorMessage } } });
+  it("handles error when fetching cart fails", async () => {
+    const errorMessage = "Error fetching cart";
+    mockAxiosGet.mockRejectedValue({
+      response: { data: { message: errorMessage } },
+    });
 
     render(
       <Provider store={store}>
         <BrowserRouter>
           <UserCart />
         </BrowserRouter>
-      </Provider>
+      </Provider>,
     );
 
     await waitFor(() => {
@@ -166,7 +167,7 @@ describe('UserCart Component', () => {
     });
   });
 
-  it('handles error when fetching cart fails without response', async () => {
+  it("handles error when fetching cart fails without response", async () => {
     mockAxiosGet.mockRejectedValue(new Error());
 
     render(
@@ -174,7 +175,7 @@ describe('UserCart Component', () => {
         <BrowserRouter>
           <UserCart />
         </BrowserRouter>
-      </Provider>
+      </Provider>,
     );
 
     await waitFor(() => {
@@ -193,19 +194,27 @@ describe('UserCart Component', () => {
         <BrowserRouter>
           <UserCart />
         </BrowserRouter>
-      </Provider>
+      </Provider>,
     );
 
     await waitFor(() => {
-      fireEvent.click(screen.getByText('Go Shopping'));
-      expect(mockNavigate).toHaveBeenCalledWith('/');
+      fireEvent.click(screen.getByText("Go Shopping"));
+      expect(mockNavigate).toHaveBeenCalledWith("/");
     });
   });
 
   it('navigates to checkout when "Checkout" button is clicked', async () => {
     const mockCartData = {
       cart: {
-        items: [{ productId: '1', name: 'Test Product', price: 100, quantity: 1, images: ['test.jpg'] }],
+        items: [
+          {
+            productId: "1",
+            name: "Test Product",
+            price: 100,
+            quantity: 1,
+            images: ["test.jpg"],
+          },
+        ],
         totalQuantity: 1,
         totalPrice: 100,
       },
@@ -221,19 +230,27 @@ describe('UserCart Component', () => {
         <BrowserRouter>
           <UserCart />
         </BrowserRouter>
-      </Provider>
+      </Provider>,
     );
 
     await waitFor(() => {
-      fireEvent.click(screen.getByText('Checkout'));
-      expect(mockNavigate).toHaveBeenCalledWith('/checkout');
+      fireEvent.click(screen.getByText("Checkout"));
+      expect(mockNavigate).toHaveBeenCalledWith("/checkout");
     });
   });
 
-  it('renders CartProductCard with correct props', async () => {
+  it("renders CartProductCard with correct props", async () => {
     const mockCartData = {
       cart: {
-        items: [{ productId: '1', name: 'Test Product', price: 100, quantity: 17, images: ['test.jpg'] }],
+        items: [
+          {
+            productId: "1",
+            name: "Test Product",
+            price: 100,
+            quantity: 17,
+            images: ["test.jpg"],
+          },
+        ],
         totalQuantity: 13,
         totalPrice: 1000,
       },
@@ -249,16 +266,213 @@ describe('UserCart Component', () => {
         <BrowserRouter>
           <UserCart />
         </BrowserRouter>
-      </Provider>
+      </Provider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Test Product')).toBeInTheDocument();
-      expect(screen.getByText('13')).toBeInTheDocument();
-      expect(screen.getByText('Rwf 1000')).toBeInTheDocument();
+      expect(screen.getByText("Test Product")).toBeInTheDocument();
+      expect(screen.getByText("13")).toBeInTheDocument();
+      expect(screen.getByText("Rwf 1000")).toBeInTheDocument();
+    });
+  });
+
+  it("deletes item when delete button is clicked", async () => {
+    const mockCartData = {
+      cart: {
+        items: [
+          {
+            productId: "1",
+            name: "Test Product",
+            price: 100,
+            quantity: 1,
+            images: ["test.jpg"],
+          },
+        ],
+        totalQuantity: 1,
+        totalPrice: 100,
+      },
+    };
+
+    mockAxiosGet.mockResolvedValueOnce({
+      status: 200,
+      data: mockCartData,
     });
 
+    const mockDelete = jest.fn().mockResolvedValue({
+      status: 200,
+      data: { message: "Item deleted from cart" },
+    });
 
+    (axiosHook.default as jest.Mock).mockReturnValue({
+      get: mockAxiosGet,
+      delete: mockDelete,
+    });
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UserCart />
+        </BrowserRouter>
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      const deleteButton = screen.getByText("Delete");
+      fireEvent.click(deleteButton);
+    });
+
+    expect(mockDelete).toHaveBeenCalledWith("/cart/products/1");
+    expect(toast).toHaveBeenCalledWith("Item deleted from cart");
+    expect(mockAxiosGet).toHaveBeenCalledTimes(2);
+  });
+
+  it("handles error when deleting item fails with response", async () => {
+    const mockCartData = {
+      cart: {
+        items: [
+          {
+            productId: "1",
+            name: "Test Product",
+            price: 100,
+            quantity: 1,
+            images: ["test.jpg"],
+          },
+        ],
+        totalQuantity: 1,
+        totalPrice: 100,
+      },
+    };
+
+    mockAxiosGet.mockResolvedValueOnce({
+      status: 200,
+      data: mockCartData,
+    });
+
+    const mockDelete = jest.fn().mockRejectedValue({
+      response: {
+        data: {
+          message: "Failed to remove item from cart",
+        },
+      },
+    });
+
+    (axiosHook.default as jest.Mock).mockReturnValue({
+      get: mockAxiosGet,
+      delete: mockDelete,
+    });
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UserCart />
+        </BrowserRouter>
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      const deleteButton = screen.getByText("Delete");
+      fireEvent.click(deleteButton);
+    });
+
+    expect(mockDelete).toHaveBeenCalledWith("/cart/products/1");
+    expect(toast).toHaveBeenCalledWith("Failed to remove item from cart");
+  });
+
+  it("handles error when deleting item fails without response", async () => {
+    const mockCartData = {
+      cart: {
+        items: [
+          {
+            productId: "1",
+            name: "Test Product",
+            price: 100,
+            quantity: 1,
+            images: ["test.jpg"],
+          },
+        ],
+        totalQuantity: 1,
+        totalPrice: 100,
+      },
+    };
+
+    mockAxiosGet.mockResolvedValueOnce({
+      status: 200,
+      data: mockCartData,
+    });
+
+    const mockDelete = jest.fn().mockRejectedValue(new Error("Network error"));
+
+    (axiosHook.default as jest.Mock).mockReturnValue({
+      get: mockAxiosGet,
+      delete: mockDelete,
+    });
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UserCart />
+        </BrowserRouter>
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      const deleteButton = screen.getByText("Delete");
+      fireEvent.click(deleteButton);
+    });
+
+    expect(mockDelete).toHaveBeenCalledWith("/cart/products/1");
+    expect(toast).toHaveBeenCalledWith("Failed to delete Item");
+  });
+
+  it("opens and closes update modal", async () => {
+    const mockCartData = {
+      cart: {
+        items: [
+          {
+            productId: "1",
+            name: "Test Product",
+            price: 100,
+            quantity: 1,
+            images: ["test.jpg"],
+          },
+        ],
+        totalQuantity: 1,
+        totalPrice: 100,
+      },
+    };
+
+    mockAxiosGet.mockResolvedValueOnce({
+      status: 200,
+      data: mockCartData,
+    });
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UserCart />
+        </BrowserRouter>
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("update-quantity-button")).toBeInTheDocument();
+    });
+
+    // Click the update button
+    fireEvent.click(screen.getByTestId("update-quantity-button"));
+
+    // Check if modal is open
+    await waitFor(() => {
+      expect(screen.getByText("Update Quantity")).toBeInTheDocument();
+    });
+
+    // Click the cancel button
+    const cancelButton = await screen.findByTestId("modal-cancel-button");
+    fireEvent.click(cancelButton);
+
+    // Check if modal is closed
+    await waitFor(() => {
+      expect(screen.queryByText("Update Quantity")).not.toBeInTheDocument();
+    });
   });
 });
-
