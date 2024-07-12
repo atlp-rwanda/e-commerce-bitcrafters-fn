@@ -24,7 +24,9 @@ import ViewProducts from "../views/seller/viewProduct";
 import SellerDashLayout from "../layouts/SellerDashLayout";
 import ViewSingleProduct from "../views/seller/viewSingleProduct";
 import UserCart from "../views/UserCart";
-import CheckoutPage from "../views/CheckoutPage";
+import Checkout from "../views/checkout";
+import XMobileMoney from "../views/XMobileMoney";
+import XCreditCard from "../views/XCreditCard";
 
 const Routers: React.FC = () => {
   return (
@@ -36,7 +38,7 @@ const Routers: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/request" element={<RequestPasswordChange />} />
           <Route path="/cart" element={<UserCart />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route
             path="/users/reset-password/:token"
             element={<ResetPassword />}
@@ -50,13 +52,18 @@ const Routers: React.FC = () => {
           <Route path="/invalid-token" element={<InvalidToken />} />
           <Route path="/verify-otp" element={<TwoFactorAuth />} />
           <Route path="/view-edit-profile" element={<Profile />} />
+          <Route path="/mobileMoney" element={<XMobileMoney />} />
+          <Route path="/creditCard" element={<XCreditCard />} />
         </Route>
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/admin" element={<DashLayout />}>
             <Route index element={<UsersTable />} />
             <Route path="/admin/users" element={<UsersTable />} />
           </Route>
-          <Route path="/users/reset-password/:token" element={<ResetPassword />} />      
+          <Route
+            path="/users/reset-password/:token"
+            element={<ResetPassword />}
+          />
         </Route>
         <Route element={<ProtectedRoute requiredRole="seller" />}>
           <Route path="/seller" element={<SellerDashLayout />}>
@@ -67,11 +74,14 @@ const Routers: React.FC = () => {
         </Route>
         <Route element={<ProtectedRoute requiredRole="buyer" />}>
           <Route path="/buyer" element={<Layout />}>
-          <Route index element={<Home />} />
+            <Route index element={<Home />} />
           </Route>
         </Route>
         <Route path="/*" element={<ErrorPage />} />
-        <Route path="/product-detail/:productId" Component={ViewSingleProduct} />
+        <Route
+          path="/product-detail/:productId"
+          Component={ViewSingleProduct}
+        />
       </Routes>
     </BrowserRouter>
   );

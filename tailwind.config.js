@@ -19,7 +19,7 @@ export default {
         "customBlue-hover": "#0563c1",
         customBlue: "#1976D2",
         customBlueBg: "rgba(25, 118, 210, 0.1)", // 30% opacity
-        customGreen: "#4CAF50",
+        customGreen: "#1FDD22",
         customGreenBg: "rgba(76, 175, 80, 0.1)",
         customRed: "#FF6347",
         dashColor: "#F3F2F0",
