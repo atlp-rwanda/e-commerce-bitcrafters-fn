@@ -17,9 +17,7 @@ import UsersTable from "../views/admin/UsersTable";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Profile from "../views/UserProfile";
 import AddProductForm from "../views/seller/AddProductForm";
-// import SellerLayout from "../layouts/SellerLayout";
 import SingleProduct from "../views/SingleProduct";
-// import SellerLayout from "../layouts/SellerLayout";
 import ViewProducts from "../views/seller/viewProduct";
 import SellerDashLayout from "../layouts/SellerDashLayout";
 import ViewSingleProduct from "../views/seller/viewSingleProduct";
@@ -27,6 +25,7 @@ import UserCart from "../views/UserCart";
 import Checkout from "../views/checkout";
 import XMobileMoney from "../views/XMobileMoney";
 import XCreditCard from "../views/XCreditCard";
+import UpdateProductForm from "../views/seller/UpdateProductForm";
 
 const Routers: React.FC = () => {
   return (
@@ -70,6 +69,7 @@ const Routers: React.FC = () => {
             <Route index element={<ViewProducts />} />
             <Route path="/seller/products" element={<ViewProducts />} />
             <Route path="/seller/addProduct" element={<AddProductForm />} />
+            <Route path="/seller/updateProduct/:productId" element={<UpdateProductForm/>} />
           </Route>
         </Route>
         <Route element={<ProtectedRoute requiredRole="buyer" />}>

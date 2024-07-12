@@ -229,12 +229,14 @@ const ViewProducts = () => {
                               <FaEye className="text-lg" />
                             </button>
                           </Link>
-                          <button
-                            aria-label="edit"
-                            className="bg-view_more text-white px-2 py-1 rounded flex items-center justify-center"
-                          >
-                            <FaEdit className="text-lg" />
-                          </button>
+                          <Link to= {`/seller/updateProduct/${product.id}`}>
+                            <button
+                              aria-label="edit"
+                              className="bg-view_more text-white px-2 py-1 rounded flex items-center justify-center"
+                            >
+                              <FaEdit className="text-lg" />
+                            </button>
+                          </Link>
                           <button
                             aria-label="delete"
                             className="bg-red-500 text-white px-2 py-1 rounded flex items-center justify-center"
