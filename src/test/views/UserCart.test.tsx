@@ -475,4 +475,146 @@ describe("UserCart Component", () => {
       expect(screen.queryByText("Update Quantity")).not.toBeInTheDocument();
     });
   });
+
+  it('clears the cart when "Clear Cart" button is clicked', async () => {
+  const clearCartMessage = "Cart cleared successfully";
+  const mockCartData = {
+    cart: {
+      items: [
+        {
+          productId: "1",
+          name: "Test Product",
+          price: 100,
+          quantity: 2,
+          images: ["test-image.jpg"],
+        },
+      ],
+      totalQuantity: 2,
+      totalPrice: 200,
+    },
+  };
+
+  mockAxiosGet.mockResolvedValueOnce({
+    status: 200,
+    data: mockCartData,
+  });
+
+  const mockAxiosDelete = jest.fn().mockResolvedValue({
+    status: 200,
+    data: { message: clearCartMessage },
+  });
+
+  (axiosHook.default as jest.Mock).mockReturnValue({ get: mockAxiosGet, delete: mockAxiosDelete });
+
+  render(
+    <Provider store={store}>
+      <BrowserRouter>
+        <UserCart />
+      </BrowserRouter>
+    </Provider>,
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText("Test Product")).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Clear Cart'));
+
+  await waitFor(() => {
+    expect(toast).toHaveBeenCalledWith(clearCartMessage);
+    expect(mockAxiosGet).toHaveBeenCalledTimes(2); 
+  });
+});
+it('handles error when clearing cart fails with response message', async () => {
+  const errorMessage = "Error clearing cart";
+  mockAxiosGet.mockResolvedValue({
+    status: 200,
+    data: {
+      cart: {
+        items: [
+          {
+            productId: "1",
+            name: "Test Product",
+            price: 100,
+            quantity: 2,
+            images: ["test-image.jpg"],
+          },
+        ],
+        totalQuantity: 2,
+        totalPrice: 200,
+      },
+    },
+  });
+
+  const mockAxiosDelete = jest.fn().mockRejectedValue({
+    response: { data: { message: errorMessage } },
+  });
+
+  (axiosHook.default as jest.Mock).mockReturnValue({ get: mockAxiosGet, delete: mockAxiosDelete });
+
+  render(
+    <Provider store={store}>
+      <BrowserRouter>
+        <UserCart />
+      </BrowserRouter>
+    </Provider>,
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText("Test Product")).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Clear Cart'));
+
+  await waitFor(() => {
+    expect(mockAxiosDelete).toHaveBeenCalledWith("/cart/clear");
+    expect(toast).toHaveBeenCalledWith(errorMessage);
+  });
+});
+
+it('handles error when clearing cart fails without response message', async () => {
+  const fallbackErrorMessage = "Failed to clear cart";
+  mockAxiosGet.mockResolvedValue({
+    status: 200,
+    data: {
+      cart: {
+        items: [
+          {
+            productId: "1",
+            name: "Test Product",
+            price: 100,
+            quantity: 2,
+            images: ["test-image.jpg"],
+          },
+        ],
+        totalQuantity: 2,
+        totalPrice: 200,
+      },
+    },
+  });
+
+  const mockAxiosDelete = jest.fn().mockRejectedValue(new Error());
+
+  (axiosHook.default as jest.Mock).mockReturnValue({ get: mockAxiosGet, delete: mockAxiosDelete });
+
+  render(
+    <Provider store={store}>
+      <BrowserRouter>
+        <UserCart />
+      </BrowserRouter>
+    </Provider>,
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText("Test Product")).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Clear Cart'));
+
+  await waitFor(() => {
+    expect(mockAxiosDelete).toHaveBeenCalledWith("/cart/clear");
+    expect(toast).toHaveBeenCalledWith(fallbackErrorMessage);
+  });
+});
+
 });
