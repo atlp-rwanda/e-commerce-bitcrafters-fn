@@ -33,6 +33,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const backendUrl = PUBLIC_URL;
@@ -68,6 +69,8 @@ const Login: React.FC = () => {
   });
 
   const handleLogin = async (values: { email: string; password: string }) => {
+    if (isSubmitted) return; 
+    setIsSubmitted(true);
     try {
       setIsLoading(true);
       const response = await client.post(`/users/login`, {
@@ -100,7 +103,6 @@ const Login: React.FC = () => {
         }
       }
     } catch (err: any) {
-      setIsLoading(false);
       notify(err.response ? err.response.data.message : "Login failed");
 
       if (

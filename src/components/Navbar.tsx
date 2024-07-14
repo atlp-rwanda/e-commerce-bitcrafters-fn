@@ -8,8 +8,7 @@ import { CiHeart } from "react-icons/ci";
 import { IoCartOutline } from "react-icons/io5";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { RxAvatar } from "react-icons/rx";
-import { IoMdLogIn, IoMdLogOut } from "react-icons/io";
-import { IoSettingsSharp } from "react-icons/io5";
+import { IoMdLogOut } from "react-icons/io";
 import { IoLocationOutline } from "react-icons/io5";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { IoMdHome } from "react-icons/io";
@@ -86,64 +85,66 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               <CiSearch />
             </div>
           </li>
-          <li>
-            <Link to="/wishList" className="text-lg">
-            <Badge badgeContent={wishListCount} color="primary">
-              <CiHeart size={24}/>
-            </Badge>
-            </Link>
-          </li>
-          <li>
-            <Link to="/cart" className="text-lg relative">
-              {" "}
-              <IoCartOutline size={24} />
-              {count >0 && <p className="bg-red-500 p-1 text-1 flex items-center justify-center text-white absolute rounded-full bottom-[-3px] right-[-3px] text-[8px] h-[13px] w-[13px]">{count}</p>}
-            </Link>
-          </li>
-            <li>
-              <Link to="" className="text-lg">
-                <Badge badgeContent={unreadCount} color="primary">
-                  <IoNotificationsOutline
-                    size={24}
-                    onClick={() => {
-                      setIsModalOpen(true);
-                    }}
-                  />
-                </Badge>
-              </Link>
-            </li>
-            <li>
-              <Link to="/orders" className="text-lg">
-                <IoLocationOutline size={24} />
-              </Link>
-            </li>
-            {isLoggedIn && (
-              <li>
-                <button
-                  data-testid="chat-button"
-                  onClick={toggleChat}
-                  className="text-black p-3 rounded-full"
-                >
-                  <IoChatbubblesOutline size={24} />
-                </button>
-                {isChatOpen && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end items-end z-40">
-                    <div
-                      data-testid="chat-container"
-                      className="bg-white w-full max-w-sm md:max-w-lg h-5/6 rounded shadow-lg p-4 relative overflow-hidden mr-10 mb-10"
-                    >
+          {isLoggedIn && (
+              <>
+                <li>
+                  <Link to="/wishList" className="text-lg">
+                    {" "}
+                    <CiHeart size={24} aria-label="Heart" />
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/cart" className="text-lg relative">
+                    {" "}
+                    <IoCartOutline size={24} aria-label="Cart"/>
+                    {count >0 && <p className="bg-red-500 p-1 text-1 flex items-center justify-center text-white absolute rounded-full bottom-[-3px] right-[-3px] text-[8px] h-[13px] w-[13px]">{count}</p>}
+                  </Link>
+                </li>
+                  <li>
+                    <Link to="" className="text-lg">
+                      <Badge badgeContent={unreadCount} color="primary">
+                        <IoNotificationsOutline
+                          size={24}
+                          onClick={() => {
+                            setIsModalOpen(true);
+                          }}
+                        />
+                      </Badge>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/orders" className="text-lg">
+                      <IoLocationOutline size={24} />
+                    </Link>
+                  </li>
+                
+                  <li>
                       <button
-                        data-testid="close-button"
+                        data-testid="chat-button"
                         onClick={toggleChat}
-                        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                        className="text-black p-3 rounded-full"
                       >
-                        <FaTimes size={24} />
+                        <IoChatbubblesOutline size={24} />
                       </button>
-                      <Chat />
-                    </div>
-                  </div>
-                )}
-              </li>
+                      {isChatOpen && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end items-end z-40">
+                          <div
+                            data-testid="chat-container"
+                            className="bg-white w-full max-w-sm md:max-w-lg h-5/6 rounded shadow-lg p-4 relative overflow-hidden mr-10 mb-10"
+                          >
+                            <button
+                              data-testid="close-button"
+                              onClick={toggleChat}
+                              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                            >
+                              <FaTimes size={24} />
+                            </button>
+                            <Chat />
+                          </div>
+                        </div>
+                      )}
+                    </li>
+              </>
             )}
           </ul>
         </div>
@@ -151,13 +152,13 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
         />
-        <div className="w-[5%] hidden tablet:flex">
+        <div className=" hidden tablet:flex">
           {!isLoggedIn ? (
-            <Link to="/login" className="text-lg">
-              <RxAvatar className="text-2xl" />
+            <Link to="/login" className="flex gap-2 rounded-full bg-black p-3 px-6">
+                <p className="text-white text-sm">Log in</p>
             </Link>
           ) : (
-            <Link to="/view-edit-profile" className="text-sm">
+            <Link to="/view-edit-profile" className="text-sm w-[5%]">
               <RxAvatar className="text-2xl" />
             </Link>
           )}
@@ -167,19 +168,25 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             className="text-xl flex tablet:hidden"
             onClick={() => setShowSearch(!showSearch)}
           />
-          <button
-            onClick={() => setIsBurgerShown(!burgerShown)}
-            className="tablet:hidden"
-          >
-            {!burgerShown ? (
-              <RxHamburgerMenu className="text-3xl" />
-            ) : (
-              <RxCross2 className="text-3xl" />
-            )}
-          </button>
+          {!isLoggedIn ? (
+            <Link to="/login" className="flex gap-2 rounded-full bg-black p-3 px-6 tablet:hidden">
+                <p className="text-white text-sm">Log in</p>
+            </Link>
+          ) : (
+            <button
+              onClick={() => setIsBurgerShown(!burgerShown)}
+              className="tablet:hidden"
+            >
+              {!burgerShown ? (
+                <RxHamburgerMenu className="text-3xl" />
+              ) : (
+                <RxCross2 className="text-3xl" />
+              )}
+            </button>
+          )}
         </div>
 
-        {burgerShown && (
+       {isLoggedIn && burgerShown && (
           <div className="bg-black flex tablet:hidden z-10 absolute w-[80%] tablet:w-[60%] top-[10%] right-[15%] border border-gray_100 rounded-sm">
             <ul className="w-full p-4 space-y-2">
               <li className="bg-gray rounded-sm">
@@ -246,8 +253,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
                   </div>
                 </Link>
               </li>
-              {isLoggedIn && (
-                <li className="flex items-center justify-center space-x-1 p-2 rounded-sm">
+              <li className="flex items-center justify-center space-x-1 p-2 rounded-sm">
                   <button
                     data-testid="chat-button"
                     onClick={toggleChat}
@@ -277,10 +283,9 @@ const Navbar: React.FC<NavbarProps> = (props) => {
                       </div>
                     </div>
                   )}
-                </li>
-              )}
+              </li>
+         
               <li className="rounded-sm hover:bg-white transition-all">
-                {isLoggedIn ? (
                   <Link
                     to="/view-edit-profile"
                     className="text-lg"
@@ -291,20 +296,8 @@ const Navbar: React.FC<NavbarProps> = (props) => {
                       <p className="text-xs text-gray_100">Profile</p>
                     </div>
                   </Link>
-                ) : (
-                  <Link
-                    to="/login"
-                    className="text-lg"
-                    onClick={() => setIsBurgerShown(false)}
-                  >
-                    <div className="flex-between justify-center space-x-1 p-2">
-                      <IoMdLogIn className="text-gray_100" />
-                      <p className="text-xs text-gray_100">Login</p>
-                    </div>
-                  </Link>
-                )}
               </li>
-              {isLoggedIn && (
+
                 <li className="rounded-sm hover:bg-white transition-all">
                   <Link to="/logout" className="text-lg">
                     <div className="flex-between justify-center space-x-1 p-2">
@@ -313,15 +306,6 @@ const Navbar: React.FC<NavbarProps> = (props) => {
                     </div>
                   </Link>
                 </li>
-              )}
-              <li className="rounded-sm hover:bg-white transition-all">
-                <Link to="/settings" className="text-lg">
-                  <div className="flex-between justify-center space-x-1 p-2">
-                    <IoSettingsSharp className="text-gray_100" />
-                    <p className="text-xs text-gray_100">Settings</p>
-                  </div>
-                </Link>
-              </li>
             </ul>
           </div>
         )}

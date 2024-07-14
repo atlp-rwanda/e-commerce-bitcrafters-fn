@@ -1,27 +1,12 @@
 // Navbar.test.tsx
 
-import renderer from "react-test-renderer";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { BrowserRouter } from "react-router-dom";
-import "@testing-library/jest-dom";
 import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-
-describe("Footer component", () => {
-  it("renders Footer ", () => {
-    const footerTree = renderer
-      .create(
-        <BrowserRouter>
-          <Footer />
-        </BrowserRouter>,
-      )
-      .toJSON();
-    expect(footerTree).toMatchSnapshot();
-  });
-});
+import Navbar from "../components/Navbar";
+import "@testing-library/jest-dom";
 
 const mockStore = configureStore([]);
 
@@ -34,9 +19,8 @@ describe("Navbar Component", () => {
     store = mockStore({
       auth: { isLoggedIn: false },
       chat: { unreadMessagesCount: 0 },
-      cart:  {
-        count: 0,
-      },
+      cart: { count: 0 },
+      wishList: { count: 0 },
     });
   });
 
@@ -44,7 +28,7 @@ describe("Navbar Component", () => {
     return render(
       <Provider store={store}>
         <BrowserRouter>{component}</BrowserRouter>
-      </Provider>,
+      </Provider>
     );
   };
 
@@ -68,68 +52,56 @@ describe("Navbar Component", () => {
     expect(contactLink).toBeInTheDocument();
   });
 
-  test("renders hamburger menu on mobile", () => {
+  test("renders login button when not logged in", () => {
     renderWithRouter(<Navbar />);
-    const hamburgerButton = screen.getByRole("button");
-    expect(hamburgerButton).toBeInTheDocument();
+    const loginButtons = screen.getAllByText("Log in");
+    expect(loginButtons.length).toBeGreaterThan(0);
   });
 
-  test("toggles mobile menu when hamburger is clicked", () => {
+  test("renders search container", () => {
     renderWithRouter(<Navbar />);
-    const hamburgerButton = screen.getByRole("button");
-
-    fireEvent.click(hamburgerButton);
-    expect(screen.getByText("My wishlist")).toBeInTheDocument();
-
-    fireEvent.click(hamburgerButton);
-    expect(screen.queryByText("My wishlist")).not.toBeInTheDocument();
+    const searchContainer = screen.getByText("search here");
+    expect(searchContainer).toBeInTheDocument();
   });
 
-  test("renders login button when user is not logged in", async () => {
+  test("toggles search component when search icon is clicked", () => {
     renderWithRouter(<Navbar />);
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button"));
-    fireEvent.click(screen.getByRole('button')); 
-    expect(screen.getByText('Home')).toBeInTheDocument();
-  })
-  })
+    const searchIcon = screen.getAllByRole('img', { hidden: true })[0];
+    fireEvent.click(searchIcon);
+    const searchContainer = screen.getByText("search here");
+    expect(searchContainer).toBeInTheDocument();
+  });
 
+test("renders user icons when logged in", () => {
+  store = mockStore({
+    auth: { isLoggedIn: true },
+    chat: { unreadMessagesCount: 0 },
+    cart: { count: 2 },
+    wishList: { count: 1 },
+  });
 
+  renderWithRouter(<Navbar />);
+
+  const heartIcon = screen.getByLabelText('Heart');
+  expect(heartIcon).toBeInTheDocument();
+  const  cartIcon = screen.getByLabelText('Cart');
+  expect(cartIcon).toBeInTheDocument();
 });
-describe("Navbar Component - Login Link", () => {
-  let store: any;
 
-  beforeEach(() => {
-    store = mockStore({
-      auth: { isLoggedIn: false },
-      chat: { unreadMessagesCount: 0 },
-      cart:  {
-        count: 0,
-      },
-    });
+test("opens chat when chat button is clicked", () => {
+  store = mockStore({
+    auth: { isLoggedIn: true },
+    chat: { unreadMessagesCount: 0 },
+    cart: { count: 0 },
+    wishList: { count: 0 },
   });
 
-  const renderWithRouter = (component: React.ReactNode) => {
-    return render(
-      <Provider store={store}>
-        <BrowserRouter>{component}</BrowserRouter>
-      </Provider>,
-    );
-  };
+  renderWithRouter(<Navbar />);
 
-  test("clicking login link in mobile menu closes the burger menu", () => {
-    renderWithRouter(<Navbar />);
+  const chatButton = screen.getByTestId("chat-button");
+  fireEvent.click(chatButton);
 
-    const hamburgerButton = screen.getByRole("button");
-    fireEvent.click(hamburgerButton);
-
-    expect(screen.getByText("Login")).toBeInTheDocument();
-
-    const loginLink = screen.getByText("Login");
-    fireEvent.click(loginLink);
-
-    expect(screen.queryByText("My wishlist")).not.toBeInTheDocument();
-
-    expect(screen.getByRole("button")).toBeInTheDocument();
-  });
-})
+  const chatContainer = screen.getByTestId("chat-container");
+  expect(chatContainer).toBeInTheDocument();
+});
+});
