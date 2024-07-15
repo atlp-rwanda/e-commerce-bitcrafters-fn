@@ -42,11 +42,12 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     setIsChatOpen(!isChatOpen);
   };
   const { count } = useSelector((state: any) => state.cart);
+  const wishListCount = useSelector((state: any) => state.wishList?.count ?? 0);
   const [burgerShown, setIsBurgerShown] = useState(props.burgerShown || false);
   const [showSearch, setShowSearch] = useState(props.showSearch || false);
   const { unreadCount } = useNotifications();
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
-  
+
   return (
     <div className=" w-full flex flex-col  ">
     <nav className="navbar-container  w-full border-b-1 p-8 flex-between space-x-2 border-b-[1px] border-gray_100">
@@ -86,9 +87,10 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             </div>
           </li>
           <li>
-            <Link to="" className="text-lg">
-              {" "}
+            <Link to="/wishList" className="text-lg">
+            <Badge badgeContent={wishListCount} color="primary">
               <CiHeart size={24}/>
+            </Badge>
             </Link>
           </li>
           <li>
@@ -214,9 +216,11 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               </li>
 
               <li className="rounded-sm hover:bg-white transition-all">
-                <Link to="" className="text-lg">
+                <Link to="/wishList" className="text-lg">
                   <div className="flex-between justify-center space-x-1 p-2">
+                  <Badge badgeContent={wishListCount} color="primary">
                     <CiHeart className="text-gray_100" />
+                  </Badge>
                     <p className="text-xs text-gray_100">My wishlist</p>
                   </div>
                 </Link>
