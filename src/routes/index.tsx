@@ -27,6 +27,8 @@ import XMobileMoney from "../views/XMobileMoney";
 import XCreditCard from "../views/XCreditCard";
 import UpdateProductForm from "../views/seller/UpdateProductForm";
 import UseWishList from "../views/UseWishList";
+import UserOrderTrack from "../views/UserOrderTrack"; 
+import UserOrders from "../views/UserOrders"; 
 
 const Routers: React.FC = () => {
   return (
@@ -40,6 +42,8 @@ const Routers: React.FC = () => {
           <Route path="/cart" element={<UserCart />} />
           <Route path="/wishList" element={<UseWishList />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<UserOrders />} />
+          <Route path="/order/:orderId" element={<UserOrderTrack />} />
           <Route
             path="/users/reset-password/:token"
             element={<ResetPassword />}

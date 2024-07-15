@@ -113,7 +113,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               </Link>
             </li>
             <li>
-              <Link to="" className="text-lg">
+              <Link to="/orders" className="text-lg">
                 <IoLocationOutline size={24} />
               </Link>
             </li>
@@ -239,7 +239,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             </li>
 
               <li className="rounded-sm hover:bg-white transition-all">
-                <Link to="" className="text-lg">
+                <Link to="/orders" className="text-lg">
                   <div className="flex-between justify-center space-x-1 p-2">
                     <IoLocationOutline className="text-gray_100" />
                     <p className="text-xs text-gray_100">My Orders</p>

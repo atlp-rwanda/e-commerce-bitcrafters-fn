@@ -90,7 +90,7 @@ const MainProductCard: React.FC<InputProps> = (props) => {
       <div className="image-container w-full rounded border shadow border-gray group-hover:blur-3 relative hover:scale-[1.03] transition-all">
         <div className='absolute rounded hidden group-hover:flex flex-col items-center justify-center gap-5 w-full h-full' style={{ backgroundColor: "rgba(0,0,0,.5)" }}>
           <div className="links flex gap-2 items-center justify-center w-full">
-            <div className='bg-white hover:bg-orange rounded-full p-2 group flex items-center justify-center transition-all'>
+            <div className='bg-white hover:bg-orange-400 rounded-full p-2 group flex items-center justify-center transition-all'>
               <button 
                 onClick={() => addProductToWishList(props.id)} 
                 disabled={isLoading} 
@@ -102,12 +102,12 @@ const MainProductCard: React.FC<InputProps> = (props) => {
                 />
               </button>
             </div>
-            <div className='bg-white hover:bg-orange rounded-full p-2 group flex items-center justify-center transition-all'>
+            <div className='bg-white hover:bg-orange-400 rounded-full p-2 group flex items-center justify-center transition-all'>
               <button onClick={openModal}>
                 <AiOutlineShoppingCart className='text-xl text-black hover:text-white ml-[-2px] transition-all' />
               </button>
             </div>
-            <div className='bg-white hover:bg-orange rounded-full p-2 group flex items-center justify-center transition-all'>
+            <div className='bg-white hover:bg-orange-400 rounded-full p-2 group flex items-center justify-center transition-all'>
               <button aria-label="view item" onClick={() => handleViewItemClick(props.id)}>
                 <FaRegEye className='text-xl text-black hover:text-white transition-all' />
               </button>
