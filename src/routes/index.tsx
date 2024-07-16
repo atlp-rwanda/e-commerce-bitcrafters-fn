@@ -24,7 +24,8 @@ import ViewSingleProduct from "../views/seller/viewSingleProduct";
 import UserCart from "../views/UserCart";
 import Checkout from "../views/checkout";
 import XMobileMoney from "../views/XMobileMoney";
-import XCreditCard from "../views/XCreditCard";
+import PaymentPage from '../components/StripePayment';
+import ConfirmationPage from '../components/Confirmation';
 import UpdateProductForm from "../views/seller/UpdateProductForm";
 import UseWishList from "../views/UseWishList";
 
@@ -54,7 +55,8 @@ const Routers: React.FC = () => {
           <Route path="/verify-otp" element={<TwoFactorAuth />} />
           <Route path="/view-edit-profile" element={<Profile />} />
           <Route path="/mobileMoney" element={<XMobileMoney />} />
-          <Route path="/creditCard" element={<XCreditCard />} />
+          <Route path="/payment/:orderId" element={<PaymentPage />} />
+          <Route path="/confirmation/:orderId" element={<ConfirmationPage />} />
         </Route>
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/admin" element={<DashLayout />}>

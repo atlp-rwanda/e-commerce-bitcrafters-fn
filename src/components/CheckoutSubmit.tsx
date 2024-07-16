@@ -14,10 +14,6 @@ export interface CheckoutFormValues {
   deliveryDate: string;
   paymentMethod: string;
   mobileMoneyNumber?: string;
-  cardNumber?: string;
-  cardHolderName?: string;
-  expiryDate?: string;
-  cvv?: string;
 }
 
 export const useCheckoutSubmit = () => {
@@ -33,10 +29,6 @@ export const useCheckoutSubmit = () => {
       delete filteredValues.mobileMoneyNumber;
     }
     if (filteredValues.paymentMethod !== "creditCard") {
-      delete filteredValues.cardNumber;
-      delete filteredValues.cardHolderName;
-      delete filteredValues.expiryDate;
-      delete filteredValues.cvv;
     }
     try {
       const response = await axiosClient.post("/checkout", filteredValues);
@@ -47,7 +39,7 @@ export const useCheckoutSubmit = () => {
         if (values.paymentMethod === "mobileMoney") {
           navigate("/mobileMoney");
         } else if (values.paymentMethod === "creditCard") {
-          navigate("/creditCard");
+          navigate("/payment/" + response.data.order.id);
         }
       }, 2000);
     } catch (error) {

@@ -41,33 +41,6 @@ const validationSchema = Yup.object().shape({
       .required("Mobile money number is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
-  cardNumber: Yup.string().when("paymentMethod", {
-    is: "creditCard",
-    then: (schema) => schema
-      .matches(/^[0-9]{16}$/, "Invalid card number")
-      .required("Card number is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  cardHolderName: Yup.string().when("paymentMethod", {
-    is: "creditCard",
-    then: (schema) => schema
-      .required("Card Holder Name is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  expiryDate: Yup.date().when("paymentMethod", {
-    is: "creditCard",
-    then: (schema) =>
-      schema
-        .min(new Date(), "Expiry date must be in the future")
-        .required("Expiry date is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  cvv: Yup.string().when("paymentMethod", {
-    is: "creditCard",
-    then: (schema) => schema
-      .matches(/^[0-9]{3,4}$/, "Invalid CVV").required("CVV is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
 });
 
 const Checkout: React.FC = () => {
@@ -121,11 +94,7 @@ const Checkout: React.FC = () => {
     email: "",
     deliveryDate: "",
     paymentMethod: "",
-    mobileMoneyNumber: undefined,
-    cardNumber: undefined,
-    cardHolderName: undefined,
-    expiryDate: undefined,
-    cvv: undefined,
+    mobileMoneyNumber: undefined
   };
 
   return (
@@ -398,84 +367,6 @@ const Checkout: React.FC = () => {
                           className="text-red-500 text-xs mt-1 text-right"
                         />
                       </div>
-                    )}
-
-                    {values.paymentMethod === "creditCard" && (
-                      <>
-                        <div className=" mb-3">
-                          <div className="flex  mt-[2rem] ">
-                            <label htmlFor="cardNumber" className="block">
-                              Card Number
-                            </label>
-                            <Field
-                              type="text"
-                              id="cardNumber"
-                              name="cardNumber"
-                              className="outline-none p-1 w-1/2 text-main-black-color text-sm rounded-[5px] shadow-[0_0_2px_rgba(0,0,0,0.9)] ml-auto"
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="cardNumber"
-                            component="div"
-                            className="text-red-500 mb-3 text-xs text-right"
-                          />
-                        </div>
-                        <div className=" mb-3">
-                          <div className="flex  mb-3 ">
-                            <label htmlFor="cardHolderName" className="block">
-                              card Holder Name
-                            </label>
-                            <Field
-                              type="text"
-                              id="cardHolderName"
-                              name="cardHolderName"
-                              className="outline-none p-1 w-1/2 text-main-black-color text-sm rounded-[5px] shadow-[0_0_2px_rgba(0,0,0,0.9)] ml-auto"
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="cardHolderName"
-                            component="div"
-                            className="text-red-500 mb-3 text-xs mt-1 text-right"
-                          />
-                        </div>
-                        <div className=" mb-3">
-                          <div className="flex mb-3">
-                            <label htmlFor="expiryDate" className="block">
-                              Expiry Date
-                            </label>
-                            <Field
-                              type="date"
-                              id="expiryDate"
-                              name="expiryDate"
-                              placeholder="MM/YY"
-                              className="outline-none p-1 w-1/2 text-main-black-color text-sm rounded-[5px] shadow-[0_0_2px_rgba(0,0,0,0.9)] ml-auto"
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="expiryDate"
-                            component="div"
-                            className="text-red-500 mb-3 text-xs mt-1 text-right"
-                          />
-                        </div>
-                        <div className=" mb-3">
-                          <div className="flex">
-                            <label htmlFor="cvv" className="block">
-                              CVV Code
-                            </label>
-                            <Field
-                              type="text"
-                              id="cvv"
-                              name="cvv"
-                              className="outline-none p-1 w-1/2 text-main-black-color text-sm rounded-[5px] shadow-[0_0_2px_rgba(0,0,0,0.9)] ml-auto"
-                            />
-                          </div>
-                          <ErrorMessage
-                            name="cvv"
-                            component="div"
-                            className="text-red-500 text-xs mt-1 text-right"
-                          />
-                        </div>
-                      </>
                     )}
                   </div>
                 </div>
