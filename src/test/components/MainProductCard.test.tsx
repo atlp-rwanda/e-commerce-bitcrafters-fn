@@ -6,6 +6,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import axiosClient from '../../hooks/AxiosInstance';
 import { AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
+import { Provider } from 'react-redux';
+import { store } from '../../redux/store';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -35,12 +37,18 @@ describe('MainProductCard', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the component with correct props', () => {
-    render(
-      <Router>
-        <MainProductCard {...mockProps} />
-      </Router>
+  const renderWithProviders = (ui: React.ReactElement) => {
+    return render(
+      <Provider store={store}>
+        <Router>
+          {ui}
+        </Router>
+      </Provider>
     );
+  };
+
+  it('renders the component with correct props', () => {
+    renderWithProviders(<MainProductCard {...mockProps} />);
 
     expect(screen.getByText('Test Product')).toBeInTheDocument();
     expect(screen.getByText('Rwf 1000')).toBeInTheDocument();
@@ -50,11 +58,7 @@ describe('MainProductCard', () => {
   });
 
   it('opens modal when add to cart button is clicked', () => {
-    render(
-      <Router>
-        <MainProductCard {...mockProps} />
-      </Router>
-    );
+    renderWithProviders(<MainProductCard {...mockProps} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Add to Cart' }));
     expect(screen.getByRole('button', { name: 'Add to Cart' })).toBeInTheDocument();
@@ -64,11 +68,7 @@ describe('MainProductCard', () => {
     const mockPost = jest.fn().mockResolvedValue({});
     mockedAxiosClient.mockReturnValue({ post: mockPost } as unknown as AxiosInstance);
 
-    render(
-      <Router>
-        <MainProductCard {...mockProps} />
-      </Router>
-    );
+    renderWithProviders(<MainProductCard {...mockProps} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Add to Cart' }));
 
@@ -82,14 +82,10 @@ describe('MainProductCard', () => {
 
   it('navigates to product detail page when view item is clicked', async () => {
     const mockNavigate = jest.fn();
-    (require('react-router-dom').useNavigate as jest.Mock).mockReturnValue(mockNavigate);
+   (require('react-router-dom').useNavigate as jest.Mock).mockReturnValue(mockNavigate);
 
-    render(
-      <Router>
-        <MainProductCard {...mockProps} />
-      </Router>
-    );
-    
+    renderWithProviders(<MainProductCard {...mockProps} />);
+
     fireEvent.click(screen.getByLabelText('view item'));
 
     await waitFor(() => {
@@ -98,11 +94,7 @@ describe('MainProductCard', () => {
   });
 
   it('updates quantity when input value changes', () => {
-    render(
-      <Router>
-        <MainProductCard {...mockProps} />
-      </Router>
-    );
+    renderWithProviders(<MainProductCard {...mockProps} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Add to Cart' }));
     const input = screen.getByLabelText('Quantity:') as HTMLInputElement;
@@ -117,11 +109,7 @@ describe('MainProductCard', () => {
     });
     mockedAxiosClient.mockReturnValue({ post: mockPost } as unknown as AxiosInstance);
 
-    render(
-      <Router>
-        <MainProductCard {...mockProps} />
-      </Router>
-    );
+    renderWithProviders(<MainProductCard {...mockProps} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Add to Cart' }));
 
@@ -139,11 +127,7 @@ describe('MainProductCard', () => {
     const mockPost = jest.fn().mockRejectedValue({ request: {} });
     mockedAxiosClient.mockReturnValue({ post: mockPost } as unknown as AxiosInstance);
 
-    render(
-      <Router>
-        <MainProductCard {...mockProps} />
-      </Router>
-    );
+    renderWithProviders(<MainProductCard {...mockProps} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Add to Cart' }));
 
@@ -161,11 +145,7 @@ describe('MainProductCard', () => {
     const mockPost = jest.fn().mockRejectedValue(new Error('Unknown error'));
     mockedAxiosClient.mockReturnValue({ post: mockPost } as unknown as AxiosInstance);
 
-    render(
-      <Router>
-        <MainProductCard {...mockProps} />
-      </Router>
-    );
+    renderWithProviders(<MainProductCard {...mockProps} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Add to Cart' }));
 

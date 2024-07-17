@@ -2,7 +2,7 @@ import Home from "../views/Home";
 import Login from "../views/Login";
 import TwoFactorAuth from "../views/TwoFactorAuth";
 import ErrorPage from "../views/ErroPage";
-import Layout from "../layouts/Layout";
+import Layout, { LoSiLayout } from "../layouts/Layout";
 import ResetPassword from "../views/ChangePassword";
 import RequestPasswordChange from "../views/RequestPasswordChange";
 import AboutPage from "../views/AboutPage";
@@ -30,6 +30,7 @@ import UpdateProductForm from "../views/seller/UpdateProductForm";
 import UseWishList from "../views/UseWishList";
 import UserOrderTrack from "../views/UserOrderTrack"; 
 import UserOrders from "../views/UserOrders"; 
+import PublicRoute,{PrivateRoute} from "../components/PublicRoute";
 
 const Routers: React.FC = () => {
   return (
@@ -38,11 +39,16 @@ const Routers: React.FC = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/request" element={<RequestPasswordChange />} />
+          <Route path="/cart" element={<PrivateRoute />} >
           <Route path="/cart" element={<UserCart />} />
+          </Route>
+          <Route path="/wishList" element={<PrivateRoute />} >
           <Route path="/wishList" element={<UseWishList />} />
+          </Route>
+          <Route path="/checkout" element={<PrivateRoute />} >
           <Route path="/checkout" element={<Checkout />} />
+          </Route>
           <Route path="/orders" element={<UserOrders />} />
           <Route path="/order/:orderId" element={<UserOrderTrack />} />
           <Route
@@ -51,9 +57,10 @@ const Routers: React.FC = () => {
           />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-otp" element={<TwoFactorAuth />} />
-          <Route path="/signup" element={<SignupForm />} />
           <Route path="/users/verify/:token" element={<VerifyEmail />} />
+          <Route path="/email-verified" element={<PublicRoute />} >
           <Route path="/email-verified" element={<EmailVerified />} />
+          </Route>
           <Route path="/products/:productId" element={<SingleProduct />} />
           <Route path="/invalid-token" element={<InvalidToken />} />
           <Route path="/verify-otp" element={<TwoFactorAuth />} />
@@ -61,6 +68,12 @@ const Routers: React.FC = () => {
           <Route path="/mobileMoney" element={<XMobileMoney />} />
           <Route path="/payment/:orderId" element={<PaymentPage />} />
           <Route path="/confirmation/:orderId" element={<ConfirmationPage />} />
+        </Route>
+        <Route element={<PublicRoute/>}>
+          <Route element={<LoSiLayout/>}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignupForm />} />
+          </Route>
         </Route>
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/admin" element={<DashLayout />}>

@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Route Components redirects to home page when logged in on PublicRoute 1`] = `<div />`;
+
+exports[`Route Components redirects to login page and shows toast when not logged in on PrivateRoute 1`] = `<div />`;
+
+exports[`Route Components renders PrivateRoute correctly when logged in 1`] = `<div />`;
+
+exports[`Route Components renders PublicRoute correctly when not logged in 1`] = `<div />`;
