@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  render,
-  fireEvent,
-  screen,
-  act,
-} from "@testing-library/react";
+import { render, fireEvent, screen, act } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
@@ -33,6 +28,7 @@ const AllTheProviders: React.FC<AllTheProvidersProps> = ({
 }) => {
   const store = mockStore({
     auth: { isLoggedIn: true, authToken: "mock-token" },
+    chat: { unreadMessagesCount: 0 },
   });
 
   return (
