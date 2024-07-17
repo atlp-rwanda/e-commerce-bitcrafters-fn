@@ -7,6 +7,7 @@ import { FaStar, FaRegStar, FaShoppingCart, FaRegHeart } from "react-icons/fa";
 import Modal from "react-modal";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import MainProductCard from "../../components/MainProductCard";
 
 interface Review {
   id: string;
@@ -22,6 +23,7 @@ interface Review {
 }
 
 interface Product {
+  collectionId: string;
   id: string;
   name: string;
   category: string;
@@ -39,23 +41,67 @@ interface Product {
   reviews: Review[];
 }
 
+interface SimilarProduct {
+  id: string;
+  images: string[];
+  name: string;
+  price: string;
+  discount: string;
+  description: string;
+  collectionId: string;
+  rating: number;
+}
+
 const ViewSingleProduct: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [similarProducts, setSimilarProducts] = useState<
+    SimilarProduct[] | null
+  >(null);
+  const [isLoadingSimilar, setIsLoadingSimilar] = useState(false);
   const navigate = useNavigate();
   const notify = (message: string) => toast(message);
   const client = axiosClient();
+
+  const fetchSimilarProducts = async (collectionId: string) => {
+    setIsLoadingSimilar(true);
+    try {
+      const response = await client.get("/collections/products", {
+        params: {
+          limit: 1000000,
+          page: 1,
+        },
+      });
+      const allProducts = response.data.products;
+
+      const filteredProducts = allProducts.filter(
+        (p: SimilarProduct) =>
+          p.id !== productId && p.collectionId === collectionId,
+      );
+
+      console.log("Filtered products:", filteredProducts);
+      setSimilarProducts(filteredProducts);
+    } catch (error) {
+    } finally {
+      setIsLoadingSimilar(false);
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await client.get(`/collections/product/${productId}`);
-        setProduct(response.data.item);
+        const fetchedProduct = response.data.item;
+        setProduct(fetchedProduct);
+        if (fetchedProduct.collectionId) {
+          fetchSimilarProducts(fetchedProduct.collectionId);
+        }
       } catch (error) {
-        notify("Error fetching product");
+        // notify("Error fetching product");
       } finally {
         setIsLoading(false);
       }
@@ -113,6 +159,15 @@ const ViewSingleProduct: React.FC = () => {
     return <div className="flex">{stars}</div>;
   };
 
+  const handleImageSelect = (index: number) => {
+    if (product && product.images) {
+      const newImages = [...product.images];
+      [newImages[0], newImages[index]] = [newImages[index], newImages[0]];
+      setProduct({ ...product, images: newImages });
+      setSelectedImageIndex(0);
+    }
+  };
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
@@ -128,20 +183,33 @@ const ViewSingleProduct: React.FC = () => {
         <div className="flex items-center m-4">
           {/* Additional product information or navigation can be added here */}
         </div>
-        <div className="flex flex-col md:flex-row items-center md:items-start md:justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:w-1/2">
-            {product.images && product.images.map((image, index) => (
-              <div key={index} className="h-64 w-full">
-                <img
-                  src={image}
-                  alt={product.name}
-                  className="h-full w-full object-cover rounded-lg"
-                />
-              </div>
-            ))}
+        <div className=" gap-[6%] flex  flex-col md:flex-row items-center md:items-start md:justify-center">
+          <div className="md:w-1/2">
+            <div className="h-64 w-full mb-4">
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                className="h-full w-full object-cover rounded-lg"
+              />
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {product.images.map((image, index) => (
+                <div
+                  key={index}
+                  className={`h-16 w-full cursor-pointer ${index === selectedImageIndex ? "border-2 border-blue-500" : ""}`}
+                  onClick={() => handleImageSelect(index)}
+                >
+                  <img
+                    src={image}
+                    alt={`${product.name} - ${index + 1}`}
+                    className="h-full w-full object-cover rounded-lg"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="m-4 md:m-20 flex-1 w-full max-w-lg">
-            <h1 className="text-3xl font-bold m-6">{product.name}</h1>
+          <div className=" flex-1 w-full max-w-lg">
+            <h1 className="text-3xl font-bold ">{product.name}</h1>
             <p className="text-lg m-4">{renderStars(product.averageRating)}</p>
             <div className="text-md m-4">
               <div className="font-semibold">Price</div> Rwf{product.price}
@@ -166,12 +234,13 @@ const ViewSingleProduct: React.FC = () => {
         </div>
 
         <div className="mt-6">
-          <div className="flex items-center m-4">
-            <div className="border-r-8 border-black h-8 m-3 rounded-full"></div>
+          <div className="flex items-center gap-2">
+            <div className="border-r-8 border-black h-8 my-3 rounded-full"></div>
             <span className="pr-4 text-lg font-semibold">About Seller</span>
           </div>
           <p className="text-md ml-6">
-            <span className="font-semibold">Username:</span> {product.seller.username}
+            <span className="font-semibold">Username:</span>{" "}
+            {product.seller.username}
           </p>
           <p className="text-md ml-6">
             <span className="font-semibold">Email:</span> {product.seller.email}
@@ -179,24 +248,28 @@ const ViewSingleProduct: React.FC = () => {
         </div>
 
         <div className="mt-6">
-          <div className="flex items-center m-4">
-            <div className="border-r-8 border-black h-8 m-3 rounded-full"></div>
+          <div className="flex items-center gap-2">
+            <div className="border-r-8 border-black h-8 my-3 rounded-full"></div>
             <span className="pr-4 text-lg font-semibold">Reviews</span>
           </div>
           {product.reviews.length > 0 ? (
             product.reviews.map((review) => (
-              <div key={review.id} className="border-t border-gray-200 pt-4 mt-4">
+              <div key={review.id} className="border-[2px] rounded-[10px] border-gray_100 pt-4 mt-4">
                 <p className="text-lg">
-                  <span className="font-semibold">Rating:</span> {renderStars(review.rating)}
+                  <span className="font-semibold">Rating:</span>{" "}
+                  {renderStars(review.rating)}
                 </p>
                 <p className="text-lg">
-                  <span className="font-semibold">Feedback:</span> {review.feedback}
+                  <span className="font-semibold">Feedback:</span>{" "}
+                  {review.feedback}
                 </p>
                 <p className="text-lg">
-                  <span className="font-semibold">Buyer:</span> {review.buyer.username}
+                  <span className="font-semibold">Buyer:</span>{" "}
+                  {review.buyer.username}
                 </p>
                 <p className="text-lg">
-                  <span className="font-semibold">Reviewed on:</span> {format(parseISO(review.createdAt), 'MM/dd/yyyy')}
+                  <span className="font-semibold">Reviewed on:</span>{" "}
+                  {format(parseISO(review.createdAt), "MM/dd/yyyy")}
                 </p>
               </div>
             ))
@@ -205,6 +278,38 @@ const ViewSingleProduct: React.FC = () => {
           )}
         </div>
       </div>
+
+      <div className="mt-6 w-full">
+        <div className="flex items-center m-4">
+          <div className="border-r-8 border-black h-8 m-3 rounded-full"></div>
+          <span className="pr-4 text-lg font-semibold">Similar Products</span>
+        </div>
+        {isLoadingSimilar && similarProducts === null ? (
+          <div className="flex justify-center items-center">
+            <p>Loading similar products...</p>
+          </div>
+        ) : similarProducts && similarProducts.length > 0 ? (
+          <div className="px-[2%] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {similarProducts.map((product) => (
+              <MainProductCard
+                key={product.id}
+                id={product.id}
+                Image={product.images[0]}
+                name={product.name}
+                price={product.price}
+                discount={product.discount}
+                discription={product.description}
+                rating={product.rating}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex justify-center items-center">
+            <p>No similar products available at the moment.</p>
+          </div>
+        )}
+      </div>
+
       <Footer />
       <Modal
         isOpen={modalIsOpen}
@@ -221,7 +326,10 @@ const ViewSingleProduct: React.FC = () => {
           }}
           className="flex flex-col gap-4"
         >
-          <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="quantity"
+            className="block text-sm font-medium text-gray-700"
+          >
             Quantity:
           </label>
           <input
@@ -253,5 +361,4 @@ const ViewSingleProduct: React.FC = () => {
     </div>
   );
 };
-
 export default ViewSingleProduct;

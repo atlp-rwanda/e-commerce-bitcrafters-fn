@@ -12,6 +12,7 @@ import { FaArrowRight } from "react-icons/fa6";
 import ServicesSection from "../components/servicesSection.tsx";
 import CollectionCard from "../components/CollectionCard.tsx";
 import axiosClient from "../hooks/AxiosInstance.tsx";
+import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 
 interface Product {
   id: string;
@@ -29,6 +30,11 @@ const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [newArrivalPage, setNewArrivalPage] = useState(1);
   const [featuredPage, setFeaturedPage] = useState(2);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
+  const [recommendedPage, setRecommendedPage] = useState(1);
+  const [hasMoreRecommended, setHasMoreRecommended] = useState(true);
+  const [isLoadingRecommended, setIsLoadingRecommended] = useState(false);
+  const productsPerPage = 8;
   const client = axiosClient();
 
   const fetchNewArrivalProducts = async (page: number) => {
@@ -53,13 +59,31 @@ const Home: React.FC = () => {
     }
   };
 
+  const fetchRecommendedProducts = async (page: number) => {
+    setIsLoadingRecommended(true);
+  try {
+    const response = await client.get(
+      `/collections/products?page=${page}&limit=${productsPerPage}`,
+    );
+    const newProducts = response.data.products;
+    setRecommendedProducts(newProducts);
+    setHasMoreRecommended(newProducts.length === productsPerPage)
+  } catch (error) {
+    console.error("Error fetching recommended products:", error);
+  } finally {
+    setIsLoadingRecommended(false);
+  }
+};
+
   useEffect(() => {
     fetchNewArrivalProducts(newArrivalPage);
     fetchFeaturedProducts(featuredPage);
+    fetchRecommendedProducts(1); 
 
     const intervalId = setInterval(() => {
       setNewArrivalPage((prevPage) => (prevPage === 1 ? 2 : 1));
       setFeaturedPage((prevPage) => (prevPage === 2 ? 3 : 2));
+      // setRecommendedPage((prevPage) => (prevPage === 2 ? 3 : 2));
     }, 60000); 
 
     return () => clearInterval(intervalId); 
@@ -68,7 +92,24 @@ const Home: React.FC = () => {
   useEffect(() => {
     fetchNewArrivalProducts(newArrivalPage);
     fetchFeaturedProducts(featuredPage);
+    // fetchRecommendedProducts(recommendedPage)
   }, [newArrivalPage, featuredPage]);
+
+   useEffect(() => {
+     if (recommendedPage > 1) {
+       fetchRecommendedProducts(recommendedPage);
+     }
+   }, [recommendedPage]);
+
+  const handlePreviousRecommendations = () => {
+    if (recommendedPage > 1) {
+      setRecommendedPage((prevPage) => prevPage - 1);
+    }
+  };
+
+  const handleNextRecommendations = () => {
+    setRecommendedPage((prevPage) => prevPage + 1);
+  };
 
   return (
     <div className="main-container px-10 py-5 flex flex-col gap-5">
@@ -224,6 +265,49 @@ const Home: React.FC = () => {
             )
           )}
         </div>
+      </div>
+
+      <div className="section-container px-2 tablet:px-10 my-10">
+        <SectionHeader title="Recommended Product" />
+        <div className="product-container flex flex-wrap gap-5 tablet:gap-10 my-5">
+          {isLoadingRecommended ? (
+            <p>Loading...</p>
+          ) : recommendedProducts.length > 0 ? (
+            recommendedProducts.map((product) => (
+              <MainProductCard
+                key={product.id}
+                id={product.id}
+                Image={product.images[0]}
+                name={product.name}
+                price={product.price}
+                discount={product.discount}
+                discription={product.discription}
+                rating={product.rating}
+              />
+            ))
+          ) : (
+            <p>No recommendations available at the moment.</p>
+          )}
+        </div>
+        <div className="flex justify-center items-center mt-5 space-x-4">
+          {recommendedPage > 1 && !isLoadingRecommended && (
+            <button
+              className="text-[#FA8232] cursor-pointer hover:text-[#d66a1f] flex items-center"
+              onClick={handlePreviousRecommendations}
+            >
+              <GrFormPrevious className="mr-3" size={20} />
+            </button>
+          )}
+          {hasMoreRecommended && !isLoadingRecommended && (
+            <button
+              className="text-[#FA8232] cursor-pointer hover:text-[#d66a1f] flex items-center"
+              onClick={handleNextRecommendations}
+            >
+              <GrFormNext className="ml-1" size={20} />
+            </button>
+          )}
+        </div>
+
       </div>
 
       <div className="section-container px-2 tablet:px-10 my-10 w-full">

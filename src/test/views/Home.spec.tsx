@@ -47,7 +47,7 @@ describe('Home Component', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getAllByTestId('main-product-card')).toHaveLength(2); // 1 for new arrivals, 1 for featured
+      expect(screen.getAllByTestId('main-product-card')).toHaveLength(3); // 1 for new arrivals, 1 for featured
     });
   });
 
@@ -60,7 +60,7 @@ describe('Home Component', () => {
       </Router>
     );
 
-    expect(screen.getAllByText('Loading...')).toHaveLength(2); // One for new arrivals, one for featured
+    expect(screen.getAllByText('Loading...')).toHaveLength(3); // One for new arrivals, one for featured
   });
 
   it('renders all sections', async () => {
@@ -72,7 +72,7 @@ describe('Home Component', () => {
       );
     });
 
-    expect(screen.getAllByTestId('section-header')).toHaveLength(4); // New Arrival, Categories, Featured Products, Promotion
+    expect(screen.getAllByTestId('section-header')).toHaveLength(5); // New Arrival, Categories, Featured Products, Promotion
     expect(screen.getByText('For a limited time only')).toBeInTheDocument(); // Promotion section
     expect(screen.getByTestId('services-section')).toBeInTheDocument();
   });
