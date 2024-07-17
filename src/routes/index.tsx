@@ -49,7 +49,9 @@ const Routers: React.FC = () => {
           <Route path="/checkout" element={<PrivateRoute />} >
           <Route path="/checkout" element={<Checkout />} />
           </Route>
+          <Route path="/orders" element={<PrivateRoute />}>
           <Route path="/orders" element={<UserOrders />} />
+          </Route>
           <Route path="/order/:orderId" element={<UserOrderTrack />} />
           <Route
             path="/users/reset-password/:token"

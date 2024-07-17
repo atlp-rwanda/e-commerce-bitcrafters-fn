@@ -76,6 +76,9 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
       setIsLoading(false);
     }
   };
+  const navigateToHome = () =>{
+    navigate('/')
+  }
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -107,11 +110,13 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
       )}
       <div className=" w-full flex items-center justify-between   gap-3">
         {showMenu && (
+          <button onClick={navigateToHome}>
           <img
             src={Logo}
             alt=""
             className="w-16 tablet:w-24  tablet:flex p-2 "
           />
+          </button>
         )}
         {showMenu ? (
           <IoIosArrowBack
