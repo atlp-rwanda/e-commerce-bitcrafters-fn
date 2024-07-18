@@ -63,6 +63,7 @@ const ConfirmationPage: React.FC = () => {
         <button
           type="submit"
           className="w-60 bg-black text-white align-center py-2 px-4 rounded disabled:opacity-50"
+          onClick={()=>{navigate(`/order/${orderId}`)}}
         >
           Track Your Order
         </button>
