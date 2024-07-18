@@ -6,12 +6,7 @@ import { CiSearch } from "react-icons/ci";
 import {
   MdSpaceDashboard,
   MdOutlineSpaceDashboard,
-  MdShoppingCart,
-  MdOutlineShoppingCart,
-  MdReviews,
-  MdOutlineReviews,
 } from "react-icons/md";
-import { MdOutlineStorefront, MdStorefront } from "react-icons/md";
 import {
   IoPersonOutline,
   IoPerson,
@@ -22,7 +17,6 @@ import { RiSettings3Fill, RiSettings3Line } from "react-icons/ri";
 import {
   IoIosNotifications,
   IoIosNotificationsOutline,
-  IoMdLogOut,
 } from "react-icons/io";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 
@@ -38,6 +32,7 @@ import { FaTimes } from "react-icons/fa";
 import Chat from "../views/chat/Chat";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import Logout from "./Logout";
 
 interface User {
   id: number;
@@ -169,7 +164,7 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             value={showMenu ? "Dashboard" : ""}
             onClick={() => {
               setIsSelected("dashboard");
-              navigate("/admin/dashboard");
+              navigate("/admin");
             }}
             color={isSelected == "dashboard" ? "rgb(38 38 38)" : "white"}
             textColor={isSelected == "dashboard" ? "white" : "rgb(38 38 38)"}
@@ -221,28 +216,6 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             borderColor={"1px solid rgb(240 238 237)"}
           />
         </div>
-
-        <div className="link w-full">
-          <DashboardButton
-            dataTestId="product-button"
-            icon={
-              isSelected == "products" ? (
-                <MdStorefront className="text-white text-lg tablet:text-2xl" />
-              ) : (
-                <MdOutlineStorefront className="text-black text-lg tablet:text-2xl" />
-              )
-            }
-            value={showMenu ? "Products" : ""}
-            onClick={() => {
-              setIsSelected("products");
-              navigate("/admin/products");
-            }}
-            color={isSelected == "products" ? "rgb(38 38 38)" : "white"}
-            textColor={isSelected == "products" ? "white" : "rgb(38 38 38)"}
-            showFull={showMenu}
-            borderColor={"1px solid rgb(240 238 237)"}
-          />
-        </div>
         <div className="link w-full">
           <DashboardButton
             dataTestId="notification-button"
@@ -280,48 +253,6 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             onClose={() => setIsModalOpen(false)}
           />
         </div>
-        <div className="link w-full">
-          <DashboardButton
-            dataTestId="orders-button"
-            icon={
-              isSelected == "order" ? (
-                <MdShoppingCart className="text-white text-lg tablet:text-2xl" />
-              ) : (
-                <MdOutlineShoppingCart className="text-black text-lg tablet:text-2xl" />
-              )
-            }
-            value={showMenu ? "Orders" : ""}
-            onClick={() => {
-              setIsSelected("order");
-              navigate("/admin/orders");
-            }}
-            color={isSelected == "order" ? "rgb(38 38 38)" : "white"}
-            textColor={isSelected == "order" ? "white" : "rgb(38 38 38)"}
-            showFull={showMenu}
-            borderColor={"1px solid rgb(240 238 237)"}
-          />
-        </div>
-        <div className="link w-full">
-          <DashboardButton
-            dataTestId="review-button"
-            icon={
-              isSelected == "reviews" ? (
-                <MdReviews className="text-white text-lg tablet:text-2xl" />
-              ) : (
-                <MdOutlineReviews className="text-black text-lg tablet:text-2xl" />
-              )
-            }
-            value={showMenu ? "Reviews" : ""}
-            onClick={() => {
-              setIsSelected("reviews");
-              navigate("/admin/reviews");
-            }}
-            color={isSelected == "reviews" ? "rgb(38 38 38)" : "white"}
-            textColor={isSelected == "reviews" ? "white" : "rgb(38 38 38)"}
-            showFull={showMenu}
-            borderColor={"1px solid rgb(240 238 237)"}
-          />
-        </div>
       </div>
 
       <div className="w-full  flex flex-col justify-end">
@@ -338,24 +269,14 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             value={showMenu ? "settings" : ""}
             onClick={() => {
               setIsSelected("settings");
-              navigate("/admin/settings");
+              navigate("/view-edit-profile");
             }}
             color={isSelected == "settings" ? "rgb(38 38 38)" : "white"}
             textColor={isSelected == "settings" ? "white" : "rgb(38 38 38)"}
           />
         </div>
-        <div className="link w-full">
-          <DashboardButton
-            dataTestId="logout-button"
-            icon={<IoMdLogOut className="text-black text-lg tablet:text-2xl" />}
-            value={showMenu ? "Logout" : ""}
-            reverse={true}
-            onClick={() => {
-              setIsSelected("logout");
-            }}
-            color={"white"}
-            textColor={"rgb(38 38 38)"}
-          />
+        <div className="link w-full border border-gray rounded-sm mt-2 p-2 w-full border-none flex space-x-2">
+         <Logout /> 
         </div>
 
         <div className="flex gap-3 items-center justify-center my-5 border-t border-gray_100  align-bottom pt-2">

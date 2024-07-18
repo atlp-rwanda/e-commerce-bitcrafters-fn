@@ -50,7 +50,10 @@ const Routers: React.FC = () => {
           <Route path="/checkout" element={<Checkout />} />
           </Route>
           <Route path="/orders" element={<PrivateRoute />}>
-          <Route path="/orders" element={<UserOrders />} />
+            <Route path="/orders" element={<UserOrders />} />
+          </Route>
+          <Route path="/view-edit-profile" element={<PrivateRoute />} >
+            <Route path="/view-edit-profile" element={<Profile />} />
           </Route>
           <Route path="/order/:orderId" element={<UserOrderTrack />} />
           <Route
@@ -66,7 +69,6 @@ const Routers: React.FC = () => {
           <Route path="/products/:productId" element={<SingleProduct />} />
           <Route path="/invalid-token" element={<InvalidToken />} />
           <Route path="/verify-otp" element={<TwoFactorAuth />} />
-          <Route path="/view-edit-profile" element={<Profile />} />
           <Route path="/mobileMoney" element={<XMobileMoney />} />
           <Route path="/payment/:orderId" element={<PaymentPage />} />
           <Route path="/confirmation/:orderId" element={<ConfirmationPage />} />
