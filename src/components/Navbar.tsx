@@ -90,7 +90,9 @@ const Navbar: React.FC<NavbarProps> = (props) => {
                 <li>
                   <Link to="/wishList" className="text-lg">
                     {" "}
-                    <CiHeart size={24} aria-label="Heart" />
+                    <Badge badgeContent={wishListCount} color="primary">
+                      <CiHeart size={24} aria-label="Heart" />
+                    </Badge>
                   </Link>
                 </li>
                 <li>

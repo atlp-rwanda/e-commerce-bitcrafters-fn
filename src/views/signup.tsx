@@ -13,6 +13,7 @@ import { AppDispatch } from '../redux/store';
 const SignupForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [showPassword, setShowPassword] = useState(false);
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
 
   return (
     <>
@@ -20,7 +21,11 @@ const SignupForm: React.FC = () => {
         initialValues={{ username: '',email: '', password: ''  }}
         validationSchema={Yup.object({
           username: Yup.string().required('Required'),
-          email: Yup.string().email('Invalid email address').required('Required'),
+          email: Yup
+            .string()
+            .required("Email is required")
+            .matches(emailPattern, "Please enter a valid email")
+            .transform(value => value?.toLowerCase().trim()),
           password: Yup.string().min(6, 'Must be at least 8 characters').required('Required'),
           
         })}

@@ -43,6 +43,7 @@ const ViewSingleProduct: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isdisabled, setIsdisabled] = useState<boolean>(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
@@ -87,9 +88,13 @@ const ViewSingleProduct: React.FC = () => {
     }
   };
   const addProductToWishList = async (productId: string) => {
+    setIsdisabled(true)
     try {
-      await client.post(`/wishList/products/${productId}`);
-      notify("Product added to WishList successfully!");
+      const response = await client.post(`/wishList/products/${productId}`);
+      if(response.status === 201){
+        toast(`${response.data.message}`);
+      }
+   
     } catch (error: any) {
       if (error.response) {
         toast(`${error.response.data.message}`);
@@ -98,6 +103,8 @@ const ViewSingleProduct: React.FC = () => {
       } else {
         notify("Error setting up request.");
       }
+    } finally {
+      setIsdisabled(false);
     }
   };
 
@@ -158,9 +165,10 @@ const ViewSingleProduct: React.FC = () => {
             </button>
             <button
               className="m-4 px-4 py-2 bg-white text-black border border-black rounded flex items-center hover:bg-gray-100"
+              disabled={isdisabled}
               onClick={() => addProductToWishList(product.id)}
             >
-              <FaRegHeart className="mr-2"  data-testid="wishlist-icon"/> Add to wishList
+              <FaRegHeart className="mr-2"  data-testid="wishlist-icon"/> {isdisabled ? 'Loading...' : 'Add to wishList'}
             </button>
           </div>
         </div>
