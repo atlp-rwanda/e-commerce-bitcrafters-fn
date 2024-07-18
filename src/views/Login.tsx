@@ -35,7 +35,8 @@ const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
+  
   const backendUrl = PUBLIC_URL;
 
   const loginWithGoogle = async () => {
@@ -59,8 +60,8 @@ const Login: React.FC = () => {
     email: yup
       .string()
       .required("Email is required")
-      .email("Please enter a valid email")
-      .matches(emailPattern, "Please enter a valid email"),
+      .matches(emailPattern, "Please enter a valid email")
+      .transform(value => value?.toLowerCase().trim()),
 
     password: yup
       .string()
@@ -74,7 +75,7 @@ const Login: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await client.post(`/users/login`, {
-        email: values.email,
+        email: values.email.toLowerCase(),
         password: values.password,
       });
       if (response.status === 200) {

@@ -28,7 +28,7 @@ export const signupUser = createAsyncThunk<
   { rejectValue: SignupError }
 >("user/signup", async ({ username, email, password }, { rejectWithValue }) => {
   try {
-    const response = await signup(username, email, password);
+    const response = await signup(username, email.toLowerCase(), password);
     return response.user as User;
   } catch (error: any) {
     if (error.response && error.response.data) {

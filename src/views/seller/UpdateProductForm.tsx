@@ -71,9 +71,6 @@ const UpdateProductForm: React.FC = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      if (imageResponse.status === 200) {
-        toast.success("Product updated images successsfully");
-      }
       return imageResponse.data;
     } catch (error) {
       toast.error("Error updating images. Please try again");
@@ -87,7 +84,9 @@ const UpdateProductForm: React.FC = () => {
         toast.success("Product updated successfully");
         navigate(`/product-detail/${productId}`);
       }
-      updateImages(images);
+      if(files.length > 0){
+        updateImages(images);
+      }
       return response.data;
     } catch (error) {
       toast.error("Error updating product. Please try again");
