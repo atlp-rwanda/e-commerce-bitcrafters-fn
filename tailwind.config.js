@@ -29,6 +29,13 @@ export default {
         "custom-bg": "#F3F2F0",
         "custom-white": "#FFFFFF",
         chat_back: "#F5F5F5",
+        green:"#386641",
+        blue: "#3943B7",
+        darkblue: "#004346",
+        red:"#DE1A1A",
+        darkgreen: "#303A2B",
+        orange: "#FF7F11"
+
       },
       borderRadius: {
         sm: "5px",

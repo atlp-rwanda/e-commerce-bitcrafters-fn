@@ -158,7 +158,7 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             value={showMenu ? "Dashboard" : ""}
             onClick={() => {
               setIsSelected("dashboard");
-              navigate("/seller");
+              navigate("/seller/dashboard");
             }}
             color={isSelected == "dashboard" ? "rgb(38 38 38)" : "white"}
             textColor={isSelected == "dashboard" ? "white" : "rgb(38 38 38)"}
@@ -262,7 +262,7 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             textColor={isSelected == "settings" ? "white" : "rgb(38 38 38)"}
           />
         </div>
-        <div className="link w-full border border-gray rounded-sm mt-2 p-2 w-full border-none flex space-x-2">
+        <div className="link w-full border border-gray rounded-sm mt-2 p-2 border-none flex space-x-2">
           <Logout /> 
         </div>
 
