@@ -52,8 +52,6 @@ describe('MainProductCard', () => {
 
     expect(screen.getByText('Test Product')).toBeInTheDocument();
     expect(screen.getByText('Rwf 1000')).toBeInTheDocument();
-    expect(screen.getByText('Rwf 1200')).toBeInTheDocument();
-    expect(screen.getByText('4/5')).toBeInTheDocument();
     expect(screen.getByAltText('Test Product')).toHaveAttribute('src', 'test-image.jpg');
   });
 

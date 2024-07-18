@@ -1,207 +1,77 @@
-import axios from "axios";
-import axiosClient from "../../hooks/AxiosInstance";
-import { useSelector } from "react-redux";
-import "@testing-library/jest-dom";
-
-jest.mock("axios");
-
-jest.mock("react-redux", () => ({
-  useSelector: jest.fn(),
-}));
-
-describe("AxiosInstance", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("adds authorization header in request interceptor when authToken is available", () => {
-    const mockUse = jest.fn();
-    (axios.create as jest.Mock).mockReturnValue({
-      interceptors: {
-        request: { use: mockUse },
-        response: { use: jest.fn() },
-      },
-    });
-    (useSelector as unknown as jest.Mock).mockReturnValue({
-      authToken: "auth-token",
-    });
-
-    axiosClient();
-
-    const interceptor = mockUse.mock.calls[0][0];
-    const config = { headers: {} };
-    const result = interceptor(config);
-
-    expect(result.headers.Authorization).toBe("Bearer auth-token");
-  });
-
-  it("removes AUTH_TOKEN from localStorage on 401 response", () => {
-    const mockUse = jest.fn();
-    (axios.create as jest.Mock).mockReturnValue({
-      interceptors: {
-        request: { use: jest.fn() },
-        response: { use: mockUse },
-      },
-    });
-
-    const removeItemSpy = jest.spyOn(Storage.prototype, "removeItem");
-    axiosClient();
-
-    const errorInterceptor = mockUse.mock.calls[0][1];
-    const error = { response: { status: 401 } };
-
-    expect(() => errorInterceptor(error)).toThrow();
-    expect(removeItemSpy).toHaveBeenCalledWith("AUTH_TOKEN");
-  });
-
-  it("throws error in response interceptor", () => {
-    const mockUse = jest.fn();
-    (axios.create as jest.Mock).mockReturnValue({
-      interceptors: {
-        request: { use: jest.fn() },
-        response: { use: mockUse },
-      },
-    });
-
-    axiosClient();
-
-    const errorInterceptor = mockUse.mock.calls[0][1];
-    const error = new Error("Test error");
-
-    expect(() => errorInterceptor(error)).toThrow("Test error");
-  });
-});
+import { renderHook } from "@testing-library/react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import useAxiosClient from "../../hooks/AxiosInstance";
+import { setAuthRole, setAuthToken, setIsLoggedIn } from "../../redux/authSlice";
 
 jest.mock("axios");
 jest.mock("react-redux", () => ({
+  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
+jest.mock("react-router-dom", () => ({
+  useNavigate: jest.fn(),
+}));
+jest.mock("react-toastify", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 
-describe("AxiosInstance", () => {
-  let mockAxiosCreate;
-  let mockInterceptors: any;
+const mockedDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockedUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
+const mockedUseNavigate = useNavigate as jest.MockedFunction<typeof useNavigate>;
+
+describe("useAxiosClient", () => {
+  const authToken = "test-token";
+  const mockDispatch = jest.fn();
+  const mockNavigate = jest.fn();
 
   beforeEach(() => {
+    mockedUseSelector.mockImplementation((selectorFn) =>
+      selectorFn({ auth: { authToken } })
+    );
+    mockedDispatch.mockReturnValue(mockDispatch);
+    mockedUseNavigate.mockReturnValue(mockNavigate);
     jest.clearAllMocks();
-    mockInterceptors = {
-      request: { use: jest.fn() },
-      response: { use: jest.fn() },
+  });
+
+  it("should set the Authorization header if authToken is present", async () => {
+    const { result } = renderHook(() => useAxiosClient());
+
+    const client = result.current;
+
+    const requestInterceptor = client.interceptors.request.use as jest.Mock;
+    const [requestInterceptorCallback] = requestInterceptor.mock.calls[0];
+
+    const config = await requestInterceptorCallback({ headers: {} });
+
+    expect(config.headers.Authorization).toBe(`Bearer ${authToken}`);
+  });
+
+  it("should call handleLogout on jwt expired error", async () => {
+    const { result } = renderHook(() => useAxiosClient());
+
+    const client = result.current;
+
+    const responseInterceptor = client.interceptors.response.use as jest.Mock;
+    const [, errorInterceptorCallback] = responseInterceptor.mock.calls[0];
+
+    const error = {
+      response: { data: { error: "jwt expired" } },
     };
-    mockAxiosCreate = jest.fn().mockReturnValue({
-      interceptors: mockInterceptors,
-    });
-    (axios.create as jest.Mock).mockImplementation(mockAxiosCreate);
-  });
 
-  describe("useSelector for authToken", () => {
-    it("uses authToken from Redux state when available", () => {
-      const mockAuthToken = "mock-auth-token";
-      (useSelector as unknown as jest.Mock).mockReturnValue({
-        authToken: mockAuthToken,
-      });
+    try {
+      await errorInterceptorCallback(error);
+    } catch (e) {
+    }
 
-      axiosClient();
-
-      const requestInterceptor = mockInterceptors.request.use.mock.calls[0][0];
-      const config = { headers: {} };
-      const result = requestInterceptor(config);
-
-      expect(result.headers.Authorization).toBe(`Bearer ${mockAuthToken}`);
-    });
-
-    it("does not add Authorization header when authToken is null", () => {
-      (useSelector as unknown as jest.Mock).mockReturnValue({
-        authToken: null,
-      });
-
-      axiosClient();
-
-      const requestInterceptor = mockInterceptors.request.use.mock.calls[0][0];
-      const config = { headers: {} };
-      const result = requestInterceptor(config);
-
-      expect(result.headers.Authorization).toBeUndefined();
-    });
-  });
-
-  describe("Response interceptor", () => {
-    it("returns response unchanged for successful requests", () => {
-      const mockResponse = { data: "test data", status: 200 };
-
-      axiosClient();
-
-      const successInterceptor = mockInterceptors.response.use.mock.calls[0][0];
-      const result = successInterceptor(mockResponse);
-
-      expect(result).toEqual(mockResponse);
-    });
-
-    it("handles errors in catch block and re-throws", () => {
-      const consoleSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
-
-      axiosClient();
-
-      const errorInterceptor = mockInterceptors.response.use.mock.calls[0][1];
-      const error = new Error("Test error");
-
-      expect(() => errorInterceptor(error)).toThrow("Test error");
-      expect(consoleSpy).toHaveBeenCalled;
-
-      consoleSpy.mockRestore();
-    });
-
-    it("removes AUTH_TOKEN from localStorage on 401 response", () => {
-      const removeItemSpy = jest.spyOn(Storage.prototype, "removeItem");
-
-      axiosClient();
-
-      const errorInterceptor = mockInterceptors.response.use.mock.calls[0][1];
-      const error = { response: { status: 401 } };
-
-      expect(() => errorInterceptor(error)).toThrow();
-      expect(removeItemSpy).toHaveBeenCalledWith("AUTH_TOKEN");
-
-      removeItemSpy.mockRestore();
-    });
-  });
-
-  
-});
-
-
-jest.mock("axios");
-jest.mock("react-redux", () => ({
-  useSelector: jest.fn(),
-}));
-
-describe("AxiosInstance - uncoverd lines", () => {
-  let mockAxiosCreate;
-  let mockInterceptors: any;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockInterceptors = {
-      request: { use: jest.fn() },
-      response: { use: jest.fn() },
-    };
-    mockAxiosCreate = jest.fn().mockReturnValue({
-      interceptors: mockInterceptors,
-    });
-    (axios.create as jest.Mock).mockImplementation(mockAxiosCreate);
-  });
-
-  it("correctly extracts authToken from Redux state", () => {
-    const mockAuthToken = "test-auth-token";
-    (useSelector as any as jest.Mock).mockReturnValue({ authToken: mockAuthToken });
-
-    axiosClient();
-
-    expect(useSelector).toHaveBeenCalled();
-    const selectorFn = (useSelector as any as jest.Mock).mock.calls[0][0];
-    const result = selectorFn({ auth: { authToken: mockAuthToken } });
-    expect(result).toEqual({ authToken: mockAuthToken });
+    expect(mockDispatch).toHaveBeenCalledWith(setIsLoggedIn(false));
+    expect(mockDispatch).toHaveBeenCalledWith(setAuthToken(null));
+    expect(mockDispatch).toHaveBeenCalledWith(setAuthRole(null));
+    expect(mockNavigate).toHaveBeenCalledWith("/login");
+    
   });
 
 

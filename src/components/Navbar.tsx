@@ -12,7 +12,7 @@ import { IoMdLogOut } from "react-icons/io";
 import { IoLocationOutline } from "react-icons/io5";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { IoMdHome } from "react-icons/io";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import SearchComponent from "./SearchComponent";
 import Badge from "@mui/material/Badge";
@@ -21,6 +21,8 @@ import { useNotifications } from "./notificationtoast";
 import NotificationPane from "../views/NotificationPane";
 import { FaTimes } from "react-icons/fa";
 import Chat from "../views/chat/Chat";
+import { setAuthRole, setAuthToken, setIsLoggedIn } from "../redux/authSlice";
+import { toast } from "react-toastify";
 
 interface NavbarProps {
   burgerShown?: boolean;
@@ -32,10 +34,12 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     (state: RootState) => state.auth.isLoggedIn,
     shallowEqual,
   );
+
   const unreadMessagesCount = useSelector(
     (state: RootState) => state.chat.unreadMessagesCount,
   );
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
@@ -47,16 +51,30 @@ const Navbar: React.FC<NavbarProps> = (props) => {
   const { unreadCount } = useNotifications();
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
 
+  const handleLogout = async () => {
+    try {
+      
+        dispatch(setIsLoggedIn(false));
+        dispatch(setAuthToken(null));
+        dispatch(setAuthRole(null));
+        // navigate("/login");
+        toast.success("Logout successful");
+      
+    } catch (error) {
+      toast.error("logout failed");
+    }
+  };
+
   return (
     <div className=" w-full flex flex-col  ">
     <nav className="navbar-container  w-full border-b-1 p-8 flex-between space-x-2 border-b-[1px] border-gray_100">
-      <div className="nav-logo w-[20%] ">
+      <Link to="/" className="nav-logo w-[20%] ">
         <img src={Logo} alt="Logo" className="w-24 object-contain " />
-      </div>
+      </Link>
       <div className="nav-link flex-between  w-[30%] hidden tablet:flex">
         <ul className="flex-between space-x-4">
           <li>
-            <Link to="" className="text-sm">
+            <Link to="/" className="text-sm">
               Home
             </Link>
           </li>
@@ -66,12 +84,12 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             </Link>
           </li>
           <li>
-            <Link to="" className="text-sm">
+            <Link to="/" className="text-sm">
               Shop
             </Link>
           </li>
           <li>
-            <Link to="" className="text-sm">
+            <Link to="/" className="text-sm">
               Contact
             </Link>
           </li>
@@ -160,9 +178,27 @@ const Navbar: React.FC<NavbarProps> = (props) => {
                 <p className="text-white text-sm">Log in</p>
             </Link>
           ) : (
-            <Link to="/view-edit-profile" className="text-sm w-[5%]">
+            <div className="text-sm w-[5%]  relative group transition-all">
+              <div className="absolute hidden  transition-all group-hover:flex flex-col gap-1 p-2 left-[-90px] bottom-[-90px]  bg-gray rounded border border-gray_100">
+              <Link
+                    to="/view-edit-profile"
+                    className="text-lg"
+                    onClick={() => setIsBurgerShown(false)}
+                  >
+                    <div className="flex-between justify-center space-x-1 gap-2 p-2 px-5 hover:bg-neutral-300 rounded">
+                      <RxAvatar className="text-black" />
+                      <p className="text-xs text-black">Profile</p>
+                    </div>
+                  </Link>
+                <Link to="" className="text-lg" onClick={()=>{handleLogout()}}>
+                <div className="flex-between justify-center space-x-1 gap-2 p-2 px-5 hover:bg-neutral-300 rounded">
+                      <IoMdLogOut className="text-black" />
+                      <p className="text-xs text-black">Logout</p>
+                    </div>
+                  </Link>
+              </div>
               <RxAvatar className="text-2xl" />
-            </Link>
+            </div>
           )}
         </div>
         <div className="flex gap-10 items-center">
@@ -192,7 +228,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           <div className="bg-black flex tablet:hidden z-10 absolute w-[80%] tablet:w-[60%] top-[10%] right-[15%] border border-gray_100 rounded-sm">
             <ul className="w-full p-4 space-y-2">
               <li className="bg-gray rounded-sm">
-                <Link to="" className="text-lg">
+                <Link to="/" className="text-lg">
                   <div className="flex-between justify-center space-x-1 p-2">
                     <IoMdHome />
                     <p className="text-xs">Home</p>
@@ -301,7 +337,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               </li>
 
                 <li className="rounded-sm hover:bg-white transition-all">
-                  <Link to="/logout" className="text-lg">
+                  <Link to="" className="text-lg" onClick={()=>{handleLogout()}}>
                     <div className="flex-between justify-center space-x-1 p-2">
                       <IoMdLogOut className="text-gray_100" />
                       <p className="text-xs text-gray_100">Logout</p>
@@ -313,8 +349,10 @@ const Navbar: React.FC<NavbarProps> = (props) => {
         )}
       </nav>
       {showSearch && (
-        <div className="transition-all duration-300">
-          <SearchComponent />
+        <div className="absolute top-24 w-full h-[75%] tablet:h-[70%] z-10 transition-all duration-300">
+          <SearchComponent
+          hideSearch={()=>{setShowSearch(false)}}
+          />
         </div>
       )}
     </div>

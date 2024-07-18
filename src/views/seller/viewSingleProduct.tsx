@@ -8,6 +8,8 @@ import Modal from "react-modal";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import MainProductCard from "../../components/MainProductCard";
+import Gallery from "../../components/ImageCaursel";
+import { ThreeDots } from "react-loader-spinner";
 
 interface Review {
   id: string;
@@ -59,7 +61,7 @@ const ViewSingleProduct: React.FC = () => {
   const [isdisabled, setIsdisabled] = useState<boolean>(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  // const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [similarProducts, setSimilarProducts] = useState<
     SimilarProduct[] | null
   >(null);
@@ -71,7 +73,7 @@ const ViewSingleProduct: React.FC = () => {
   const fetchSimilarProducts = async (collectionId: string) => {
     setIsLoadingSimilar(true);
     try {
-      const response = await client.get("/collections/products", {
+      const response = await client.get("/collections/products/all", {
         params: {
           limit: 1000000,
           page: 1,
@@ -95,7 +97,7 @@ const ViewSingleProduct: React.FC = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await client.get(`/collections/product/${productId}`);
+        const response = await client.get(`/collections/products/single/${productId}`);
         const fetchedProduct = response.data.item;
         setProduct(fetchedProduct);
         if (fetchedProduct.collectionId) {
@@ -166,54 +168,56 @@ const ViewSingleProduct: React.FC = () => {
     return <div className="flex">{stars}</div>;
   };
 
-  const handleImageSelect = (index: number) => {
-    if (product && product.images) {
-      const newImages = [...product.images];
-      [newImages[0], newImages[index]] = [newImages[index], newImages[0]];
-      setProduct({ ...product, images: newImages });
-      setSelectedImageIndex(0);
-    }
-  };
+  // const handleImageSelect = (index: number) => {
+  //   if (product && product.images) {
+  //     const newImages = [...product.images];
+  //     [newImages[0], newImages[index]] = [newImages[index], newImages[0]];
+  //     setProduct({ ...product, images: newImages });
+  //     setSelectedImageIndex(0);
+  //   }
+  // };
 
+  
   if (isLoading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return (
+      <div className="w-full h-[100vh]">
+        <Navbar/>
+      <div className="w-full text-black h-[70%] mx-auto items-center justify-center flex flex-col gap-3">
+        <p>Loading... </p>
+        <ThreeDots visible={true} height="50" width="50" color="rgb(38 38 38)" radius="5" ariaLabel="three-dots-loading" />
+      </div>
+      <Footer/>
+      </div>
+    );
   }
 
   if (!product) {
-    return <div className="flex justify-center items-center h-screen">No product found</div>;
+    return  <div className="w-full h-[100vh]">
+      <Navbar/>
+      <div className="w-full text-black h-[70%] mx-auto items-center justify-center flex flex-col gap-3">No product found</div>;
+      <Footer/>
+      </div>
   }
+
+  // const handleDragStart = (e) => e.preventDefault();
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div className="container mx-auto p-4 max-w-screen-lg">
-        <div className="flex items-center m-4">
+      <div className="container mx-auto p-2 tablet:p-4 max-w-screen-lg">
+        <div className="flex items-center m-2 tablet:m-4">
           {/* Additional product information or navigation can be added here */}
         </div>
-        <div className=" gap-[6%] flex  flex-col md:flex-row items-center md:items-start md:justify-center">
-          <div className="md:w-1/2">
-            <div className="h-64 w-full mb-4">
-              <img
-                src={product.images[0]}
-                alt={product.name}
-                className="h-full w-full object-cover rounded-lg"
+        <div className="flex flex-col gap-5 md:flex-row items-center md:items-center md:justify-center h-full ">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:w-1/2"> */}
+          <div className="w-[80%] mx-auto  tablet:w-[50%]  tablet:h-full">
+                        
+            {product.images && 
+
+              <Gallery
+              Images={product.images}
               />
-            </div>
-            <div className="grid grid-cols-4 gap-2">
-              {product.images.map((image, index) => (
-                <div
-                  key={index}
-                  className={`h-16 w-full cursor-pointer ${index === selectedImageIndex ? "border-2 border-blue-500" : ""}`}
-                  onClick={() => handleImageSelect(index)}
-                >
-                  <img
-                    src={image}
-                    alt={`${product.name} - ${index + 1}`}
-                    className="h-full w-full object-cover rounded-lg"
-                  />
-                </div>
-              ))}
-            </div>
+}
           </div>
           <div className=" flex-1 w-full max-w-lg">
             <h1 className="text-3xl font-bold ">{product.name}</h1>

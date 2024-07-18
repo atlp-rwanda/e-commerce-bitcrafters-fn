@@ -1,6 +1,8 @@
 import axios, { AxiosInstance, AxiosError, AxiosResponse } from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PUBLIC_URL } from "../constants";
+import { useNavigate } from "react-router-dom";
+import { setAuthRole, setAuthToken, setIsLoggedIn } from "../redux/authSlice";
 
 const axiosInstance = axios.create({
   baseURL: `${PUBLIC_URL}`,
@@ -11,6 +13,21 @@ const axiosInstance = axios.create({
 
 const useAxiosClient = (token?: string): AxiosInstance => {
   const { authToken } = useSelector((state: any) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    try {
+      
+        dispatch(setIsLoggedIn(false));
+        dispatch(setAuthToken(null));
+        dispatch(setAuthRole(null));
+        navigate("/login");
+      
+    } catch (error) {
+      console.log("logout failed");
+    }
+  };
 
   const headers = token
     ? {
@@ -43,12 +60,12 @@ const useAxiosClient = (token?: string): AxiosInstance => {
     },
     (error: AxiosError) => {
       try {
-        const { response } = error;
-        if (response?.status === 401) {
-          localStorage.removeItem("AUTH_TOKEN");
+        const { response  }  = error as unknown as any;
+        if (response?.data.error === "jwt expired" || response?.data.error === "Please Login" || response?.data.message=== "Please login again")  {
+          handleLogout()
         }
       } catch (e) {
-        console.error(e);
+        console.error("error occured here", e);
       }
       throw error;
     },

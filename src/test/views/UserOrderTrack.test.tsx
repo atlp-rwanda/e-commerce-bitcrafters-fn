@@ -78,11 +78,12 @@ describe("UserOrderTrack Component", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText("#123")).toBeInTheDocument();
-      expect(screen.getByText("14/July/2023")).toBeInTheDocument();
-      expect(screen.getByText("ORD001")).toBeInTheDocument();
-      expect(screen.getByText("Order Completed")).toBeInTheDocument();
-      expect(screen.getByText("Test Product")).toBeInTheDocument();
+      expect(screen.getByText('#123')).toBeInTheDocument();
+      expect(screen.getByText('14/July/2023')).toBeInTheDocument();
+      expect(screen.getByText('ORD001')).toBeInTheDocument();
+      expect(screen.getByText('Order Completed')).toBeInTheDocument();
+      expect(screen.getByText('Rwf 100')).toBeInTheDocument();
+      expect(screen.getByText('Test Product')).toBeInTheDocument();
     });
   });
 
