@@ -27,6 +27,11 @@ import Badge from "@mui/material/Badge";
 import { toast } from "react-toastify";
 import { useNotifications } from "./notificationtoast";
 import NotificationPane from "../views/NotificationPane";
+import Chat from "../views/chat/Chat";
+import { FaTimes } from "react-icons/fa";
+import { IoChatbubblesOutline } from "react-icons/io5";
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 
 interface User {
   id: number;
@@ -50,10 +55,16 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { unreadCount } = useNotifications();
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
+  const unreadMessagesCount = useSelector(
+    (state: RootState) => state.chat.unreadMessagesCount,
+  );
   const navigate = useNavigate();
   const notify = (message: string) => toast(message);
-
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
   const client = axiosClient();
   const fetchUserProfile = async () => {
     try {
@@ -77,6 +88,23 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
           : "flex p-4 w-24 pb-2 resize-x items-center justify-between  flex-col  bg-white border border-gray_100 rounded h-full transition-all"
       }
     >
+      {isChatOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-start items-start z-40">
+          <div
+            data-testid="chat-container"
+            className="bg-white w-full max-w-sm md:max-w-lg h-5/6 rounded shadow-lg p-4 relative overflow-hidden ml-10 mb-4 mt-10"
+          >
+            <button
+              data-testid="close-button"
+              onClick={toggleChat}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            >
+              <FaTimes size={24} />
+            </button>
+            <Chat />
+          </div>
+        </div>
+      )}
       <div className=" w-full flex items-center justify-between   gap-3">
         {showMenu && (
           <img
@@ -137,7 +165,28 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             borderColor={"1px solid rgb(240 238 237)"}
           />
         </div>
-
+        <div className="link w-full">
+          <DashboardButton
+            dataTestId="chat-button"
+            icon={
+              isSelected == "chats" ? (
+                <Badge badgeContent={unreadMessagesCount} color="primary">
+                  <IoChatbubblesOutline className="text-white text-lg tablet:text-2xl" />
+                </Badge>
+              ) : (
+                <Badge badgeContent={unreadMessagesCount} color="primary">
+                  <IoChatbubblesOutline className="text-black text-lg tablet:text-2xl" />
+                </Badge>
+              )
+            }
+            value={showMenu ? "Chats" : ""}
+            onClick={toggleChat}
+            color={isSelected == "chats" ? "rgb(38 38 38)" : "white"}
+            textColor={isSelected == "chats" ? "white" : "rgb(38 38 38)"}
+            showFull={showMenu}
+            borderColor={"1px solid rgb(240 238 237)"}
+          />
+        </div>
         <div className="link w-full">
           <DashboardButton
             dataTestId="product-button"
@@ -165,17 +214,17 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             icon={
               isSelected == "notifications" ? (
                 <Badge badgeContent={unreadCount} color="primary">
-                <IoIosNotifications className="text-white text-lg tablet:text-2xl" />
+                  <IoIosNotifications className="text-white text-lg tablet:text-2xl" />
                 </Badge>
               ) : (
-                 <Badge badgeContent={unreadCount} color="primary">
-                <IoIosNotificationsOutline className="text-black text-lg tablet:text-2xl" />
+                <Badge badgeContent={unreadCount} color="primary">
+                  <IoIosNotificationsOutline className="text-black text-lg tablet:text-2xl" />
                 </Badge>
               )
             }
             value={showMenu ? "Notifications" : ""}
             onClick={() => {
-              setIsModalOpen(true)
+              setIsModalOpen(true);
               setIsSelected("notifications");
             }}
             color={isSelected == "notifications" ? "rgb(38 38 38)" : "white"}
@@ -185,7 +234,7 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
             showFull={showMenu}
             borderColor={"1px solid rgb(240 238 237)"}
           />
-          <NotificationPane 
+          <NotificationPane
             open={isModalOpen}
             onClose={() => setIsModalOpen(false)}
           />
