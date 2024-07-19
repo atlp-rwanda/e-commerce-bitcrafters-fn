@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import useAxiosClient from "../hooks/AxiosInstance";
 import io from "socket.io-client";
+import { PUBLIC_URL } from "../constants";
 
 interface Notification {
   id: string;
@@ -16,7 +17,7 @@ export function useNotifications() {
   const { isLoggedIn, authToken } = useSelector((state: any) => state.auth);
   const axiosClient = useAxiosClient();
 
-  const socket = io("https://e-commerce-bitcrafters-bn-1mpf.onrender.com", {
+  const socket = io(`${PUBLIC_URL}`, {
     auth: { token: authToken },
   });
 
