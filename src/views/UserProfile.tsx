@@ -43,7 +43,6 @@ const Profile: React.FC = () => {
         const response = await axiosClient.get("/users/profile");
         setProfile(response.data);
       } catch (error) {
-        toast.error("Failed to fetch profile");
       }
     };
     fetchProfile();

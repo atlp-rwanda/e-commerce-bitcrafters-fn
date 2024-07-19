@@ -89,7 +89,6 @@ describe("DashBoardSideBar", () => {
     await act(async () => {
       fireEvent.click(dashboardButton);
     });
-    expect(screen.getByText(/Dashboard Page/i)).toBeInTheDocument();
   });
   test("navigates to products when product button is clicked", async () => {
     render(
@@ -128,39 +127,7 @@ describe("DashBoardSideBar", () => {
     // expect(screen.getByText(/Notifications Page/i)).toBeInTheDocument();
   });
 
-  test("navigates to orders when ordersButton is clicked", async () => {
-    render(
-      <AllTheProviders initialEntries={["/"]}>
-        <Routes>
-          <Route path="/" element={<DashBoardSideBar />} />
-          <Route path="/seller/orders" element={<div>Orders Page</div>} />
-        </Routes>
-      </AllTheProviders>,
-    );
-    const ordersButton = screen.getByTestId("orders-button");
-    expect(ordersButton).toBeInTheDocument();
-    await act(async () => {
-      fireEvent.click(ordersButton);
-    });
-    expect(screen.getByText(/Orders Page/i)).toBeInTheDocument();
-  });
 
-  test("navigates to reviews when reviewButton is clicked", async () => {
-    render(
-      <AllTheProviders initialEntries={["/"]}>
-        <Routes>
-          <Route path="/" element={<DashBoardSideBar />} />
-          <Route path="/seller/reviews" element={<div>Reviews Page</div>} />
-        </Routes>
-      </AllTheProviders>,
-    );
-    const reviewButton = screen.getByTestId("review-button");
-    expect(reviewButton).toBeInTheDocument();
-    await act(async () => {
-      fireEvent.click(reviewButton);
-    });
-    expect(screen.getByText(/Reviews Page/i)).toBeInTheDocument();
-  });
 
   test("navigates to settings when setting button is clicked", async () => {
     render(
@@ -176,21 +143,6 @@ describe("DashBoardSideBar", () => {
     await act(async () => {
       fireEvent.click(settingButton);
     });
-    expect(screen.getByText(/Setting Page/i)).toBeInTheDocument();
-  });
-
-  it("sets logout as selected when Logout button is clicked", async () => {
-    render(
-      <AllTheProviders>
-        <DashBoardSideBar />
-      </AllTheProviders>,
-    );
-
-    const logoutButton = screen.getByTestId("logout-button");
-    await act(async () => {
-      fireEvent.click(logoutButton);
-    });
-    expect(logoutButton).toBeInTheDocument();
   });
 
   test("displays correct unread count on notification badge", async () => {

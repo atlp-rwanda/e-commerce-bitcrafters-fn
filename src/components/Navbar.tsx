@@ -55,16 +55,16 @@ const Navbar: React.FC<NavbarProps> = (props) => {
         <div className="nav-link flex-between w-[30%] hidden tablet:flex">
           <ul className="flex-between space-x-4">
             <li data-testid="mobile-menu-home">
-              <Link to="" className="text-sm">Home</Link>
+              <Link to="/" className="text-sm">Home</Link>
             </li>
             <li>
               <Link to="/about" className="text-sm">About</Link>
             </li>
             <li>
-              <Link to="" className="text-sm">Shop</Link>
+              <Link to="/" className="text-sm">Shop</Link>
             </li>
             <li>
-              <Link to="" className="text-sm">Contact</Link>
+              <Link to="/" className="text-sm">Contact</Link>
             </li>
           </ul>
         </div>

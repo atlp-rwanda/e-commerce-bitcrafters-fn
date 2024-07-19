@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useAxiosClient from '../../hooks/AxiosInstance';
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 type Option = {
@@ -29,7 +29,6 @@ const SelectCollection = () => {
         }  
       }catch(error){
         setCollectionsStatus('failed')
-        toast.error("Error fetching collection Try again");
       }
     }
     fetchCollections();

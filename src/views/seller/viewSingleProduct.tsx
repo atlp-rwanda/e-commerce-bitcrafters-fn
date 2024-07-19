@@ -10,6 +10,8 @@ import Footer from "../../components/Footer";
 import MainProductCard from "../../components/MainProductCard";
 import Gallery from "../../components/ImageCaursel";
 import { ThreeDots } from "react-loader-spinner";
+import { shallowEqual, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 interface Review {
   id: string;
@@ -41,6 +43,8 @@ interface Product {
     email: string;
   };
   reviews: Review[];
+  productStatus: string;
+
 }
 
 interface SimilarProduct {
@@ -69,6 +73,10 @@ const ViewSingleProduct: React.FC = () => {
   const navigate = useNavigate();
   const notify = (message: string) => toast(message);
   const client = axiosClient();
+  const authRole = useSelector(
+    (state: RootState) => state.auth.authRole,
+    shallowEqual,
+  );
 
   const fetchSimilarProducts = async (collectionId: string) => {
     setIsLoadingSimilar(true);
@@ -223,8 +231,20 @@ const ViewSingleProduct: React.FC = () => {
             <h1 className="text-3xl font-bold ">{product.name}</h1>
             <p className="text-lg m-4">{renderStars(product.averageRating)}</p>
             <div className="text-md m-4">
-              <div className="font-semibold">Price</div> Rwf{product.price}
+              <div className="font-semibold">Price</div> Rwf {product.price}
             </div>
+            <div className="text-md m-4">
+              <div className="font-semibold">Expiry Date</div> {new Date(product.expiryDate).toLocaleDateString()}
+            </div>
+            {(authRole === "seller") && (
+                <div className="text-md m-4">
+                    <div className="font-semibold">Status</div>
+                    <span className="bg-red">
+                      {product.productStatus}
+                    </span> 
+                 </div>
+            )}
+            
             <div className="text-md m-4">
               <div className="font-semibold">Description:</div>
               {product.category}
