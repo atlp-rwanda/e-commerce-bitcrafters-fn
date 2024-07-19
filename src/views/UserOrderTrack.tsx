@@ -6,11 +6,13 @@ import { toast } from "react-toastify";
 import useAxiosClient from "../hooks/AxiosInstance";
 import Button from "../components/Button";
 import { ThreeDots } from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { IoMdStar, IoMdStarHalf } from "react-icons/io";
 import { FaCheck } from "react-icons/fa6";
 import { TbProgressCheck } from "react-icons/tb";
 import moment from "moment";
+import { VscDebugContinue } from "react-icons/vsc";
+
 
 const UserOrderTrack: React.FC = () => {
   const client = useAxiosClient();
@@ -108,6 +110,12 @@ const UserOrderTrack: React.FC = () => {
           </div>
 
           <div className="flex gap-2 items-center">
+            <p className="font-semibold text-xs tablet:text-sm">Payment method</p>
+            <p className="text-gray_100 text-xs tablet:text-sm">
+              {response?.paymentInfo?.method}
+            </p>
+          </div>
+          <div className="flex gap-2 items-center">
             <p className="font-semibold text-xs tablet:text-sm">Order Number</p>
             <p className="text-gray_100 text-xs tablet:text-sm">
               {response?.orderNumber}
@@ -146,6 +154,7 @@ const UserOrderTrack: React.FC = () => {
             </div>
             <p className="text-xs tablet:text-base">Order {response?.status}</p>
           </div>
+      
           <div className="flex flex-col tablet:flex-row items-center gap-3 bg-black rounded p-3 py-4">
             <p className="font-medium text-gray_100 text-xs tablet:text-sm">
               Total Amount:
@@ -155,6 +164,17 @@ const UserOrderTrack: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {response?.status !== "Completed"&& 
+        <div className="flex justify-start items-center w-[90%] my-3 mx-auto">
+        <Link to={response?.paymentInfo?.method =="mobileMoney" ?`/mobileMoney/${orderId}`:`/stripe/${orderId}`} className="flex gap-2 items-center rounded p-2  bg-gray">
+                <p className="text-sx tablet:text-base">Continue process</p>  
+
+                  <VscDebugContinue/>
+          </Link>
+
+        </div>
+ }
       </div>
 
       <div className="border border-gray rounded-md p-5">

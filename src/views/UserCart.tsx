@@ -123,8 +123,8 @@ const UserCart: React.FC = () => {
   }
 
   return (
-    <div className="container m-3 tablet:m-5 flex flex-col space-x-2 items-start justify-start tablet:min-h-[100vh] tablet:px-10 w-full">
-      <div className="flex flex-row items-center justify-between w-full">
+    <div className="container m-3  tablet:m-5 flex flex-col space-x-2 items-start justify-start tablet:min-h-[100vh] px-2 tablet:px-10 w-[90%] mx-auto tablet:w-full">
+      <div className="flex flex-row items-center justify-between w-[95%] mx-auto">
         <SectionHeader title="My Cart" />
         <div>
           <Button value="Clear Cart" icon={<MdDelete className="text-red-500" />} onClick={clearUserCart} />

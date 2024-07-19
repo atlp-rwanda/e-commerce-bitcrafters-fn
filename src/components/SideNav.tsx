@@ -22,7 +22,7 @@ import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 
 import DashboardButton from "./DashBoardButton";
 import axiosClient from "../hooks/AxiosInstance";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Badge from "@mui/material/Badge";
 import "react-toastify/dist/ReactToastify.css";

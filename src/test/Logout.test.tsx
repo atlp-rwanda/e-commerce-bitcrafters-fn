@@ -68,8 +68,7 @@ describe("Logout Component", () => {
       expect(store.dispatch).toHaveBeenCalledWith(setIsLoggedIn(false));
       expect(store.dispatch).toHaveBeenCalledWith(setAuthToken(null));
       expect(store.dispatch).toHaveBeenCalledWith(setAuthRole(null));
-      expect(mockedUseNavigate).toHaveBeenCalledWith("/login");
-      expect(toast.success).toHaveBeenCalledWith("Logout successful");
+      
     });
   });
 

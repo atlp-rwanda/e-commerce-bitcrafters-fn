@@ -37,7 +37,7 @@ export const useCheckoutSubmit = () => {
 
       setTimeout(() => {
         if (values.paymentMethod === "mobileMoney") {
-          navigate("/mobileMoney");
+          navigate(`/mobileMoney/${response?.data?.order?.id}`);
         } else if (values.paymentMethod === "creditCard") {
           navigate("/payment/" + response.data.order.id);
         }
