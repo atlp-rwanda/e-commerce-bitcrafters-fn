@@ -132,34 +132,51 @@ const MainProductCard: React.FC<InputProps> = (props) => {
         </div>
       </div>
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Add Quantity"
-        className="bg-white p-6 rounded-lg shadow-lg w-1/3 mx-auto mt-20"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+<Modal
+  isOpen={modalIsOpen}
+  onRequestClose={closeModal}
+  contentLabel="Add Quantity"
+  className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-2/3 md:w-1/2 lg:w-1/3 mx-auto mt-20"
+  overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+>
+  <h2 className="text-xl sm:text-2xl font-bold mb-4">Add to Cart</h2>
+  <form
+    role="form"
+    onSubmit={(e) => {
+      e.preventDefault();
+      addProductToCart(props.id, quantity);
+    }}
+    className="flex flex-col gap-4"
+  >
+    <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
+      Quantity:
+    </label>
+    <input
+      type="number"
+      id="quantity"
+      value={quantity}
+      onChange={handleQuantityChange}
+      min="1"
+      required
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+    />
+    <div className="flex justify-end gap-3">
+      <button
+        type="button"
+        onClick={closeModal}
+        className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition-colors"
       >
-        <h2 className="text-2xl font-bold mb-4">Add to Cart</h2>
-        <form role="form" onSubmit={(e) => {
-          e.preventDefault();
-          addProductToCart(props.id, quantity);
-        }} className="flex flex-col gap-4">
-          <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity:</label>
-          <input
-            type="number"
-            id="quantity"
-            value={quantity}
-            onChange={handleQuantityChange}
-            min="1"
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
-          <div className="flex justify-end gap-3">
-            <button type="button" onClick={closeModal} className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition-colors">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Add to Cart</button>
-          </div>
-        </form>
-      </Modal>
+        Cancel
+      </button>
+      <button
+        type="submit"
+        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+      >
+        Add to Cart
+      </button>
+    </div>
+  </form>
+</Modal>
       <ToastContainer />
     </div>
   );

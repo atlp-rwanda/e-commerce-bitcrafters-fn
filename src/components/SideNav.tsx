@@ -73,6 +73,9 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
   const notify = (message: string) => toast(message);
 
   const client = axiosClient();
+  const navigateToHome = () =>{
+    navigate('/')
+  }
   const fetchProfile = async () => {
     try {
       const response = await client.get("/users/profile");
@@ -114,11 +117,13 @@ const DashBoardSideBar: React.FC<InputProps> = () => {
       )}
       <div className=" w-full flex items-center justify-between   gap-3">
         {showMenu && (
+          <button onClick={navigateToHome}>
           <img
             src={Logo}
             alt=""
             className="w-16 tablet:w-24  tablet:flex p-2 "
           />
+          </button>
         )}
         {showMenu ? (
           <IoIosArrowBack
