@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 import useAxiosClient from "../hooks/AxiosInstance";
@@ -18,8 +18,8 @@ const Logout: React.FC = () => {
         dispatch(setIsLoggedIn(false));
         dispatch(setAuthToken(null));
         dispatch(setAuthRole(null));
-        navigate("/login");
-        toast.success("Logout successful");
+        navigate("/");
+       
       } else {
         toast.error("Logout failed");
       }
@@ -29,12 +29,12 @@ const Logout: React.FC = () => {
   };
 
   return (
-    <Link to="/login" onClick={handleLogout} className="text-lg">
+    <div  onClick={handleLogout} className="text-lg">
       <div className="flex space-x-1 py-2 ">
         <RiLogoutCircleLine className="" />
         <p className="text-xs ">Logout</p>
       </div>
-    </Link>
+    </div>
   );
 };
 

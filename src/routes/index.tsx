@@ -17,7 +17,6 @@ import UsersTable from "../views/admin/UsersTable";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Profile from "../views/UserProfile";
 import AddProductForm from "../views/seller/AddProductForm";
-import SingleProduct from "../views/SingleProduct";
 import ViewProducts from "../views/seller/viewProduct";
 import SellerDashLayout from "../layouts/SellerDashLayout";
 import ViewSingleProduct from "../views/seller/viewSingleProduct";
@@ -31,6 +30,7 @@ import UseWishList from "../views/UseWishList";
 import UserOrderTrack from "../views/UserOrderTrack"; 
 import UserOrders from "../views/UserOrders"; 
 import PublicRoute,{PrivateRoute} from "../components/PublicRoute";
+import PaymentSuccess from "../views/PaymentSuccess";
 
 const Routers: React.FC = () => {
   return (
@@ -66,12 +66,14 @@ const Routers: React.FC = () => {
           <Route path="/email-verified" element={<PublicRoute />} >
           <Route path="/email-verified" element={<EmailVerified />} />
           </Route>
-          <Route path="/products/:productId" element={<SingleProduct />} />
           <Route path="/invalid-token" element={<InvalidToken />} />
           <Route path="/verify-otp" element={<TwoFactorAuth />} />
-          <Route path="/mobileMoney" element={<XMobileMoney />} />
+          <Route path="/view-edit-profile" element={<Profile />} />
+          <Route path="/mobileMoney/:orderId" element={<XMobileMoney />} />
           <Route path="/payment/:orderId" element={<PaymentPage />} />
           <Route path="/confirmation/:orderId" element={<ConfirmationPage />} />
+          <Route path="/payment-complete/:orderId" element={<PaymentSuccess />} />
+
         </Route>
         <Route element={<PublicRoute/>}>
           <Route element={<LoSiLayout/>}>

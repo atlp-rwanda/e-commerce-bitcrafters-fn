@@ -24,7 +24,7 @@ const UserOrders: React.FC = () => {
           const response = await client.get(`/orders`);
 
           if (response.status === 200){
-            setOrders(response.data.orders)
+            setOrders(response.data.orders.reverse())
             console.log("data: ", response.data )
           }
 
@@ -130,7 +130,7 @@ const UserOrders: React.FC = () => {
                   <th scope="col" className="px-6 py-4 text-xs tablet:text-sm">Action</th>
                 </tr>
               </thead>
-        {orders?.map((item:any, index:number)=>{
+        {orders.map((item:any, index:number)=>{
 
             return(
                 <tbody key={index}>

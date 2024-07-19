@@ -128,7 +128,7 @@ describe("useCheckoutSubmit", () => {
       jest.runAllTimers();
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith("/mobileMoney");
+    expect(mockNavigate).toHaveBeenCalledWith("/mobileMoney/undefined");
     jest.useRealTimers();
   });
   it("should navigate to credit card page after successful submission", async () => {
