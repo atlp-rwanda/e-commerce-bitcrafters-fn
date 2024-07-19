@@ -88,16 +88,16 @@ describe('Home Component', () => {
       );
     });
 
-    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/collections/products?page=1');
-    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/collections/products?page=2');
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/collections/products/all?page=1');
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/collections/products/all?page=2');
 
     act(() => {
       jest.advanceTimersByTime(60000);
     });
 
     await waitFor(() => {
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/collections/products?page=2');
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/collections/products?page=3');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/collections/products/all?page=2');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/collections/products/all?page=3');
     });
 
     jest.useRealTimers();

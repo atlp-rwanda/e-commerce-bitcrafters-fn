@@ -73,7 +73,7 @@ describe('SearchComponent', () => {
     fireEvent.change(queryInput, { target: { value: 'test query' } });
 
     await waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith('collections/products/search', {
+      expect(mockGet).toHaveBeenCalledWith('collections/products/all/search', {
         params: {
           query: 'test query',
           minPrice: '',
@@ -135,7 +135,7 @@ describe('SearchComponent', () => {
     await waitFor(() => {
       expect(mockedDebounce).toHaveBeenCalled;
       expect(mockGet).toHaveBeenCalled;
-      expect(mockGet).toHaveBeenCalledWith('collections/products/search', {
+      expect(mockGet).toHaveBeenCalledWith('collections/products/all/search', {
         params: {
           query: 'test',
           minPrice: '',
@@ -217,7 +217,7 @@ describe('SearchComponent', () => {
       fireEvent.change(maxPriceInput, { target: { value: '2000' } });
   
       await waitFor(() => {
-        expect(mockGet).toHaveBeenCalledWith('collections/products/search', {
+        expect(mockGet).toHaveBeenCalledWith('collections/products/all/search', {
           params: {
             query: '',
             minPrice: '1000',

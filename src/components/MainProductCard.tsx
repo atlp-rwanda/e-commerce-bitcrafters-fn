@@ -124,11 +124,11 @@ const MainProductCard: React.FC<InputProps> = (props) => {
           <div className="stars flex gap-2 items-center justify-center">
             {renderStars(props.rating)}
           </div>
-          <p className='text-xs tablet:text-sm text-black'>{props.rating || 4.2}/5</p>
+          <p className='text-xs tablet:text-sm text-black'>{props.rating }</p>
         </div>
         <div className='flex gap-5 items-center'>
-          <p className='text-xs tablet:text-sm text-black font-semibold'>Rwf {props.price || 1000}</p>
-          <p className='text-xs tablet:text-sm text-gray_100 line-through'>Rwf {props.discount || 1000}</p>
+          <p className='text-xs tablet:text-sm text-black font-semibold'>Rwf {props.price }</p>
+          <p className='text-xs tablet:text-sm text-gray_100 line-through'>{props.discount }</p>
         </div>
       </div>
 

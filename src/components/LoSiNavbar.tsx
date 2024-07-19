@@ -64,8 +64,10 @@ const Navbar: React.FC<NavbarProps> = (props) => {
         </div>
       </nav>
       {showSearch && (
-        <div className="transition-all duration-300">
-          <SearchComponent />
+        <div className="absolute top-24 w-full h-[75%] tablet:h-[70%] z-10 transition-all duration-300">
+          <SearchComponent
+          hideSearch={()=>{setShowSearch(false)}}
+          />
         </div>
       )}
     </div>

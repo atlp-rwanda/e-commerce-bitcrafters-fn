@@ -39,7 +39,7 @@ const Home: React.FC = () => {
 
   const fetchNewArrivalProducts = async (page: number) => {
     try {
-      const response = await client.get(`/collections/products?page=${page}`);
+      const response = await client.get(`/collections/products/all?page=${page}`);
       setNewArrivalProducts(response.data.products);
     } catch (error) {
       console.error("Error fetching new arrival products:", error);
@@ -50,7 +50,7 @@ const Home: React.FC = () => {
 
   const fetchFeaturedProducts = async (page: number) => {
     try {
-      const response = await client.get(`/collections/products?page=${page}`);
+      const response = await client.get(`/collections/products/all?page=${page}`);
       setFeaturedProducts(response.data.products);
     } catch (error) {
       console.error("Error fetching featured products:", error);
