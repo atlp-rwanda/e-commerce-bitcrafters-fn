@@ -77,6 +77,10 @@ const ViewSingleProduct: React.FC = () => {
     (state: RootState) => state.auth.authRole,
     shallowEqual,
   );
+  const isLoggedIn = useSelector(
+    (state: RootState) => state.auth.isLoggedIn,
+    shallowEqual,
+  );
 
   const fetchSimilarProducts = async (collectionId: string) => {
     setIsLoadingSimilar(true);
@@ -105,11 +109,18 @@ const ViewSingleProduct: React.FC = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await client.get(`/collections/products/single/${productId}`);
-        const fetchedProduct = response.data.item;
-        setProduct(fetchedProduct);
-        if (fetchedProduct.collectionId) {
-          fetchSimilarProducts(fetchedProduct.collectionId);
+        if(!isLoggedIn){
+          const response = await client.get(`/collections/products/single/${productId}`);
+          const fetchedProduct = response.data.item;
+          setProduct(fetchedProduct);
+        }
+        else{
+          const response = await client.get(`/collections/product/${productId}`);
+          const fetchedProduct = response.data.item;
+          setProduct(fetchedProduct);
+        }
+        if (product?.collectionId) {
+          fetchSimilarProducts(product.collectionId);
         }
       } catch (error) {
         // notify("Error fetching product");
