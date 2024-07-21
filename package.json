@@ -37,6 +37,7 @@
     "date-fns": "^3.6.0",
     "emoji-picker-react": "^4.11.1",
     "emoji.json": "^15.1.0",
+    "esbuild": "^0.23.0",
     "eslint-plugin-jest": "^28.6.0",
     "eslint-plugin-testing-library": "^6.2.2",
     "formik": "^2.4.6",
@@ -143,5 +144,8 @@
     "typescript-eslint": "^7.13.0",
     "vite": "^5.2.0",
     "vite-plugin-environment": "^1.1.3"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.18.1"
   }
 }
