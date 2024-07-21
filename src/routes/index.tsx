@@ -31,6 +31,7 @@ import UserOrderTrack from "../views/UserOrderTrack";
 import UserOrders from "../views/UserOrders"; 
 import PublicRoute,{PrivateRoute} from "../components/PublicRoute";
 import PaymentSuccess from "../views/PaymentSuccess";
+import SellerDashboard from "../components/SellerStats";
 
 const Routers: React.FC = () => {
   return (
@@ -93,10 +94,11 @@ const Routers: React.FC = () => {
         </Route>
         <Route element={<ProtectedRoute requiredRole="seller" />}>
           <Route path="/seller" element={<SellerDashLayout />}>
-            <Route index element={<ViewProducts />} />
+            <Route index element={<SellerDashboard />} />
             <Route path="/seller/products" element={<ViewProducts />} />
             <Route path="/seller/addProduct" element={<AddProductForm />} />
             <Route path="/seller/updateProduct/:productId" element={<UpdateProductForm/>} />
+            <Route path="/seller/dashboard" element={<SellerDashboard/>} />
           </Route>
         </Route>
         <Route element={<ProtectedRoute requiredRole="buyer" />}>

@@ -28,7 +28,8 @@ export default {
         back_next: "#BDBBBB",
         "custom-bg": "#F3F2F0",
         "custom-white": "#FFFFFF",
-        chat_back: "#F5F5F5",
+        chat_back: "#F5F5F5"
+      
       },
       borderRadius: {
         sm: "5px",

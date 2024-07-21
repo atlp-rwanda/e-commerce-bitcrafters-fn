@@ -5,12 +5,12 @@ import SellerDashboardStats from "../views/dashboard/sellerDashboardStats";
 
 const SellerDashLayout = () => {
   return (
-    <div className=" bg-dashColor flex-1 flex flex-col w-full min-h-screen">
-      <div className="flex flex-1 p-4 space-x-4">
+    <div className=" bg-dashColor flex-1 flex flex-col w-full ">
+      <div className="flex">
         <SideNav />
-        <div className="flex-1">
+        <div className="sm:flex-1 w-full max-w-full">
           <SellerDashboardStats />
-          <div className="mt-20">
+          <div className="">
             <Outlet />
           </div>
         </div>
