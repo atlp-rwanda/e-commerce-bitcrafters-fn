@@ -62,7 +62,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       setProcessing(false);
       return;
     }
-
+try{
     const { data: paymentIntentData } = await axiosClient.post(
       `/payment/process-payment/${orderId}`,
       {
@@ -125,6 +125,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     };
 
     await handlePaymentIntent(paymentIntentData.clientSecret);
+  } catch (err) {
+    setError(err.response?.data?.message || "Payment processing failed");
+    setProcessing(false);
+  }
   };
 
   return (
